@@ -31,6 +31,18 @@
                         <li class="nav-item">
                             <ul>
                                 <li class="nav-item">
+                                    <router-link to="/apps/workcharts" class="group" @click="toggleMobileMenu">
+                                        <div class="flex items-center">
+                                            <icon-menu-charts class="group-hover:!text-primary shrink-0" />
+
+                                            <span class="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{{
+                                                $t('workcharts')
+                                            }}</span>
+                                        </div>
+                                    </router-link>
+                                </li>
+                                
+                                <!-- <li class="nav-item">
                                     <router-link to="/" class="group" @click="toggleMobileMenu">
                                         <div class="flex items-center">
                                             <icon-menu-chat class="group-hover:!text-primary shrink-0" />
@@ -62,18 +74,7 @@
                                             }}</span>
                                         </div>
                                     </router-link>
-                                </li>
-                                <li class="nav-item">
-                                    <router-link to="/crypto" class="group" @click="toggleMobileMenu">
-                                        <div class="flex items-center">
-                                            <icon-menu-chat class="group-hover:!text-primary shrink-0" />
-
-                                            <span class="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{{
-                                                $t('crypto')
-                                            }}</span>
-                                        </div>
-                                    </router-link>
-                                </li>
+                                </li> -->
                                 <li class="menu nav-item">
                                     <button
                                         type="button"

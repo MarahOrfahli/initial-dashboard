@@ -138,5 +138,6 @@
     "check-delete":"Are you sure want to delete selected row ?",
     "action":{
         "name":"Manage"
-    }
+    },
+    "workcharts":"workcharts"
 }

@@ -2,21 +2,28 @@
     <div>
         <div class="panel px-0 pb-1.5 border-[#e0e6ed] dark:border-[#1b2e4b]">
             <div class="datatable invoice-table">
-                <div class="mb-4.5 px-5 flex md:items-center md:flex-row flex-col gap-5">
-                    <div class="flex items-center gap-2">
-                        <button type="button" class="btn btn-danger gap-2" @click="deleteRow()">
-                            <icon-trash-lines />
-                            {{ $t('delete') }}
-                        </button>
+                <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-4 mb-4.5 px-5">
+                    <div class="">
                         <router-link to="/apps/categories/main-categories/add" class="btn btn-primary gap-2">
                             <icon-plus />
                             {{ $t('add-new-section') }}
                         </router-link>
                     </div>
-                    <div class="ltr:ml-auto rtl:mr-auto">
+                    <div class="md:col-span-2">
                         <input v-model="search" type="text" class="form-input" :placeholder="$t('search-ph')" />
                     </div>
                 </div>
+                <!-- <div class="mb-4.5 px-5 flex md:items-center md:flex-row flex-col gap-5">
+                    <div class="flex items-center gap-2">
+                        <router-link to="/apps/categories/main-categories/add" class="btn btn-primary gap-2">
+                            <icon-plus />
+                            {{ $t('add-new-section') }}
+                        </router-link>
+                    </div>
+                    <div class="flex items-center ">
+                        <input v-model="search" type="text" class="form-input" :placeholder="$t('search-ph')" />
+                    </div>
+                </div> -->
 
                 <vue3-datatable
                     ref="datatable"
@@ -47,12 +54,17 @@
                     </template>
                     <template #actions="data">
                         <div class="flex gap-4 items-center justify-center">
-                            <router-link to="/apps/categories/main-categories/edit" class="hover:text-info">
-                                <icon-edit class="w-4.5 h-4.5" />
-                            </router-link>
-                            <button type="button" class="hover:text-danger" @click="deleteRow(`${data.value.id}`)">
-                                <icon-trash-lines />
-                            </button>
+                            <div class="btn btn-success w-4">
+                                <router-link to="/apps/categories/main-categories/edit">
+                                    <icon-edit />
+                                </router-link>
+                            </div>
+                            <div class="btn btn-danger w-4">
+                                <button type="button" @click="deleteRow(`${data.value.id}`)">
+                                    <icon-trash-lines />
+                                </button>
+                            </div>
+                            
                         </div>
                     </template>
                 </vue3-datatable>
@@ -73,7 +85,7 @@
     useMeta({ title: 'Invoice List' });
 
     const datatable: any = ref(null);
-    const { t, locale } = useI18n()
+    const { t } = useI18n()
     const search = ref('');
     const cols = ref([
         // { field: 'invoice', title: 'Invoice' },

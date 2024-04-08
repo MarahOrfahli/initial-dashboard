@@ -7,27 +7,25 @@ import HomeView from '../views/index.vue';
 const routes: RouteRecordRaw[] = [
     // dashboard
     { path: '/', name: 'home', component: HomeView },
+    // {
+    //     path: '/analytics',
+    //     name: 'analytics',
+    //     component: () => import(/* webpackChunkName: "analytics" */ '../views/analytics.vue'),
+    // },
+    // {
+    //     path: '/finance',
+    //     name: 'finance',
+    //     component: () => import(/* webpackChunkName: "finance" */ '../views/finance.vue'),
+    // },
+    // {
+    //     path: '/apps/chat',
+    //     name: 'chat',
+    //     component: () => import(/* webpackChunkName: "apps-chat" */ '../views/apps/chat.vue'),
+    // },
     {
-        path: '/analytics',
-        name: 'analytics',
-        component: () => import(/* webpackChunkName: "analytics" */ '../views/analytics.vue'),
-    },
-    {
-        path: '/finance',
-        name: 'finance',
-        component: () => import(/* webpackChunkName: "finance" */ '../views/finance.vue'),
-    },
-    {
-        path: '/crypto',
-        name: 'crypto',
-        component: () => import(/* webpackChunkName: "crypto" */ '../views/crypto.vue'),
-    },
-
-    // apps
-    {
-        path: '/apps/chat',
-        name: 'chat',
-        component: () => import(/* webpackChunkName: "apps-chat" */ '../views/apps/chat.vue'),
+        path: '/apps/workcharts',
+        name: 'workcharts',
+        component: () => import(/* webpackChunkName: "apps-todolist" */ '../views/apps/workcharts.vue'),
     },
     {
         path: '/apps/todolist',

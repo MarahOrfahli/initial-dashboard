@@ -29,22 +29,15 @@
                                 <icon-calendar />
                             </router-link>
                         </li>
-                        <li>
+                        <!-- <li>
                             <router-link
                                 to="/apps/todolist"
                                 class="block p-2 rounded-full bg-white-light/40 dark:bg-dark/40 hover:text-primary hover:bg-white-light/90 dark:hover:bg-dark/60"
                             >
                                 <icon-edit />
                             </router-link>
-                        </li>
-                        <li>
-                            <router-link
-                                to="/apps/chat"
-                                class="block p-2 rounded-full bg-white-light/40 dark:bg-dark/40 hover:text-primary hover:bg-white-light/90 dark:hover:bg-dark/60"
-                            >
-                                <icon-chat-notification />
-                            </router-link>
-                        </li>
+                        </li> -->
+                       
                     </ul>
                 </div>
                 <div
@@ -142,7 +135,7 @@
                         </Popper>
                     </div>
 
-                    <div class="dropdown shrink-0">
+                    <!-- <div class="dropdown shrink-0">
                         <Popper :placement="store.rtlClass === 'rtl' ? 'bottom-start' : 'bottom-end'" offsetDistance="8">
                             <button
                                 type="button"
@@ -203,9 +196,9 @@
                                 </ul>
                             </template>
                         </Popper>
-                    </div>
+                    </div> -->
 
-                    <div class="dropdown shrink-0">
+                    <!-- <div class="dropdown shrink-0">
                         <Popper :placement="store.rtlClass === 'rtl' ? 'bottom-end' : 'bottom-start'" offsetDistance="8">
                             <button
                                 type="button"
@@ -279,7 +272,7 @@
                                 </ul>
                             </template>
                         </Popper>
-                    </div>
+                    </div> -->
 
                     <div class="dropdown shrink-0">
                         <Popper :placement="store.rtlClass === 'rtl' ? 'bottom-end' : 'bottom-start'" offsetDistance="8" class="!block">
