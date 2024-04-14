@@ -47,7 +47,7 @@ export default {
 
     toggleLanguage(item: any) {
         const store = useAppStore();
-
+        
         let lang: any = null;
         if (item) {
             lang = item;

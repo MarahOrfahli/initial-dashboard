@@ -79,8 +79,8 @@
                                     <button
                                         type="button"
                                         class="nav-link group w-full"
-                                        :class="{ active: activeDropdown === 'invoice' }"
-                                        @click="activeDropdown === 'invoice' ? (activeDropdown = null) : (activeDropdown = 'invoice')"
+                                        :class="{ active: activeDropdown === 'product-sec' }"
+                                        @click="activeDropdown === 'product-sec' ? (activeDropdown = null) : (activeDropdown = 'product-sec')"
                                     >
                                         <div class="flex items-center">
                                             <icon-menu-invoice class="group-hover:!text-primary shrink-0" />
@@ -89,24 +89,24 @@
                                                 $t('products_section')
                                             }}</span>
                                         </div>
-                                        <div :class="{ 'rtl:rotate-90 -rotate-90': activeDropdown !== 'invoice' }">
+                                        <div :class="{ 'rtl:rotate-90 -rotate-90': activeDropdown !== 'product-sec' }">
                                             <icon-caret-down />
                                         </div>
                                     </button>
-                                    <vue-collapsible :isOpen="activeDropdown === 'invoice'">
+                                    <vue-collapsible :isOpen="activeDropdown === 'product-sec'">
                                         <ul class="sub-menu text-gray-500">
                                             <li>
                                                 <router-link to="/apps/categories/main-categories/list" @click="toggleMobileMenu">{{ $t('main_section') }}</router-link>
                                             </li>
                                             <li>
-                                                <router-link to="/apps/categories/main-categories/preview" @click="toggleMobileMenu">{{ $t('sub_section') }}</router-link>
+                                                <router-link to="/apps/categories/sub-categories/list" @click="toggleMobileMenu">{{ $t('sub_section') }}</router-link>
                                             </li>
                                         </ul>
                                     </vue-collapsible>
                                 </li>
 
                                 <li class="nav-item">
-                                    <router-link to="/apps/calendar" class="group" @click="toggleMobileMenu">
+                                    <router-link to="/apps/products/list" class="group" @click="toggleMobileMenu">
                                         <div class="flex items-center">
                                             <icon-menu-calendar class="group-hover:!text-primary shrink-0" />
 

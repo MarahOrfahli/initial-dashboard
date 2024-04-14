@@ -4,13 +4,10 @@
             <div class="datatable invoice-table">
                 <div class="grid sm:grid-cols-2 gap-3 mb-4.5 px-5">
                     <div style="width: 160px">
-                        <div @click="add" class="btn btn-primary gap-2 hover:cursor-pointer">
+                        <router-link to="/apps/categories/main-categories/add" class="btn btn-primary gap-2">
                             <icon-plus />
                             {{ t('add-category') }}
-                        </div>
-                        <!-- <router-link to="/apps/categories/main-categories/add" >
-                            
-                        </router-link> -->
+                        </router-link>
                     </div>
                     <div>
                         <input v-model="search" type="text" class="form-input" :placeholder="t('search-ph')" />
@@ -36,18 +33,22 @@
                     <template #titleEnglish="data">
                         <div>{{ data.value.titleEnglish }}</div>
                     </template>
-                    <template #mainCategory="data">
-                        <div>{{ data.value.mainCategory }}</div>
+                    <template #catImg="data">
+                        <div class="flex items-center font-semibold">
+                            <div class="p-0.5 bg-white-dark/30 rounded-md w-max ltr:mr-2 rtl:ml-2">
+                                <img class="h-20 w-20 rounded-md object-cover" :src="`${data.value.catImg}`" />
+                            </div>
+                        </div>
                     </template>
                     <template #actions="data">
                         <div class="flex gap-4 items-center justify-center">
-                            <div class="btn btn-white w-4 cursor-pointer hover:text-success" @click="editRow(`${data.value.id}`)">
-                                <button type="button">
+                            <div class="btn btn-white w-4">
+                                <router-link to="/apps/categories/main-categories/edit" class="hover:text-success">
                                     <icon-edit />
-                                </button>
+                                </router-link>
                             </div>
-                            <div class="btn btn-white w-4 cursor-pointer hover:text-danger" @click="deleteRow(`${data.value.id}`)">
-                                <button type="button">
+                            <div class="btn btn-white w-4">
+                                <button type="button" @click="deleteRow(`${data.value.id}`)" class="hover:text-danger">
                                     <icon-trash-lines />
                                 </button>
                             </div>
@@ -57,135 +58,79 @@
                 </vue3-datatable>
             </div>
         </div>
-
-        <div>
-                                <!-- Modal -->
-                                <TransitionRoot appear :show="addeditMainCategory" as="template">
-                            <Dialog as="div" class="relative z-[51]">
-                                <TransitionChild
-                                    as="template"
-                                    enter="duration-300 ease-out"
-                                    enter-from="opacity-0"
-                                    enter-to="opacity-100"
-                                    leave="duration-200 ease-in"
-                                    leave-from="opacity-100"
-                                    leave-to="opacity-0"
-                                >
-                                    <DialogOverlay class="fixed inset-0 bg-[black]/60" />
-                                </TransitionChild>
-
-                                <div class="fixed inset-0 overflow-y-auto">
-                                    <div class="flex min-h-full items-start justify-center px-4 py-8">
-                                        <TransitionChild
-                                            as="template"
-                                            enter="duration-300 ease-out"
-                                            enter-from="opacity-0 scale-95"
-                                            enter-to="opacity-100 scale-100"
-                                            leave="duration-200 ease-in"
-                                            leave-from="opacity-100 scale-100"
-                                            leave-to="opacity-0 scale-95"
-                                        >
-                                            <DialogPanel class="panel border-0 p-0 rounded-lg overflow-hidden w-full max-w-lg text-black dark:text-white-dark">
-                                                <button
-                                                    type="button"
-                                                    class="absolute top-4 ltr:right-4 rtl:left-4 text-gray-400 hover:text-gray-800 dark:hover:text-gray-600 outline-none"
-                                                    @click="addeditMainCategory = false"
-                                                >
-                                                    <icon-x />
-                                                </button>
-                                                <div
-                                                    class="text-lg font-bold bg-[#fbfbfb] dark:bg-[#121c2c] ltr:pl-5 rtl:pr-5 py-3 ltr:pr-[50px] rtl:pl-[50px]"
-                                                >
-                                                    <span>{{ addedit }}</span>
-                                                </div>
-                                                <div class="p-5">
-                                                    <AddEditCategory :dataid="categoryID" @close="close" />
-
-                                                    <!-- <div class="flex justify-end items-center mt-8">
-                                                        <button type="button" @click="addeditMainCategory = false" class="btn btn-outline-danger">Discard</button>
-                                                        <button type="button" @click="addeditMainCategory = false" class="btn btn-primary ltr:ml-4 rtl:mr-4">Save</button>
-                                                    </div> -->
-                                                </div>
-                                            </DialogPanel>
-                                        </TransitionChild>
-                                    </div>
-                                </div>
-                            </Dialog>
-                        </TransitionRoot>
-                            </div>
     </div>
 </template>
 <script lang="ts">
     import { defineComponent } from 'vue';
     import { useI18n } from 'vue-i18n'
-    import AddEditCategory from '@/views/apps/categories/sub-categories/add-edit.vue'
     import Vue3Datatable from '@bhplugin/vue3-datatable';
     import { useMeta } from '@/composables/use-meta';
     import IconTrashLines from '@/components/icon/icon-trash-lines.vue';
-    import IconX from '@/components/icon/icon-x.vue';
     import IconPlus from '@/components/icon/icon-plus.vue';
     import IconEdit from '@/components/icon/icon-edit.vue';
     import IconEye from '@/components/icon/icon-eye.vue';
-    import { TransitionRoot, TransitionChild, Dialog, DialogPanel, DialogOverlay }
-     from '@headlessui/vue';
     export default defineComponent({
         components: {
-            AddEditCategory,
             Vue3Datatable,
-            TransitionRoot,
-            TransitionChild,
             IconTrashLines,
-            DialogPanel,
-            Dialog,
-            IconX,
             IconPlus,
             IconEdit,
             IconEye
         },
         setup(){
-            useMeta({ title: 'SubCategory List' });
+            useMeta({ title: 'Invoice List' });
         },
         computed:{
            cols(){
-            let { t } = useI18n()
+            let { t, locale } = useI18n()
             let cols = [
+                // { field: 'invoice', title: 'Invoice' },
                 { field: 'titleArabic', title: t('title-arabic') },
                 { field: 'titleEnglish', title: t('title-english')  },
-                { field: 'mainCategory', title: t('mainCategory')  },
+                { field: 'catImg', title: t('img')  },
                 { field: 'actions', title: t('action.name') , sort: false, headerClass: 'justify-center' },
             ];
             return cols;
-           },
+           }
         },
         data() {
             const datatable: any = null;
             const { t, locale } = useI18n()
+            const search = '';
+            const cols1 = [
+                // { field: 'invoice', title: 'Invoice' },
+                { field: 'titleArabic', title: t('title-arabic') },
+                { field: 'titleEnglish', title: t('title-english')  },
+                { field: 'catImg', title: t('img')  },
+                { field: 'actions', title: t('action.name') , sort: false, headerClass: 'justify-center' },
+            ];
             const items = [
                 {
                     id: 1,
-                    titleArabic: 'روج',
-                    titleEnglish: 'Roge',
-                    mainCategory: 'Face'
+                    titleArabic: 'وجه',
+                    titleEnglish: 'Face',
+                    catImg: 'https://test.mightcinema.com/storage/images/categories/hqdelKiprK4sZbrRYcNTVrwCStQUeTV9798fcGDF.jpg'
                 },
                 {
                     id: 2,
-                    titleArabic: 'روج',
-                    titleEnglish: 'Roge',
-                    mainCategory: 'Face'
+                    titleArabic: 'وجه',
+                    titleEnglish: 'Face',
+                    catImg: 'https://test.mightcinema.com/storage/images/categories/hqdelKiprK4sZbrRYcNTVrwCStQUeTV9798fcGDF.jpg'
                 },
                 {
                     id: 3,
-                    titleArabic: 'روج',
-                    titleEnglish: 'Roge',
-                    mainCategory: 'Face'
+                    titleArabic: 'وجه',
+                    titleEnglish: 'Face',
+                    catImg: 'https://test.mightcinema.com/storage/images/categories/hqdelKiprK4sZbrRYcNTVrwCStQUeTV9798fcGDF.jpg'
                 },
                 {
                     id: 4,
-                    titleArabic: 'روج',
-                    titleEnglish: 'Roge',
-                    mainCategory: 'Face'
+                    titleArabic: 'وجه',
+                    titleEnglish: 'Face',
+                    catImg: 'https://test.mightcinema.com/storage/images/categories/hqdelKiprK4sZbrRYcNTVrwCStQUeTV9798fcGDF.jpg'
                 },
             ];
+            const searchText = '';
             const columns = ['id', 'titleArabic', 'titleEnglish', 'catImg','actions'];
             const tableOption = {
                 headings: {
@@ -213,35 +158,32 @@
                 },
             };
             return {
-                // Values
-                addeditMainCategory: false,
-                addedit: '',
-                search: '',
-                searchText: '',
-                categoryID: 0,
-                ////////
                 datatable,
                 t,locale,
+                search,
+                cols1,
                 items,
                 columns,
+                searchText,
                 tableOption
             }
         },
+        watch:{
+            col(){
+                const cols = [
+                // { field: 'invoice', title: 'Invoice' },
+                { field: 'titleArabic', title: this.t('title-arabic') },
+                { field: 'titleEnglish', title: this.t('title-english')  },
+                { field: 'catImg', title: this.t('img')  },
+                { field: 'actions', title: this.t('action.name') , sort: false, headerClass: 'justify-center' },
+            ];
+            }
+            // cols(newValue, oldValue) {
+            // console.log(`تم تغيير القيمة من ${oldValue} إلى ${newValue}`);
+            // }
+        },
         async mounted() {},
         methods: {
-            close(){
-                this.addeditMainCategory = false
-            },
-            add(){
-                this.addeditMainCategory = true
-                this.addedit = 'Adding New SubCategory'
-                this.categoryID = 0
-            },
-            editRow(id: any = null){
-                this.addeditMainCategory = true
-                this.addedit = 'Edit SubCategory'
-                this.categoryID = id
-            },
             deleteRow(item: any = null){
                 if (confirm(this.t('check-delete'))) {
             if (item) {

@@ -2,7 +2,7 @@ import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 import { useAppStore } from '@/stores/index';
 import appSetting from '@/app-setting';
 
-import HomeView from '../views/index.vue';
+import HomeView from '../views/apps/workcharts.vue';
 
 const routes: RouteRecordRaw[] = [
     // dashboard
@@ -25,59 +25,56 @@ const routes: RouteRecordRaw[] = [
     {
         path: '/apps/workcharts',
         name: 'workcharts',
-        component: () => import(/* webpackChunkName: "apps-todolist" */ '../views/apps/workcharts.vue'),
+        component: () => import('../views/apps/workcharts.vue'),
     },
     {
         path: '/apps/todolist',
         name: 'todolist',
-        component: () => import(/* webpackChunkName: "apps-todolist" */ '../views/apps/todolist.vue'),
+        component: () => import('../views/apps/todolist.vue'),
     },
     ////////////////////////////////
     /* Main Categories */
     {
         path: '/apps/categories/main-categories/list',
         name: 'main-categories-list',
-        component: () => import(/* webpackChunkName: "apps-invoice-list" */ '../views/apps/categories/main-categories/list.vue'),
+        component: () => import('../views/apps/categories/main-categories/list.vue'),
+    },
+    {
+        path: '/apps/categories/main-categories/add-edit',
+        name: 'main-categories-add-edit',
+        component: () => import('../views/apps/categories/main-categories/add-edit.vue'),
+    },
+
+    ////////////////////////////////
+    /* Sub Categories */
+    {
+        path: '/apps/categories/sub-categories/list',
+        name: 'sub-categories-list',
+        component: () => import('../views/apps/categories/sub-categories/list.vue'),
+    },
+    {
+        path: '/apps/categories/sub-categories/add-edit',
+        name: 'sub-categories-add-edit',
+        component: () => import('../views/apps/categories/sub-categories/add-edit.vue'),
+    },
+    ////////////////////////////////
+    /* Products */
+    {
+        path: '/apps/products/list',
+        name: 'products-list',
+        component: () => import('../views/apps/products/list.vue'),
+    },
+    {
+        path: '/apps/products/add',
+        name: 'products-add',
+        component: () => import('../views/apps/products/add.vue'),
     },
     // {
-    //     path: '/apps/invoice/preview',
-    //     name: 'invoice-preview',
-    //     component: () => import(/* webpackChunkName: "apps-invoice-preview" */ '../views/apps/invoice/preview.vue'),
+    //     path: '/apps/products/edit',
+    //     name: 'products-edit',
+    //     component: () => import(/* webpackChunkName: "apps-invoice-edit" */ '../views/apps/products/edit.vue'),
     // },
-    {
-        path: '/apps/categories/main-categories/add',
-        name: 'main-categories-add',
-        component: () => import(/* webpackChunkName: "apps-invoice-add" */ '../views/apps/categories/main-categories/add.vue'),
-    },
-    {
-        path: '/apps/categories/main-categories/edit',
-        name: 'main-categories-edit',
-        component: () => import(/* webpackChunkName: "apps-invoice-edit" */ '../views/apps/categories/main-categories/edit.vue'),
-    },
-
-
-    ////////////////////////
-    // invoice
-    {
-        path: '/apps/invoice/list',
-        name: 'invoice-list',
-        component: () => import(/* webpackChunkName: "apps-invoice-list" */ '../views/apps/invoice/list.vue'),
-    },
-    {
-        path: '/apps/invoice/preview',
-        name: 'invoice-preview',
-        component: () => import(/* webpackChunkName: "apps-invoice-preview" */ '../views/apps/invoice/preview.vue'),
-    },
-    {
-        path: '/apps/invoice/add',
-        name: 'invoice-add',
-        component: () => import(/* webpackChunkName: "apps-invoice-add" */ '../views/apps/invoice/add.vue'),
-    },
-    {
-        path: '/apps/invoice/edit',
-        name: 'invoice-edit',
-        component: () => import(/* webpackChunkName: "apps-invoice-edit" */ '../views/apps/invoice/edit.vue'),
-    },
+    ////////////////////////////////////////////
     {
         path: '/apps/calendar',
         name: 'calendar',
