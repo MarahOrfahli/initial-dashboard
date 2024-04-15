@@ -96,17 +96,17 @@
                                     <vue-collapsible :isOpen="activeDropdown === 'product-sec'">
                                         <ul class="sub-menu text-gray-500">
                                             <li>
-                                                <router-link to="/apps/categories/main-categories/list" @click="toggleMobileMenu">{{ $t('main_section') }}</router-link>
+                                                <router-link to="/pages/categories/mainCategories/list" @click="toggleMobileMenu">{{ $t('main_section') }}</router-link>
                                             </li>
                                             <li>
-                                                <router-link to="/apps/categories/sub-categories/list" @click="toggleMobileMenu">{{ $t('sub_section') }}</router-link>
+                                                <router-link to="/pages/categories/subCategories/list" @click="toggleMobileMenu">{{ $t('sub_section') }}</router-link>
                                             </li>
                                         </ul>
                                     </vue-collapsible>
                                 </li>
 
                                 <li class="nav-item">
-                                    <router-link to="/apps/products/list" class="group" @click="toggleMobileMenu">
+                                    <router-link to="/pages/products/list" class="group" @click="toggleMobileMenu">
                                         <div class="flex items-center">
                                             <icon-menu-calendar class="group-hover:!text-primary shrink-0" />
 
@@ -116,6 +116,29 @@
                                         </div>
                                     </router-link>
                                 </li>
+                                <li class="nav-item">
+                                    <router-link to="/pages/brand/list" class="group" @click="toggleMobileMenu">
+                                        <div class="flex items-center">
+                                            <icon-menu-calendar class="group-hover:!text-primary shrink-0" />
+
+                                            <span class="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{{
+                                                $t('brand')
+                                            }}</span>
+                                        </div>
+                                    </router-link>
+                                </li>
+                                <li class="nav-item">
+                                    <router-link to="/pages/store/list" class="group" @click="toggleMobileMenu">
+                                        <div class="flex items-center">
+                                            <icon-menu-calendar class="group-hover:!text-primary shrink-0" />
+
+                                            <span class="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{{
+                                                $t('store')
+                                            }}</span>
+                                        </div>
+                                    </router-link>
+                                </li>
+
                             </ul>
                         </li>
                     </ul>

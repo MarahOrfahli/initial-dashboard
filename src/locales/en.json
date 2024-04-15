@@ -140,5 +140,7 @@
     "action":{
         "name":"Manage"
     },
-    "workcharts":"workcharts"
+    "workcharts":"workcharts",
+    "brand":"Brand",
+    "store":"Store"
 }

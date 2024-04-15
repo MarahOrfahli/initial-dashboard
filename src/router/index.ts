@@ -3,24 +3,27 @@ import { useAppStore } from '@/stores/index';
 import appSetting from '@/app-setting';
 
 import HomeView from '../views/apps/workcharts.vue';
-
 const routes: RouteRecordRaw[] = [
     // dashboard
     { path: '/', name: 'home', component: HomeView },
+    {
+        path: '/:catchAll(.*)',
+        redirect: { name: 'error404' },
+    },
     // {
     //     path: '/analytics',
     //     name: 'analytics',
-    //     component: () => import(/* webpackChunkName: "analytics" */ '../views/analytics.vue'),
+    //     component: () => import('../views/analytics.vue'),
     // },
     // {
     //     path: '/finance',
     //     name: 'finance',
-    //     component: () => import(/* webpackChunkName: "finance" */ '../views/finance.vue'),
+    //     component: () => import('../views/finance.vue'),
     // },
     // {
     //     path: '/apps/chat',
     //     name: 'chat',
-    //     component: () => import(/* webpackChunkName: "apps-chat" */ '../views/apps/chat.vue'),
+    //     component: () => import('../views/apps/chat.vue'),
     // },
     {
         path: '/apps/workcharts',
@@ -33,111 +36,120 @@ const routes: RouteRecordRaw[] = [
         component: () => import('../views/apps/todolist.vue'),
     },
     ////////////////////////////////
+    /* Brand */
+    {
+        path: '/pages/brand/list',
+        name: 'brand-list',
+        component: () => import('../views/pages/brand/list.vue'),
+    },
+    ////////////////////////////////
+    /* Store */
+    {
+        path: '/pages/store/list',
+        name: 'store-list',
+        component: () => import('../views/pages/store/list.vue'),
+    },
+    ////////////////////////////////
     /* Main Categories */
     {
-        path: '/apps/categories/main-categories/list',
-        name: 'main-categories-list',
-        component: () => import('../views/apps/categories/main-categories/list.vue'),
+        path: '/pages/categories/mainCategories/list',
+        name: 'mainCategories-list',
+        component: () => import('../views/pages/categories/mainCategories/list.vue'),
     },
     {
-        path: '/apps/categories/main-categories/add-edit',
-        name: 'main-categories-add-edit',
-        component: () => import('../views/apps/categories/main-categories/add-edit.vue'),
+        path: '/pages/categories/mainCategories/add-edit',
+        name: 'mainCategories-add-edit',
+        component: () => import('../views/pages/categories/mainCategories/add-edit.vue'),
     },
 
     ////////////////////////////////
     /* Sub Categories */
     {
-        path: '/apps/categories/sub-categories/list',
-        name: 'sub-categories-list',
-        component: () => import('../views/apps/categories/sub-categories/list.vue'),
+        path: '/pages/categories/subCategories/list',
+        name: 'subCategories-list',
+        component: () => import('../views/pages/categories/subCategories/list.vue'),
     },
     {
-        path: '/apps/categories/sub-categories/add-edit',
-        name: 'sub-categories-add-edit',
-        component: () => import('../views/apps/categories/sub-categories/add-edit.vue'),
+        path: '/pages/categories/subCategories/add-edit',
+        name: 'subCategories-add-edit',
+        component: () => import('../views/pages/categories/subCategories/add-edit.vue'),
     },
     ////////////////////////////////
     /* Products */
     {
-        path: '/apps/products/list',
+        path: '/pages/products/list',
         name: 'products-list',
-        component: () => import('../views/apps/products/list.vue'),
+        component: () => import('../views/pages/products/list.vue'),
     },
     {
-        path: '/apps/products/add',
+        path: '/pages/products/add',
         name: 'products-add',
-        component: () => import('../views/apps/products/add.vue'),
+        component: () => import('../views/pages/products/add.vue'),
     },
-    // {
-    //     path: '/apps/products/edit',
-    //     name: 'products-edit',
-    //     component: () => import(/* webpackChunkName: "apps-invoice-edit" */ '../views/apps/products/edit.vue'),
-    // },
     ////////////////////////////////////////////
     {
         path: '/apps/calendar',
         name: 'calendar',
-        component: () => import(/* webpackChunkName: "apps-calendar" */ '../views/apps/calendar.vue'),
+        component: () => import('../views/apps/calendar.vue'),
     },
     //charts
     {
         path: '/charts',
         name: 'charts',
-        component: () => import(/* webpackChunkName: "charts" */ '../views/charts.vue'),
+        component: () => import('../views/charts.vue'),
     },
     // users
     {
         path: '/users/profile',
         name: 'profile',
-        component: () => import(/* webpackChunkName: "users-profile" */ '../views/users/profile.vue'),
+        component: () => import('../views/users/profile.vue'),
     },
     {
         path: '/users/user-account-settings',
         name: 'user-account-settings',
-        component: () => import(/* webpackChunkName: "users-user-account-settings" */ '../views/users/user-account-settings.vue'),
+        component: () => import('../views/users/user-account-settings.vue'),
     },
 
     // pages
     {
         path: '/pages/faq',
         name: 'faq',
-        component: () => import(/* webpackChunkName: "pages-faq" */ '../views/pages/faq.vue'),
+        component: () => import('../views/pages/faq.vue'),
     },
     {
         path: '/pages/coming-soon-boxed',
         name: 'coming-soon-boxed',
-        component: () => import(/* webpackChunkName: "pages-coming-soon-boxed" */ '../views/pages/coming-soon-boxed.vue'),
+        component: () => import('../views/pages/coming-soon-boxed.vue'),
         meta: { layout: 'auth' },
     },
     {
         path: '/pages/coming-soon-cover',
         name: 'coming-soon-cover',
-        component: () => import(/* webpackChunkName: "pages-coming-soon-cover" */ '../views/pages/coming-soon-cover.vue'),
+        component: () => import('../views/pages/coming-soon-cover.vue'),
         meta: { layout: 'auth' },
     },
     {
         path: '/pages/error404',
         name: 'error404',
-        component: () => import(/* webpackChunkName: "pages-error404" */ '../views/pages/error404.vue'),
+        component: () => import('../views/pages/error404.vue'),
         meta: { layout: 'auth' },
     },
     {
         path: '/pages/error500',
         name: 'error500',
-        component: () => import(/* webpackChunkName: "pages-error500" */ '../views/pages/error500.vue'),
+        component: () => import('../views/pages/error500.vue'),
         meta: { layout: 'auth' },
     },
     {
         path: '/pages/error503',
         name: 'error503',
-        component: () => import(/* webpackChunkName: "pages-error503" */ '../views/pages/error503.vue'),
+        component: () => import('../views/pages/error503.vue'),
         meta: { layout: 'auth' },
     },
     {
         path: '/pages/maintenence',
         name: 'maintenence',
-        component: () => import(/* webpackChunkName: "pages-maintenence" */ '../views/pages/maintenence.vue'),
+        component: () => import('../views/pages/maintenence.vue'),
         meta: { layout: 'auth' },
     },
 
@@ -145,49 +157,49 @@ const routes: RouteRecordRaw[] = [
     {
         path: '/auth/boxed-signin',
         name: 'boxed-signin',
-        component: () => import(/* webpackChunkName: "auth-boxed-signin" */ '../views/auth/boxed-signin.vue'),
+        component: () => import('../views/auth/boxed-signin.vue'),
         meta: { layout: 'auth' },
     },
     {
         path: '/auth/boxed-signup',
         name: 'boxed-signup',
-        component: () => import(/* webpackChunkName: "auth-boxed-signup" */ '../views/auth/boxed-signup.vue'),
+        component: () => import('../views/auth/boxed-signup.vue'),
         meta: { layout: 'auth' },
     },
     {
         path: '/auth/boxed-lockscreen',
         name: 'boxed-lockscreen',
-        component: () => import(/* webpackChunkName: "auth-boxed-lockscreen" */ '../views/auth/boxed-lockscreen.vue'),
+        component: () => import('../views/auth/boxed-lockscreen.vue'),
         meta: { layout: 'auth' },
     },
     {
         path: '/auth/boxed-password-reset',
         name: 'boxed-password-reset',
-        component: () => import(/* webpackChunkName: "auth-boxed-password-reset" */ '../views/auth/boxed-password-reset.vue'),
+        component: () => import('../views/auth/boxed-password-reset.vue'),
         meta: { layout: 'auth' },
     },
     {
         path: '/auth/cover-login',
         name: 'cover-login',
-        component: () => import(/* webpackChunkName: "auth-cover-login" */ '../views/auth/cover-login.vue'),
+        component: () => import('../views/auth/cover-login.vue'),
         meta: { layout: 'auth' },
     },
     {
         path: '/auth/cover-register',
         name: 'cover-register',
-        component: () => import(/* webpackChunkName: "auth-cover-register" */ '../views/auth/cover-register.vue'),
+        component: () => import('../views/auth/cover-register.vue'),
         meta: { layout: 'auth' },
     },
     {
         path: '/auth/cover-lockscreen',
         name: 'cover-lockscreen',
-        component: () => import(/* webpackChunkName: "auth-cover-lockscreen" */ '../views/auth/cover-lockscreen.vue'),
+        component: () => import('../views/auth/cover-lockscreen.vue'),
         meta: { layout: 'auth' },
     },
     {
         path: '/auth/cover-password-reset',
         name: 'cover-password-reset',
-        component: () => import(/* webpackChunkName: "auth-cover-password-reset" */ '../views/auth/cover-password-reset.vue'),
+        component: () => import('../views/auth/cover-password-reset.vue'),
         meta: { layout: 'auth' },
     },
 ];

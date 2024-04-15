@@ -36,12 +36,8 @@
                     <template #titleEnglish="data">
                         <div>{{ data.value.titleEnglish }}</div>
                     </template>
-                    <template #catImg="data">
-                        <div class="flex items-center font-semibold">
-                            <div class="p-0.5 bg-white-dark/30 rounded-md w-max ltr:mr-2 rtl:ml-2">
-                                <img class="h-20 w-20 rounded-md object-cover" :src="`${data.value.catImg}`" />
-                            </div>
-                        </div>
+                    <template #mainCategory="data">
+                        <div>{{ data.value.mainCategory }}</div>
                     </template>
                     <template #actions="data">
                         <div class="flex gap-4 items-center justify-center">
@@ -122,7 +118,7 @@
 <script lang="ts">
     import { defineComponent } from 'vue';
     import { useI18n } from 'vue-i18n'
-    import AddEditCategory from '@/views/apps/categories/main-categories/add-edit.vue'
+    import AddEditCategory from '@/views/pages/categories/subCategories/add-edit.vue'
     import Vue3Datatable from '@bhplugin/vue3-datatable';
     import { useMeta } from '@/composables/use-meta';
     import IconTrashLines from '@/components/icon/icon-trash-lines.vue';
@@ -147,7 +143,7 @@
             IconEye
         },
         setup(){
-            useMeta({ title: 'Main Category List' });
+            useMeta({ title: 'SubCategory List' });
         },
         computed:{
            cols(){
@@ -155,7 +151,7 @@
             let cols = [
                 { field: 'titleArabic', title: t('title-arabic') },
                 { field: 'titleEnglish', title: t('title-english')  },
-                { field: 'catImg', title: t('img')  },
+                { field: 'mainCategory', title: t('mainCategory')  },
                 { field: 'actions', title: t('action.name') , sort: false, headerClass: 'justify-center' },
             ];
             return cols;
@@ -167,27 +163,27 @@
             const items = [
                 {
                     id: 1,
-                    titleArabic: 'وجه',
-                    titleEnglish: 'Face',
-                    catImg: 'https://test.mightcinema.com/storage/images/categories/hqdelKiprK4sZbrRYcNTVrwCStQUeTV9798fcGDF.jpg'
+                    titleArabic: 'روج',
+                    titleEnglish: 'Roge',
+                    mainCategory: 'Face'
                 },
                 {
                     id: 2,
-                    titleArabic: 'وجه',
-                    titleEnglish: 'Face',
-                    catImg: 'https://test.mightcinema.com/storage/images/categories/hqdelKiprK4sZbrRYcNTVrwCStQUeTV9798fcGDF.jpg'
+                    titleArabic: 'روج',
+                    titleEnglish: 'Roge',
+                    mainCategory: 'Face'
                 },
                 {
                     id: 3,
-                    titleArabic: 'وجه',
-                    titleEnglish: 'Face',
-                    catImg: 'https://test.mightcinema.com/storage/images/categories/hqdelKiprK4sZbrRYcNTVrwCStQUeTV9798fcGDF.jpg'
+                    titleArabic: 'روج',
+                    titleEnglish: 'Roge',
+                    mainCategory: 'Face'
                 },
                 {
                     id: 4,
-                    titleArabic: 'وجه',
-                    titleEnglish: 'Face',
-                    catImg: 'https://test.mightcinema.com/storage/images/categories/hqdelKiprK4sZbrRYcNTVrwCStQUeTV9798fcGDF.jpg'
+                    titleArabic: 'روج',
+                    titleEnglish: 'Roge',
+                    mainCategory: 'Face'
                 },
             ];
             const columns = ['id', 'titleArabic', 'titleEnglish', 'catImg','actions'];
@@ -238,12 +234,12 @@
             },
             add(){
                 this.addeditMainCategory = true
-                this.addedit = 'Adding New Category'
+                this.addedit = 'Adding New SubCategory'
                 this.categoryID = 0
             },
             editRow(id: any = null){
                 this.addeditMainCategory = true
-                this.addedit = 'Edit Category'
+                this.addedit = 'Edit SubCategory'
                 this.categoryID = id
             },
             deleteRow(item: any = null){
