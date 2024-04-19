@@ -142,5 +142,6 @@
     },
     "workcharts":"workcharts",
     "brand":"Brand",
-    "store":"Store"
+    "store":"Store",
+    "add-brand": "Add Brand"
 }

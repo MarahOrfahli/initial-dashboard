@@ -92,7 +92,6 @@ export const useAppStore = defineStore('app', {
                 console.log(payload)
             } else {
                 this.toggleRTL('ltr');
-                console.log(payload)
             }
         },
         toggleSidebar(state: boolean = false) {

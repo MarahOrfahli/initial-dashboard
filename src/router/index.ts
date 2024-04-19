@@ -56,23 +56,12 @@ const routes: RouteRecordRaw[] = [
         name: 'mainCategories-list',
         component: () => import('../views/pages/categories/mainCategories/list.vue'),
     },
-    {
-        path: '/pages/categories/mainCategories/add-edit',
-        name: 'mainCategories-add-edit',
-        component: () => import('../views/pages/categories/mainCategories/add-edit.vue'),
-    },
-
     ////////////////////////////////
     /* Sub Categories */
     {
         path: '/pages/categories/subCategories/list',
         name: 'subCategories-list',
         component: () => import('../views/pages/categories/subCategories/list.vue'),
-    },
-    {
-        path: '/pages/categories/subCategories/add-edit',
-        name: 'subCategories-add-edit',
-        component: () => import('../views/pages/categories/subCategories/add-edit.vue'),
     },
     ////////////////////////////////
     /* Products */
@@ -87,6 +76,7 @@ const routes: RouteRecordRaw[] = [
         component: () => import('../views/pages/products/add.vue'),
     },
     ////////////////////////////////////////////
+    /* Apps */
     {
         path: '/apps/calendar',
         name: 'calendar',
