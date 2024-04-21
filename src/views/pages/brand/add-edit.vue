@@ -2,8 +2,8 @@
     <div class="space-y-5">
         <!--  -------------------------------  Brand name input field  --------------------------------------  -->
         <div :class="isSubmmit ? { 'has-error': errorn } : ''">
-            <label for="name">Brand</label>
-            <input id="name" type="text" placeholder="Enter Brand Name" class="form-input" 
+            <label for="name">{{ t('pages.brand.fields.brand-name') }}</label>
+            <input id="name" type="text" :placeholder="t('pages.brand.fields.enter-title')" class="form-input" 
             @keyup="isSubmmit = false,errorn = false" v-model="name" />
             <template v-if="isSubmmit && errorn == true">
             <p class="text-danger mt-1">{{errorName}}</p>
@@ -12,7 +12,7 @@
         <!-------------------------------------------------------------------------------------------->
         <!--  -------------------------------  Image field  --------------------------------------  -->
         <div :class="isSubmmit ? { 'has-error': errorI, 'has-success': !errorI } : ''">
-            <label for="cat-img">Upload an image logo</label>
+            <label for="cat-img">{{ t('page-control.upload-brand-image') }}</label>
             <input id="cat-img" type="file" class="" @change="handleFileUpload"
             accept="image/*" @click="" :model-value="fileVal"/>
             <template v-if="isSubmmit && errorI == true">
@@ -24,20 +24,22 @@
         <div class="flex justify-end items-center mt-8">
             <button type="button" @click="saveInfo" class="btn btn-primary ltr:ml-4 rtl:mr-4">
                 <div v-if="ID == 0">
-                    <span v-if="loading == false">Add brand</span>
+                    <span v-if="loading == false">
+                        {{ t('page-control.add') }}
+                    </span>
                     <span v-else>
                         <IconRefresh class="animate-[spin_1s_linear_infinite] w-5 h-5" />
                     </span>
                 </div>
                 <div v-else-if="ID != 0">
-                    <span v-if="loading == false">Edit brand</span>
+                    <span v-if="loading == false">{{ t('page-control.save-changes') }}</span>
                     <span v-else>
                         <IconRefresh class="animate-[spin_1s_linear_infinite] w-5 h-5" />
                     </span>
                 </div>
             </button>
             <button type="button" @click="ondismiss" class="btn btn-outline-danger ltr:ml-4 rtl:mr-4">
-                Discard
+                {{ t('page-control.cancel') }}
             </button>
         </div>
         
@@ -76,6 +78,7 @@ export default defineComponent({
        const fileImg = { name: 'image', url: '' }
        let currentData: Brands = props.data
         return{
+            t,
             // Data Connection
             brand,
             loading,
@@ -119,11 +122,14 @@ export default defineComponent({
             this.isSubmmit = true
             if(this.name == ''){
                 this.errorn = true
-                this.errorName = 'Please fill the Name'
+                this.errorName = this.t('pages.brand.errors.brand-empty')
+            }else if(this.name.length > 29){
+                this.errorn = true
+                this.errorName = this.t('page-control.error-length')
             }
             if(this.fileVal == null){
                 this.errorI = true
-                this.errorImage = 'Please fill the Name'
+                this.errorImage = this.t('pages.brand.errors.upload')
             }
             if (this.errorn == true || this.errorI == true) {
                 this.counter++

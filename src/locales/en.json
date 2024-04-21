@@ -25,21 +25,27 @@
     "**********************":"************************",
     "page-control":{
         "add": "Add",
+        "save-changes":"Save Changes",
         "edit": "Edit",
         "done":"Done",
         "cancel":"Cancel",
-        "delete":"Delete",
-        "deleted":"Deleted!",
         "search": "Search",
         "search-placeholder":"Search...",
         "table":{
             "rows-count":"Showing {from} to {to} of {count} entries",
-            "no-data-content":"No Data Availavle At This Moment"
+            "no-data-content":"No Data Availavle At This Momment"
         },
-        "check-delete":"Are you sure want to delete selected row ?",
-        "text-delete":"This item will be permanently deleted!",
-        "text-success-deleted":"The Item has been deleted.",
-        "title-delete":"do you want to continue?",
+        "delete":{
+            "name": "Delete",
+            "done":"Deleted!",
+            "check":"Are you sure want to delete selected row ?",
+            "text":"This item will be permanently deleted!",
+            "text-success":"The Item has been deleted.",
+            "title":"do you want to continue?"
+        },
+        "error-length":"Must be less than 30 characters",
+        "upload-category-image":"Upload an image category",
+        "upload-brand-image":"Upload an image logo",
         "action":"Manage",
         "img":"Image"
     },
@@ -64,6 +70,58 @@
         "main_section":{
             "fields": {
                 "title-arabic":"Title In Arabic",
+                "title-english":"Title In English",
+                "enter-title":"Enter Title..."
+            },
+            "modals":{
+                "add-new-category":"Adding New Category",
+                "edit-category":"Edit Category"
+            },
+            "errors":{
+                "arabic-empty":"The title in arabic must not be empty",
+                "english-empty":"The title in english must not be empty",
+                "upload":"Please add an image file to the main category"
+            }
+        },
+        "****":"**********",
+        "sub_section":{
+            "fields": {
+                "title-arabic":"Title In Arabic",
+                "title-english":"Title In English",
+                "main-category":"Main Category",
+                "enter-title":"Enter Title...",
+                "select-option":"Select An Option",
+                "select":"Choose one of these categories"
+            },
+            "modals":{
+                "add-new-category":"Adding New Subcategory",
+                "edit-category":"Edit Subcategory"
+            },
+            "errors":{
+                "arabic-empty":"The title in arabic must not be empty",
+                "english-empty":"The title in english must not be empty",
+                "select":"You must Choose one of these categories"
+            }
+        },
+        "******":"********",
+        "brand":{
+            "fields": {
+                "brand-name":"Brand",
+                "enter-title":"Enter brand name..."
+            },
+            "modals":{
+                "add-new-brand":"Adding New Brand",
+                "edit-brand":"Edit Brand"
+            },
+            "errors":{
+                "brand-empty":"The brand name must not be empty",
+                "upload":"Please add an image logo to the brand"
+            }
+        },
+        "*":"**************",
+        "store":{
+            "fields": {
+                "title-arabic":"Title In Arabic",
                 "title-english":"Title In English"
             },
             "modals":{
@@ -71,20 +129,10 @@
                 "edit-category":"Edit Category"
             },
             "errors":{
-
+                "arabic-empty":"",
+                "english-empty":"",
+                "upload":""
             }
-        },
-        "****":"**********",
-        "sub_section":{
-            
-        },
-        "******":"********",
-        "brand":{
-
-        },
-        "*":"**************",
-        "store":{
-
         }
     }
 }

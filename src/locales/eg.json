@@ -25,21 +25,27 @@
     "**********************":"************************",
     "page-control":{
         "add": "إضافة",
+        "save-changes":"حفظ التغييرات",
         "edit": "تعديل",
         "cancel":"إلغاء",
-        "delete":"حذف",
         "done":"تم",
-        "deleted":"تم الحذف!",
         "search": "بحث",
         "search-placeholder":"بحث...",
         "table":{
             "rows-count":"إظهار {from} حتى {to} من أصل  {count}",
             "no-data-content":"لا يوجد بيانات متاحة حالياً"
         },
-        "check-delete":"هل أنت متأكد أنك تريد حذف الصف المحدد؟",
-        "text-success-deleted":"تم حذف العنصر",
-        "text-delete":"سيتم مسح هذا العنصر نهائياً!",
-        "title-delete":"هل تريد الاستمرار؟",
+        "delete":{
+            "name": "حذف",
+            "done":"تم الحذف!",
+            "check":"هل أنت متأكد أنك تريد حذف الصف المحدد؟",
+            "text":"سيتم مسح هذا العنصر نهائياً!",
+            "text-success":"تم حذف العنصر",
+            "title":"هل تريد الاستمرار؟"
+        },
+        "error-length":"يجب أن يكون أقل من 30 حرفاً",
+        "upload-category-image":"يرجى رفع صورة للقسم",
+        "upload-brand-image":"يرجى رفع صورة لوغو للبراند",
         "action":"إدارة",
         "img":"صورة"
     },
@@ -64,27 +70,69 @@
         "main_section":{
             "fields": {
                 "title-arabic":"العنوان عربي",
-                "title-english":"العنوان إنكليزي"
+                "title-english":"العنوان إنكليزي",
+                "enter-title":"أضف عنوناً..."
             },
             "modals":{
                 "add-new-category":"إضافة قسم جديد",
                 "edit-category":"تعديل القسم"
             },
             "errors":{
-
+                "arabic-empty":"يجب ألا يكون العنوان باللغة العربية فارغاً",
+                "english-empty":"يجب ألا يكون العنوان باللغة الإنجليزية فارغًا",
+                "upload":"الرجاءإضافة ملف صورة للقسم الأساسي"
             }
         },
         "****":"**********",
         "sub_section":{
-            
+            "fields": {
+                "title-arabic":"العنوان عربي",
+                "title-english":"العنوان إنكليزي",
+                "main-category":"القسم الأساسي",
+                "enter-title":"أضف عنوناً...",
+                "select-option":"حدد اختياراً",
+                "select":"اختر واحدة من هذه الفئات"
+            },
+            "modals":{
+                "add-new-category":"إضافة قسم فرعي جديد",
+                "edit-category":"تعديل القسم الفرعي"
+            },
+            "errors":{
+                "arabic-empty":"يجب ألا يكون العنوان باللغة العربية فارغاً",
+                "english-empty":"يجب ألا يكون العنوان باللغة الإنجليزية فارغًا",
+                "select":"الرجاء اختيار قسم اساسي"
+            }
         },
         "******":"********",
         "brand":{
-
+            "fields": {
+                "brand-name":"براند",
+                "enter-title":"ادخل اسم البراند..."
+            },
+            "modals":{
+                "add-new-brand":"إضافة براند جديد",
+                "edit-brand":"تعديل براند"
+            },
+            "errors":{
+                "brand-empty":"يجب ألا يكون اسم البراند فارغاً",
+                "upload":"الرجاءإضافة صورة لوغو للبراند"
+            }
         },
         "*":"**************",
         "store":{
-
+            "fields": {
+                "title-arabic":"Title In Arabic",
+                "title-english":"Title In English"
+            },
+            "modals":{
+                "add-new-category":"Adding New Category",
+                "edit-category":"Edit Category"
+            },
+            "errors":{
+                "arabic-empty":"",
+                "english-empty":"",
+                "upload":""
+            }
         }
     }
 }

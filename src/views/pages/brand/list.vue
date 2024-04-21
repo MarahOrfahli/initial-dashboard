@@ -159,9 +159,9 @@
            cols(){
             let { t } = useI18n()
             let cols = [
-                { field: 'name', title: t('brand'), headerClass: 'justify-center' },
-                { field: 'logo', title: t('img'), sort: false, headerClass: 'justify-center'  },
-                { field: 'actions', title: t('action.name') , sort: false, headerClass: 'justify-center' },
+                { field: 'name', title: t('pages.brand.fields.brand-name'), headerClass: 'justify-center' },
+                { field: 'logo', title: t('page-control.img'), sort: false, headerClass: 'justify-center'  },
+                { field: 'actions', title: t('page-control.action') , sort: false, headerClass: 'justify-center' },
             ];
             return cols;
            },
@@ -234,14 +234,14 @@
             },
             // Add New Item
             addbrand(){
-                this.addedit = 'Adding New Brand'
+                this.addedit = this.t('pages.brand.modals.add-new-brand')
                 this.addeditbrand = true
                 this.brandID = 0
             },
             // Edit the Item data
             editRow(id: number,data: Brands){
                 this.addeditbrand = true
-                this.addedit = 'Edit Brand'
+                this.addedit = this.t('pages.brand.modals.edit-brand')
                 this.brandID = id
                 this.currentData = data
             },
@@ -251,8 +251,8 @@
             onDeleteCallback(idrow: number) {
                 this.DataStore.deleteData('Brands', idrow).then(() => {
                     Swal.fire({ 
-                        title: this.t('page-control.deleted'),
-                        text:  this.t('page-control.text-success-deleted'),
+                        title: this.t('page-control.delete.done'),
+                        text:  this.t('page-control.delete.text-success'),
                         confirmButtonText: this.t('page-control.done'),
                         icon: 'success',
                         customClass: 'sweet-alerts' 
@@ -264,9 +264,9 @@
             deleteRow(idrow: number){
                 Swal.fire({
                     icon: 'warning',
-                    title: this.t('page-control.title-delete'),
-                    text: this.t('page-control.text-delete'),
-                    confirmButtonText: this.t('page-control.delete'),
+                    title: this.t('page-control.delete.check'),
+                    text: this.t('page-control.delete.text') + ' ' + this.t('page-control.delete.title'),
+                    confirmButtonText: this.t('page-control.delete.name'),
                     cancelButtonText: this.t('page-control.cancel'),
                     showCancelButton: true,
                     showCloseButton: true,

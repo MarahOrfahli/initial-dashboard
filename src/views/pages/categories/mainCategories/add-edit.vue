@@ -2,8 +2,8 @@
     <div class="space-y-5">
         <!--  -------------------------------  Arabic title input field  --------------------------------------  -->
         <div :class="isSubmmit ? { 'has-error': errora } : ''">
-            <label for="title-in-arabic">Title In Arabic</label>
-            <input id="title-in-arabic" type="text" placeholder="Enter Title" 
+            <label for="title-in-arabic">{{ t('pages.main_section.fields.title-arabic') }}</label>
+            <input id="title-in-arabic" type="text" :placeholder="t('pages.main_section.fields.enter-title')" 
             class="form-input" @keyup="isSubmmit = false,errora = false" v-model="artitle" />
             <template v-if="isSubmmit && errora == true">
             <p class="text-danger mt-1">{{errorArabic}}</p>
@@ -12,8 +12,8 @@
         <!---------------------------------------------------------------------------------------------------------->
         <!--  -------------------------------  English title input field  --------------------------------------  -->
         <div :class="isSubmmit ? { 'has-error': errorE} : ''">
-            <label for="title-in-english">Title In English</label>
-            <input id="title-in-english" type="text" placeholder="Enter Title" 
+            <label for="title-in-english">{{ t('pages.main_section.fields.title-english') }}</label>
+            <input id="title-in-english" type="text" :placeholder="t('pages.main_section.fields.enter-title')"
             class="form-input" @keyup="isSubmmit = false,errorE = false" v-model="entitle" />
             <template v-if="isSubmmit && errorE == true">
             <p class="text-danger mt-1">{{errorEnglish}}</p>
@@ -22,9 +22,9 @@
         <!-------------------------------------------------------------------------------------------->
         <!--  -------------------------------  Image field  --------------------------------------  -->
         <div :class="isSubmmit ? { 'has-error': errorI } : ''">
-            <label for="cat-img">Upload an image category</label>
+            <label for="cat-img">{{ t('page-control.upload-category-image') }}</label>
             <input id="cat-img" type="file" class="" @change="handleFileUpload"
-            accept="image/*" @click="" :model-value="fileVal"/>
+            accept="image/*" :model-value="fileVal"/>
             <template v-if="isSubmmit && errorI == true">
                 <p class="text-danger mt-1">{{errorImage}}</p>
             </template>
@@ -36,23 +36,21 @@
             <button type="button" @click="saveInfo" class="btn btn-primary ltr:ml-4 rtl:mr-4">
                 <div v-if="ID == 0">
                     <span v-if="loading == false">
-                        Add Category
+                        {{ t('page-control.add') }}
                     </span>
                     <span v-else>
                         <IconRefresh class="animate-[spin_1s_linear_infinite] w-5 h-5" />
                     </span>
                 </div>
                 <div v-else-if="ID != 0">
-                    <span v-if="loading == false">Edit</span>
+                    <span v-if="loading == false">{{ t('page-control.save-changes') }}</span>
                     <span v-else>
                         <IconRefresh class="animate-[spin_1s_linear_infinite] w-5 h-5" />
                     </span>
                 </div>
-                
             </button>
-            <button type="button" @click="ondismiss" class="btn btn-outline-danger ltr:ml-4 rtl:mr-4">Discard</button>
+            <button type="button" @click="ondismiss" class="btn btn-outline-danger ltr:ml-4 rtl:mr-4">{{ t('page-control.cancel') }}</button>
         </div>
-        
     </div>
 </template>
 <script lang="ts">
@@ -79,15 +77,17 @@ export default defineComponent({
         }
     },
     data(props){
-       // const data = props.data
-       const file = ref<File | null>(null);
+        // Variables
+        let file = ref<File | null>(null);
+        const fileImg = { name: 'image', url: '' }
+        let currentData: Categories = props.data
+        const ID = props.dataid
+        // Data & t-translate
         const DataStore = useConnectionStore()
         const { categories, loading, imgLocation } = storeToRefs(DataStore)
-        const { t, locale } = useI18n()
-       const ID = props.dataid
-       const fileImg = { name: 'image', url: '' }
-       let currentData: Categories = props.data
+        const { t } = useI18n()
         return{
+            t,
             // Data Connection
             currentData,
             imgLocation,
@@ -100,8 +100,6 @@ export default defineComponent({
             file,
             artitle: '',
             entitle: '',
-            imgval: '',
-            counter: 0,
             formData: new FormData(),
             ///////// Validation  ////
             isSubmmit: false,
@@ -111,6 +109,7 @@ export default defineComponent({
             errorEnglish: '',
             errorImage: '',
             errorArabic: '',
+            counter: 0,
         }
     },
     async mounted(){ this.FillData() },
@@ -135,15 +134,21 @@ export default defineComponent({
             this.isSubmmit = true
             if(this.artitle == ''){
                 this.errora = true
-                this.errorArabic = 'Please fill the Name'
+                this.errorArabic = this.t('pages.main_section.errors.arabic-empty')
+            }else if(this.artitle.length > 29){
+                this.errora = true
+                this.errorArabic = this.t('page-control.error-length')
             }
             if(this.entitle == ''){
                 this.errorE = true
-                this.errorEnglish = 'Please fill the Name'
+                this.errorEnglish = this.t('pages.main_section.errors.english-empty')
+            }else if(this.entitle.length > 29){
+                this.errorE = true
+                this.errorEnglish = this.t('page-control.error-length')
             }
             if(this.fileVal == null){
                 this.errorI = true
-                this.errorImage = 'Please fill the Name'
+                this.errorImage = this.t('pages.main_section.errors.upload')
             }
             if (this.errora == true || this.errorE == true || this.errorI == true) {
                 this.counter++
@@ -156,12 +161,12 @@ export default defineComponent({
             var isValid = this.formValidate()
             if (isValid == 0) {
                 this.getData()
-                if (this.ID === 0) {
+                if (this.ID === 0) { // Create Data
                     this.DataStore.createData('Categories', this.formData, 'CreateWithImg').then(() => {
                     this.$emit('load-data')
                     this.ondismiss()
                     })
-                } else {
+                } else { // Update Data
                     this.DataStore.updateData('Categories', this.ID, this.formData, 'EditWithImg').then(() => {
                     this.$emit('load-data')
                     this.ondismiss()
@@ -169,8 +174,7 @@ export default defineComponent({
                 }
             }
         },
-        getData(){
-        //this.formData.append('id', this.ID)
+        getData(){ // Use Form Data To Submit The Data Into Database
         if (this.artitle != '' && this.artitle != null) this.formData.append('name_ar', this.artitle)
         if (this.entitle != '' && this.entitle != null) this.formData.append('name_en', this.entitle)
         if (this.file != null) this.formData.append('image', this.file)

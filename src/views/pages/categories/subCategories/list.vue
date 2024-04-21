@@ -154,10 +154,10 @@
            cols(){
             let { t } = useI18n()
             let cols = [
-                { field: 'name_ar', title: t('title-arabic'), headerClass: 'justify-center' },
-                { field: 'name_en', title: t('title-english'), headerClass: 'justify-center'  },
-                { field: 'category_id', title: 'Main Category', headerClass: 'justify-center'  },
-                { field: 'actions', title: t('action.name') , sort: false, headerClass: 'justify-center' },
+                { field: 'name_ar', title: t('pages.sub_section.fields.title-arabic'), headerClass: 'justify-center' },
+                { field: 'name_en', title: t('pages.sub_section.fields.title-english'), headerClass: 'justify-center'  },
+                { field: 'category_id', title: t('pages.sub_section.fields.main-category'), headerClass: 'justify-center'  },
+                { field: 'actions', title: t('page-control.action') , sort: false, headerClass: 'justify-center' },
             ];
             return cols;
            },
@@ -214,27 +214,31 @@
         async mounted() { this.startPage() },
         methods: {
             startPage(){
-                this.DataStore.getData('SubCategories', 1).then(() => {})
+                this.DataStore.getData('SubCategories').then(() => {})
             },
-            close(){
+            close(){ // Close The Add-Edit Modal
                 this.addeditSubCategory = false
             },
-            add(){
+            add(){ // Add New Item
                 this.addeditSubCategory = true
-                this.addedit = 'Adding New SubCategory'
+                this.addedit = this.t('pages.sub_section.modals.add-new-category')
                 this.categoryID = 0
             },
+            // Edit the Item data
             editRow(id: number, data:SubCategories){
                 this.addeditSubCategory = true
-                this.addedit = 'Edit SubCategory'
+                this.addedit = this.t('pages.sub_section.modals.edit-category')
                 this.categoryID = id
                 this.currentData = data
             },
+            ////////////////////////////////////
+            ///// Delete Methods //////////////
+            // Call a notification to confirm delete then delete the item
             onDeleteCallback(idrow: number) {
                 this.DataStore.deleteData('SubCategories', idrow).then(() => {
                     Swal.fire({ 
-                        title: this.t('page-control.deleted'),
-                        text:  this.t('page-control.text-success-deleted'),
+                        title: this.t('page-control.delete.done'),
+                        text:  this.t('page-control.delete.text-success'),
                         confirmButtonText: this.t('page-control.done'),
                         icon: 'success',
                         customClass: 'sweet-alerts' 
@@ -246,9 +250,9 @@
             deleteRow(idrow: number){
                 Swal.fire({
                     icon: 'warning',
-                    title: this.t('page-control.title-delete'),
-                    text: this.t('page-control.text-delete'),
-                    confirmButtonText: this.t('page-control.delete'),
+                    title: this.t('page-control.delete.check'),
+                    text: this.t('page-control.delete.text') + ' ' + this.t('page-control.delete.title'),
+                    confirmButtonText: this.t('page-control.delete.name'),
                     cancelButtonText: this.t('page-control.cancel'),
                     showCancelButton: true,
                     showCloseButton: true,

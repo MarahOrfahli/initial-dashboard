@@ -2,8 +2,8 @@
     <div class="space-y-5">
         <!--  -------------------------------  Arabic title input field  --------------------------------------  -->
         <div :class="isSubmmit ? { 'has-error': errora } : ''">
-            <label for="title-in-arabic">Title In Arabic</label>
-            <input id="title-in-arabic" type="text" placeholder="Enter Title" class="form-input" 
+            <label for="title-in-arabic">{{ t('pages.sub_section.fields.title-arabic') }}</label>
+            <input id="title-in-arabic" type="text" :placeholder="t('pages.sub_section.fields.enter-title')" class="form-input" 
             @keyup="isSubmmit = false,errora = false" v-model="artitle" />
             <template v-if="isSubmmit && errora == true">
             <p class="text-danger mt-1">{{errorArabic}}</p>
@@ -12,8 +12,8 @@
         <!---------------------------------------------------------------------------------------------------------->
         <!--  -------------------------------  English title input field  --------------------------------------  -->
         <div :class="isSubmmit ? { 'has-error': errorE } : ''">
-            <label for="title-in-english">Title In English</label>
-            <input id="title-in-english" type="text" placeholder="Enter Title" class="form-input" 
+            <label for="title-in-english">{{ t('pages.sub_section.fields.title-english') }}</label>
+            <input id="title-in-english" type="text" :placeholder="t('pages.sub_section.fields.enter-title')" class="form-input" 
             @keyup="isSubmmit = false,errorE = false" v-model="entitle" />
             <template v-if="isSubmmit && errorE == true">
             <p class="text-danger mt-1">{{errorEnglish}}</p>
@@ -22,7 +22,7 @@
         <!-------------------------------------------------------------------------------------------->
         <!--  -------------------------------  Select field  --------------------------------------  -->
         <div :class="isSubmmit ? { 'has-error': errorS } : ''">
-            <label for="cat-img">Choose one of these category</label>
+            <label for="cat-img">{{ t('pages.sub_section.fields.select') }}</label>
             <!-- searchable -->
             <multiselect
             v-model="category"
@@ -33,11 +33,8 @@
             :searchable="true"
             noResult="no data"
             :loading="loading"
-            placeholder="Select an option"
+            :placeholder="t('pages.sub_section.fields.select-option')"
             >
-            <template #noResult>
-                Oops! No elements found. Consider changing the search query.
-            </template>
         </multiselect>
             <template v-if="isSubmmit && errorS == true">
             <p class="text-danger mt-1">{{errorSelection}}</p>
@@ -48,21 +45,22 @@
         <div class="flex justify-end items-center mt-8">
             <button type="button" @click="saveInfo" class="btn btn-primary ltr:ml-4 rtl:mr-4">
                 <div v-if="ID == 0">
-                    <span v-if="loading == false">Add SubCategory</span>
+                    <span v-if="loading == false">
+                        {{ t('page-control.add') }}
+                    </span>
                     <span v-else>
                         <IconRefresh class="animate-[spin_1s_linear_infinite] w-5 h-5" />
                     </span>
                 </div>
                 <div v-else-if="ID != 0">
-                    <span v-if="loading == false">Edit</span>
+                    <span v-if="loading == false">{{ t('page-control.save-changes') }}</span>
                     <span v-else>
                         <IconRefresh class="animate-[spin_1s_linear_infinite] w-5 h-5" />
                     </span>
                 </div>
             </button>
-            <button type="button" @click="ondismiss" class="btn btn-outline-danger ltr:ml-4 rtl:mr-4">Discard</button>
+            <button type="button" @click="ondismiss" class="btn btn-outline-danger ltr:ml-4 rtl:mr-4">{{ t('page-control.cancel') }}</button>
         </div>
-        
     </div>
 </template>
 <script lang="ts">
@@ -152,21 +150,26 @@ export default defineComponent({
                     }
                 }
             }
-            
         },
         formValidate(){
             this.isSubmmit = true
             if(this.artitle == ''){
                 this.errora = true
-                this.errorArabic = 'Please fill the Name'
+                this.errorArabic = this.t('pages.sub_section.errors.arabic-empty')
+            }else if(this.artitle.length > 29){
+                this.errora = true
+                this.errorArabic = this.t('page-control.error-length')
             }
             if(this.entitle == ''){
                 this.errorE = true
-                this.errorEnglish = 'Please fill the Name'
+                this.errorEnglish = this.t('pages.sub_section.errors.english-empty')
+            }else if(this.entitle.length > 29){
+                this.errorE = true
+                this.errorEnglish = this.t('page-control.error-length')
             }
             if(this.category == ''){
                 this.errorS = true
-                this.errorSelection = 'Please fill the Name'
+                this.errorSelection = this.t('pages.sub_section.errors.select')
             }
             if (this.errora == true || this.errorE == true || this.errorS == true) {
                 this.counter++
@@ -176,15 +179,16 @@ export default defineComponent({
             return this.counter
         },
         saveInfo(){
+            // Use JSON Data To Submit The Data Into Database
             let data = { name_ar: this.artitle, name_en: this.entitle, category_id: this.categoryID }
             var isValid = this.formValidate()
             if (isValid == 0) {
-                if (this.ID === 0) {
+                if (this.ID === 0) { // Create Data
                     this.DataStore.createData('SubCategories', data).then(() => {
                     this.$emit('load-data')
                     this.ondismiss()
                     })
-                } else {
+                } else { // Update Data
                     this.DataStore.updateData('SubCategories', this.ID, data).then(() => {
                     this.$emit('load-data')
                     this.ondismiss()

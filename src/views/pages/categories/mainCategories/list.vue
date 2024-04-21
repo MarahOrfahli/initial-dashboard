@@ -247,23 +247,22 @@
             onDeleteCallback(idrow: number) {
                 this.DataStore.deleteData('Categories', idrow).then(() => {
                     Swal.fire({ 
-                        title: this.t('page-control.deleted'),
-                        text:  this.t('page-control.text-success-deleted'),
+                        title: this.t('page-control.delete.done'),
+                        text:  this.t('page-control.delete.text-success'),
                         confirmButtonText: this.t('page-control.done'),
                         icon: 'success',
                         customClass: 'sweet-alerts' 
                     }).then((result) => {
                         if (result.value) { this.startPage() }
                     });
-                    
                 })
             },
             deleteRow(idrow: number){
                 Swal.fire({
                     icon: 'warning',
-                    title: this.t('page-control.title-delete'),
-                    text: this.t('page-control.text-delete'),
-                    confirmButtonText: this.t('page-control.delete'),
+                    title: this.t('page-control.delete.check'),
+                    text: this.t('page-control.delete.text') + ' ' + this.t('page-control.delete.title'),
+                    confirmButtonText: this.t('page-control.delete.name'),
                     cancelButtonText: this.t('page-control.cancel'),
                     showCancelButton: true,
                     showCloseButton: true,
