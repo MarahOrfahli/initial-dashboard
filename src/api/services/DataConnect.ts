@@ -55,12 +55,12 @@ function APIURL(dname: string, type = 'List', num = 0) {
     }
     /////////////  SubCategories ////////////////
     case 'SubCategories': {
-      if (type == 'GET' && num != 0 || type == 'Create' && num != 0) {
-        apiurl = `categories/${num}/subcategories`
+      if (type == 'GET' || type == 'Create') {
+        apiurl = `subcategories`
       } else if (type == 'Edit'  && num != 0) {
-        apiurl = `categories/${num}`
+        apiurl = `subcategories/${num}`
       } else if (type == 'Delete' && num != 0) {
-        apiurl = `categories/${num}`
+        apiurl = `subcategories/${num}`
       }
       return apiurl
       break
@@ -78,7 +78,7 @@ function APIURL(dname: string, type = 'List', num = 0) {
     //   break
     // }
     default: {
-      console.log('Empty action received...\nThe dataName is: ' + dname + 'And the type is: ' + type)
+      console.log('Empty action received...\nThe dataName is: ' + dname + ' And the type is: ' + type)
       return apiurl
     }
   }
@@ -100,8 +100,11 @@ export async function getData(dataName: string, dataId = 0, type = 'GET'){
 export async function updateData(dataName: string, id:number, data: any, type = ''){
     try{
       let response
-      if(type == 'EditWithImg') response = await formDataApiClient.put(APIURL(dataName, 'Edit', id), data)
-        else response = await apiClient.put(APIURL(dataName, 'Edit', id), data)
+      if(dataName == "SubCategories") response = await apiClient.put(APIURL(dataName, 'Edit', id), data)
+        else{
+          if(type == 'EditWithImg') response = await formDataApiClient.post(APIURL(dataName, 'Edit', id), data)
+          else response = await apiClient.post(APIURL(dataName, 'Edit', id), data)
+        }
       if (!response.data.status) throw { message: response.data.errors.general }
       return response.data.data
     } catch (error) {

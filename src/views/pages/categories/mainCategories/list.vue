@@ -6,11 +6,11 @@
                     <div style="width: 160px"> <!-- Add Category Button -->
                         <div @click="add" class="btn btn-primary gap-2 hover:cursor-pointer">
                             <icon-plus />
-                            {{ t('add') }}
+                            {{ t('page-control.add') }}
                         </div>
                     </div>
                     <div> <!-- Search Input -->
-                        <input v-model="search" type="text" class="form-input" :placeholder="t('search-ph')" />
+                        <input v-model="search" type="text" class="form-input" :placeholder="t('page-control.search-placeholder')" />
                     </div>
                 </div>
                 <!-- Datatable -->
@@ -23,11 +23,16 @@
                     :sortable="true"
                     :search="search"
                     :loading="loading"
+                    :noDataContent="t('page-control.table.no-data-content')"
+                    :showNumbersCount="tableOption.pagination.chunk"
+                    :pageSize="tableOption.perPage"
+                    :paginationInfo="t('page-control.table.rows-count', { from:'{0}', to:'{1}', count:'{2}'})"
+                    :pageSizeOptions="tableOption.perPageValues"
                     skin="whitespace-nowrap bh-table-hover"
-                    firstArrow='<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"> <path d="M13 19L7 12L13 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> <path opacity="0.5" d="M16.9998 19L10.9998 12L16.9998 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg>'
-                    lastArrow='<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"> <path d="M11 19L17 12L11 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> <path opacity="0.5" d="M6.99976 19L12.9998 12L6.99976 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg> '
-                    previousArrow='<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"> <path d="M15 5L9 12L15 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg>'
-                    nextArrow='<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"> <path d="M9 5L15 12L9 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg>'
+                    :firstArrow= "firstArrow"
+                    :lastArrow="lastArrow"
+                    :previousArrow="previousArrow"
+                    :nextArrow="nextArrow"
                 >
                     <template #name_ar="data">
                         <div class="text-center">{{ data.value.name_ar }}</div>
@@ -155,10 +160,10 @@
            cols(){
             let { t } = useI18n()
             let cols = [
-                { field: 'name_ar', title: t('title-arabic'), headerClass: 'justify-center' },
-                { field: 'name_en', title: t('title-english'), headerClass: 'justify-center'  },
-                { field: 'image', title: t('img'), headerClass: 'justify-center' },
-                { field: 'actions', title: t('action.name') , sort: false, headerClass: 'justify-center' },
+                { field: 'name_ar', title: t('pages.main_section.fields.title-arabic'), headerClass: 'justify-center' },
+                { field: 'name_en', title: t('pages.main_section.fields.title-english'), headerClass: 'justify-center'  }, 
+                { field: 'image', title: t('page-control.img'),sort: false, headerClass: 'justify-center' },
+                { field: 'actions', title: t('page-control.action') , sort: false, headerClass: 'justify-center' },
             ];
             return cols;
            },
@@ -167,23 +172,20 @@
             let currentData = new Categories()
             const datatable: any = null;
             const DataStore = useConnectionStore()
-            const { categories, loading, imgLocation } = storeToRefs(DataStore)
+            const { categories, loading, imgLocation,
+                firstArrow, lastArrow, previousArrow, nextArrow
+             } = storeToRefs(DataStore)
             const { t, locale } = useI18n()
             const tableOption = {
-                headings: {
-                    id: (h: any, row: any, index: number) => {
-                        return '#';
-                    },
-                },
                 perPage: 10,
                 perPageValues: [10, 20, 30, 50, 100],
                 skin: 'table-hover',
                 columnsClasses: { actions: 'actions !text-center w-1' },
-                pagination: { show: true, nav: 'scroll', chunk: 10 },
+                pagination: { show: true, nav: 'scroll', chunk: 3 },
                 texts: {
-                    count: 'Showing {from} to {to} of {count} entries',
+                    count: t('page-control.table.rows-count', { from:'{0}', to: '{1}', count: '{2}'}) ,
                     filter: '',
-                    filterPlaceholder: 'Search...',
+                    filterPlaceholder: t('page-control.search-placeholder'),
                     limit: '',
                 },
                 resizableColumns: false,
@@ -195,6 +197,11 @@
                 },
             };
             return {
+                // Arrows
+                firstArrow,
+                lastArrow,
+                previousArrow,
+                nextArrow,
                 // Values
                 addeditMainCategory: false,
                 addedit: '',
@@ -219,25 +226,30 @@
             startPage(){
                 this.DataStore.getData('Categories').then(() => {})
             },
-            close(){
+            close(){ // Close The Add-Edit Modal
                 this.addeditMainCategory = false
             },
-            add(){
+            add(){ // Add New Item
                 this.addeditMainCategory = true
-                this.addedit = 'Adding New Category'
+                this.addedit = this.t('pages.main_section.modals.add-new-category')
                 this.categoryID = 0
             },
+            // Edit the Item data
             editRow(id: number, data:Categories){
                 this.addeditMainCategory = true
-                this.addedit = 'Edit Category'
+                this.addedit = this.t('pages.main_section.modals.edit-category')
                 this.categoryID = id
                 this.currentData = data
             },
+            ////////////////////////////////////
+            ///// Delete Methods //////////////
+            // Call a notification to confirm delete then delete the item
             onDeleteCallback(idrow: number) {
                 this.DataStore.deleteData('Categories', idrow).then(() => {
                     Swal.fire({ 
-                        title: 'Deleted!',
-                        text: 'Your file has been deleted.',
+                        title: this.t('page-control.deleted'),
+                        text:  this.t('page-control.text-success-deleted'),
+                        confirmButtonText: this.t('page-control.done'),
                         icon: 'success',
                         customClass: 'sweet-alerts' 
                     }).then((result) => {
@@ -249,10 +261,10 @@
             deleteRow(idrow: number){
                 Swal.fire({
                     icon: 'warning',
-                    title: 'هل تريد الاستمرار؟',
-                    text: "سيتم مسح هذا العنصر نهائياً!",
-                    confirmButtonText: 'حذف',
-                    cancelButtonText: 'إلغاء',
+                    title: this.t('page-control.title-delete'),
+                    text: this.t('page-control.text-delete'),
+                    confirmButtonText: this.t('page-control.delete'),
+                    cancelButtonText: this.t('page-control.cancel'),
                     showCancelButton: true,
                     showCloseButton: true,
                     padding: '2em',

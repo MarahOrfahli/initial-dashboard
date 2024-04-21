@@ -5,7 +5,7 @@
                 <div class="flex justify-between items-center px-4 py-3">
                     <router-link to="/" class="main-logo flex items-center shrink-0">
                         <img class="w-8 ml-[5px] flex-none" src="/assets/images/logo.svg" alt="" />
-                        <span class="text-xl ltr:ml-1.5 rtl:mr-1.5 font-semibold align-middle lg:inline dark:text-white-light">ZanobiaMarket</span>
+                        <span class="text-xl ltr:ml-1.5 rtl:mr-1.5 font-semibold align-middle lg:inline dark:text-white-light">{{ project_name }}</span>
                     </router-link>
                     <a
                         href="javascript:;"
@@ -25,7 +25,7 @@
                     <ul class="relative font-semibold space-y-0.5 p-4 py-0">
                         <h2 class="py-3 px-7 flex items-center uppercase font-extrabold bg-white-light/30 dark:bg-dark dark:bg-opacity-[0.08] -mx-4 mb-1">
                             <icon-minus class="w-4 h-5 flex-none hidden" />
-                            <span>{{ $t('dashboard') }}</span>
+                            <span>{{ $t('sidebar.dashboard') }}</span>
                         </h2>
 
                         <li class="nav-item">
@@ -36,7 +36,7 @@
                                             <icon-menu-charts class="group-hover:!text-primary shrink-0" />
 
                                             <span class="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{{
-                                                $t('workcharts')
+                                                $t('sidebar.workcharts')
                                             }}</span>
                                         </div>
                                     </router-link>
@@ -86,7 +86,7 @@
                                             <icon-menu-invoice class="group-hover:!text-primary shrink-0" />
 
                                             <span class="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{{
-                                                $t('products_section')
+                                                $t('sidebar.products_section')
                                             }}</span>
                                         </div>
                                         <div :class="{ 'rtl:rotate-90 -rotate-90': activeDropdown !== 'product-sec' }">
@@ -96,10 +96,10 @@
                                     <vue-collapsible :isOpen="activeDropdown === 'product-sec'">
                                         <ul class="sub-menu text-gray-500">
                                             <li>
-                                                <router-link to="/pages/categories/mainCategories/list" @click="toggleMobileMenu">{{ $t('main_section') }}</router-link>
+                                                <router-link to="/pages/categories/mainCategories/list" @click="toggleMobileMenu">{{ $t('sidebar.main_section') }}</router-link>
                                             </li>
                                             <li>
-                                                <router-link to="/pages/categories/subCategories/list" @click="toggleMobileMenu">{{ $t('sub_section') }}</router-link>
+                                                <router-link to="/pages/categories/subCategories/list" @click="toggleMobileMenu">{{ $t('sidebar.sub_section') }}</router-link>
                                             </li>
                                         </ul>
                                     </vue-collapsible>
@@ -111,7 +111,7 @@
                                             <icon-menu-calendar class="group-hover:!text-primary shrink-0" />
 
                                             <span class="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{{
-                                                $t('products')
+                                                $t('sidebar.products')
                                             }}</span>
                                         </div>
                                     </router-link>
@@ -122,7 +122,7 @@
                                             <icon-menu-calendar class="group-hover:!text-primary shrink-0" />
 
                                             <span class="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{{
-                                                $t('brand')
+                                                $t('sidebar.brand')
                                             }}</span>
                                         </div>
                                     </router-link>
@@ -133,7 +133,7 @@
                                             <icon-menu-calendar class="group-hover:!text-primary shrink-0" />
 
                                             <span class="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{{
-                                                $t('store')
+                                                $t('sidebar.store')
                                             }}</span>
                                         </div>
                                     </router-link>
@@ -150,10 +150,11 @@
 
 <script lang="ts" setup>
     import { ref, onMounted } from 'vue';
-
+    import { storeToRefs } from 'pinia'
     import { useAppStore } from '@/stores/index';
     import VueCollapsible from 'vue-height-collapsible/vue3';
-
+    // Data Connection
+    import { useConnectionStore } from '../../stores/module/DataModule'
     import IconCaretsDown from '@/components/icon/icon-carets-down.vue';
     import IconMenuDashboard from '@/components/icon/menu/icon-menu-dashboard.vue';
     import IconMinus from '@/components/icon/icon-minus.vue';
@@ -183,6 +184,8 @@
     const store = useAppStore();
     const activeDropdown: any = ref('');
     const subActive: any = ref('');
+    const DataStore = useConnectionStore()
+    const { project_name } = storeToRefs(DataStore)
 
     onMounted(() => {
         const selector = document.querySelector('.sidebar ul a[href="' + window.location.pathname + '"]');

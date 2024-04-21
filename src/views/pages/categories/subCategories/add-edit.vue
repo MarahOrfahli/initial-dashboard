@@ -26,12 +26,18 @@
             <!-- searchable -->
             <multiselect
             v-model="category"
-            :options="categories"
+            :options="options.names"
             @click="isSubmmit = false,errorS = false"
+            @update:model-value="updateSelected"
             class="custom-multiselect"
             :searchable="true"
+            noResult="no data"
+            :loading="loading"
             placeholder="Select an option"
             >
+            <template #noResult>
+                Oops! No elements found. Consider changing the search query.
+            </template>
         </multiselect>
             <template v-if="isSubmmit && errorS == true">
             <p class="text-danger mt-1">{{errorSelection}}</p>
@@ -101,7 +107,8 @@ export default defineComponent({
             category: '',
             artitle: '',
             entitle: '',
-            options,
+            update: '',
+            options: { ids: [], names: [] },
             ///////// Validation  ////
             isSubmmit: false,
             errora: false,
@@ -112,27 +119,38 @@ export default defineComponent({
             errorArabic: '',
         }
     },
-    async mounted(){ this.startPage() },
+    async mounted(){ 
+        this.startPage()
+     },
     methods: {
+        updateSelected(){
+            for (let index = 0;  index < this.options.names.length; index++) {
+                if(this.options.names[index] == this.category){
+                    this.categoryID = this.options.ids[index]
+                }
+            }
+        },
         startPage(){
             this.DataStore.getData('Categories').then(() => {
-                console.log(this.categories)
                 this.categories.forEach(element => {
-                    this.options.push(element)
+                    let name = element.name_ar + '-' + element.name_en
+                    this.options.ids.push(element.id)
+                    this.options.names.push(name)
                 });
+            }).then(()=>{
+                this.FillData()
             })
-            // this.DataStore.getData('SubCategories', 1).then(() => {})
-            // this.DataStore.getCategoriesForSelection().then(()=>{
-            //     this.FillData()
-            //    // this.DataStore.getData('SubCategories', )
-            // })
         },
         FillData(){
             if(this.ID != 0){
                 this.artitle = this.currentData.name_ar
                 this.entitle = this.currentData.name_en
-                console.log('Hello')
-                
+                this.categoryID = this.currentData.category_id
+                for (let index = 0;  index < this.options.ids.length; index++) {
+                    if(this.options.ids[index] == this.categoryID){
+                        this.category = this.options.names[index]
+                    }
+                }
             }
             
         },
@@ -158,15 +176,16 @@ export default defineComponent({
             return this.counter
         },
         saveInfo(){
+            let data = { name_ar: this.artitle, name_en: this.entitle, category_id: this.categoryID }
             var isValid = this.formValidate()
             if (isValid == 0) {
                 if (this.ID === 0) {
-                    this.DataStore.createData('Categories', {}).then(() => {
+                    this.DataStore.createData('SubCategories', data).then(() => {
                     this.$emit('load-data')
                     this.ondismiss()
                     })
                 } else {
-                    this.DataStore.updateData('Categories', this.ID, {}).then(() => {
+                    this.DataStore.updateData('SubCategories', this.ID, data).then(() => {
                     this.$emit('load-data')
                     this.ondismiss()
                     })

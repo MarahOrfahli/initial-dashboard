@@ -30,6 +30,7 @@
             </template>
         </div>
         
+        
         <!---------------------------------------------------------------------------->
         <div class="flex justify-end items-center mt-8">
             <button type="button" @click="saveInfo" class="btn btn-primary ltr:ml-4 rtl:mr-4">
@@ -169,10 +170,11 @@ export default defineComponent({
             }
         },
         getData(){
-        this.formData.append('id', this.ID)
+        //this.formData.append('id', this.ID)
         if (this.artitle != '' && this.artitle != null) this.formData.append('name_ar', this.artitle)
         if (this.entitle != '' && this.entitle != null) this.formData.append('name_en', this.entitle)
         if (this.file != null) this.formData.append('image', this.file)
+        this.formData.append('_method', "PUT")
         },
         ondismiss() {
         this.$emit('close')

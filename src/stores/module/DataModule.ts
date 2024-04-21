@@ -15,7 +15,8 @@ import {
     Categories,
     Store,
     Customer,
-    Products
+    Products,
+    Orders
   } from '../../model/Classes'
   /// Make Data Connection Store 
   // Put the data into objects..
@@ -23,6 +24,13 @@ import {
     state: () => {
       const { t } = useI18n()
       return {
+        // Project Name
+        project_name: 'ZanobiaMarket',
+        // Arrows
+        firstArrow: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"> <path d="M13 19L7 12L13 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> <path opacity="0.5" d="M16.9998 19L10.9998 12L16.9998 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg>`,
+        lastArrow: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"> <path d="M11 19L17 12L11 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path opacity="0.5" d="M6.99976 19L12.9998 12L6.99976 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg>`,
+        previousArrow: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"> <path d="M15 5L9 12L15 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg>`,
+        nextArrow: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"> <path d="M9 5L15 12L9 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg>`,
         // Lang Variable [not used yet..]
         t,
         // variable for images storage
@@ -30,6 +38,7 @@ import {
         // Variables For Connection
         brand: [Brands],
         store: [Store],
+        orders: [Orders],
         products: [Products],
         customer: [Customer],
         categories: [Categories],
@@ -58,6 +67,8 @@ import {
                   this.products = await getData(dataName, dataId)
                 } else if (dataName == 'Customer') {
                   this.customer = await getData(dataName, dataId)
+                } else if (dataName == 'Orders') {
+                  this.orders = await getData(dataName, dataId)
                 }
             } catch (error) {
               console.log(error)
@@ -117,6 +128,11 @@ import {
               if (index !== -1) {
                 this.customer.splice(index, 1, DataType)
               }
+            }else if (dataName == 'Orders') {
+              index = this.orders.findIndex((t: any) => t.id === DataType.id)
+              if (index !== -1) {
+                this.orders.splice(index, 1, DataType)
+              }
             }
           } catch (error) {
             console.log(error)
@@ -142,6 +158,8 @@ import {
               this.products = this.products.filter((t: any) => t.id !== dataId)
             } else if (dataName == 'Customer') {
               this.customer = this.customer.filter((t: any) => t.id !== dataId)
+            }else if (dataName == 'Orders') {
+              this.orders = this.orders.filter((t: any) => t.id !== dataId)
             }
           } catch (error) {
             console.log(error)

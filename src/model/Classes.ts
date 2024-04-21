@@ -29,3 +29,7 @@ export class Products { // Products
     id = 0
     name = ''
 }
+export class Orders { // Orders
+    id = 0
+    name = ''
+}

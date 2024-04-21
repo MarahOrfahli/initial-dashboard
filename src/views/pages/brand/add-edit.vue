@@ -154,6 +154,7 @@ export default defineComponent({
         this.formData.append('id', this.ID)
         if (this.name != '' && this.name != null) this.formData.append('name', this.name)
         if (this.file != null) this.formData.append('logo', this.file)
+        this.formData.append('_method', "PUT")
         },
         ondismiss() {
         this.$emit('close')

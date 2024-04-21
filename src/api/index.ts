@@ -1,5 +1,5 @@
 import axios from 'axios'
- const apiOne = 'https://api.mightcinema.com/api/' // object for test
+const apiOne = 'https://api.mightcinema.com/api/' // object for test
 const apiURL = apiOne
 
 ///  Default Headers..........

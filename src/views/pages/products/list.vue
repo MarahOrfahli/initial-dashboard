@@ -6,11 +6,11 @@
                     <div style="width: 160px">
                         <router-link to="/pages/products/add" class="btn btn-primary gap-2">
                             <icon-plus />
-                            {{ t('add') }}
+                            {{ t('page-control.add') }}
                         </router-link>
                     </div>
                     <div>
-                        <input v-model="search" type="text" class="form-input" :placeholder="t('search-ph')" />
+                        <input v-model="search" type="text" class="form-input" :placeholder="t('page-control.search-placeholder')" />
                     </div>
                 </div>
                 <vue3-datatable
@@ -18,26 +18,50 @@
                     :rows="items"
                     :columns="cols"
                     :totalRows="items?.length"
-                    :hasCheckbox="true"
+                    :hasCheckbox="false"
                     :sortable="true"
                     :search="search"
+                    :loading="loading"
+                    :noDataContent="t('page-control.table.no-data-content')"
+                    :showNumbersCount="tableOption.pagination.chunk"
+                    :pageSize="tableOption.perPage"
+                    :paginationInfo="t('page-control.table.rows-count', { from:'{0}', to:'{1}', count:'{2}'})"
+                    :pageSizeOptions="tableOption.perPageValues"
                     skin="whitespace-nowrap bh-table-hover"
-                    firstArrow='<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"> <path d="M13 19L7 12L13 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> <path opacity="0.5" d="M16.9998 19L10.9998 12L16.9998 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg>'
-                    lastArrow='<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"> <path d="M11 19L17 12L11 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> <path opacity="0.5" d="M6.99976 19L12.9998 12L6.99976 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg> '
-                    previousArrow='<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"> <path d="M15 5L9 12L15 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg>'
-                    nextArrow='<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"> <path d="M9 5L15 12L9 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg>'
-                >
+                    :firstArrow= "firstArrow"
+                    :lastArrow="lastArrow"
+                    :previousArrow="previousArrow"
+                    :nextArrow="nextArrow"
+                    >
+                    <template #name="data">
+                        <div class="text-center">{{ data.value.name}}</div>
+                    </template>
+                    <template #model="data">
+                        <div class="text-center">{{ data.value.model}}</div>
+                    </template>
+                    <template #belongTo="data">
+                        <div class="text-center">{{ data.value.belongTo}}</div>
+                    </template>
+                    <template #price="data">
+                        <div class="text-center">{{ data.value.price}}</div>
+                    </template>
                     <template #available="data">
-                        <div class="text-success" v-if="data.value.available == true"><icon-circle-check class="w-6 h-6" /></div>
-                        <div class="text-danger" v-else><icon-x-circle class="w-6 h-6" /></div>
+                        <div class="items-center justify-center">
+                            <div class="text-success text-center" v-if="data.value.available == true"><icon-circle-check class="w-6 h-6" /></div>
+                            <div class="text-danger text-center" v-else><icon-x-circle class="w-6 h-6" /></div>
+                        </div>
                     </template>
                     <template #popular="data">
-                        <div class="text-success" v-if="data.value.popular == true"><icon-circle-check class="w-6 h-6" /></div>
-                        <div class="text-danger" v-else><icon-x-circle class="w-6 h-6" /></div>
+                        <div class="items-center justify-center">
+                            <div class="text-success" v-if="data.value.popular == true"><icon-circle-check class="w-6 h-6" /></div>
+                            <div class="text-danger" v-else><icon-x-circle class="w-6 h-6" /></div>
+                        </div>
                     </template>
                     <template #new="data">
-                        <div class="text-success" v-if="data.value.new == true"><icon-circle-check class="w-6 h-6" /></div>
-                        <div class="text-danger" v-else><icon-x-circle class="w-6 h-6" /></div>
+                        <div class="items-center justify-center">
+                            <div class="text-success" v-if="data.value.new == true"><icon-circle-check class="w-6 h-6" /></div>
+                            <div class="text-danger" v-else><icon-x-circle class="w-6 h-6" /></div>
+                        </div>
                     </template>
                     <template #actions="data">
                         <div class="flex gap-4 items-center justify-center">
@@ -52,7 +76,7 @@
                                 </router-link>
                             </div>
                             <div class="btn btn-white w-4">
-                                <button type="button" @click="deleteRow(`${data.value.id}`)" class="hover:text-danger">
+                                <button type="button" @click="deleteRow(data.value.id)" class="hover:text-danger">
                                     <icon-trash-lines />
                                 </button>
                             </div>
@@ -69,6 +93,11 @@
     import { useI18n } from 'vue-i18n'
     import Vue3Datatable from '@bhplugin/vue3-datatable';
     import { useMeta } from '@/composables/use-meta';
+    import { storeToRefs } from 'pinia'
+    import Swal from 'sweetalert2';
+    import { Products } from '../../../model/Classes'
+    import { useConnectionStore } from '../../../stores/module/DataModule'
+    // Import Icons
     import IconTrashLines from '@/components/icon/icon-trash-lines.vue';
     import IconCircleCheck from '@/components/icon/icon-circle-check.vue';
     import IconGallery from '@/components/icon/icon-gallery.vue';
@@ -94,10 +123,10 @@
            cols(){
             let { t } = useI18n()
             let cols = [
-                { field: 'name', title: t('name') },
-                { field: 'model', title: t('model')  },
-                { field: 'belongTo', title: 'Belong To'  },
-                { field: 'price', title: 'Price'  },
+                { field: 'name', title: t('name'), headerClass: 'justify-center' },
+                { field: 'model', title: t('model'), headerClass: 'justify-center'  },
+                { field: 'belongTo', title: 'Belong To', headerClass: 'justify-center'  },
+                { field: 'price', title: 'Price', headerClass: 'justify-center'  },
                 { field: 'available', title: 'Available', sort: false, headerClass: 'justify-center'  },
                 { field: 'popular', title: 'Popular', sort: false, headerClass: 'justify-center' },
                 { field: 'new', title: 'New', sort: false, headerClass: 'justify-center' },
@@ -109,6 +138,9 @@
         data() {
             const datatable: any = null;
             const { t, locale } = useI18n()
+            const DataStore = useConnectionStore()
+            const { products, loading , firstArrow, lastArrow, previousArrow, nextArrow} = storeToRefs(DataStore)
+            // firstArrow, lastArrow, previousArrow, nextArrow
             const search = '';
             const items = [
                 {
@@ -145,20 +177,15 @@
             const searchText = '';
             const columns = ['id', 'name', 'model', 'belongTo', 'price', 'available', 'popular', 'new', 'actions'];
             const tableOption = {
-                headings: {
-                    id: (h: any, row: any, index: number) => {
-                        return '#';
-                    },
-                },
                 perPage: 10,
                 perPageValues: [10, 20, 30, 50, 100],
                 skin: 'table-hover',
                 columnsClasses: { actions: 'actions !text-center w-1' },
-                pagination: { show: true, nav: 'scroll', chunk: 10 },
+                pagination: { show: true, nav: 'scroll', chunk: 3 },
                 texts: {
-                    count: 'Showing {from} to {to} of {count} entries',
+                    count: t('page-control.table.rows-count', { from:'{0}', to: '{1}', count: '{2}'}) ,
                     filter: '',
-                    filterPlaceholder: 'Search...',
+                    filterPlaceholder: t('page-control.search-placeholder'),
                     limit: '',
                 },
                 resizableColumns: false,
@@ -170,6 +197,16 @@
                 },
             };
             return {
+                // Arrows
+                firstArrow,
+                lastArrow,
+                previousArrow,
+                nextArrow,
+                /////////////////
+                // Data Connection
+                products, loading,
+                DataStore,
+                //////////
                 datatable,
                 t,locale,
                 search,
@@ -179,22 +216,40 @@
                 tableOption
             }
         },
-        async mounted() {},
+        async mounted() { this.startPage() },
         methods: {
-            deleteRow(item: any = null){
-                if (confirm(this.t('check-delete'))) {
-            if (item) {
-                this.items = this.items.filter((d) => d.id != item);
-                this.datatable.clearSelectedRows();
-            } else {
-                let selectedRows = this.datatable.getSelectedRows();
-                const ids = selectedRows.map((d) => {
-                    return d.id;
+            startPage(){
+                this.DataStore.getData('Products').then(() => {})
+            },
+            onDeleteCallback(idrow: number) {
+                this.DataStore.deleteData('Products', idrow).then(() => {
+                    Swal.fire({ 
+                        title: this.t('page-control.deleted'),
+                        text:  this.t('page-control.text-success-deleted'),
+                        confirmButtonText: this.t('page-control.done'),
+                        icon: 'success',
+                        customClass: 'sweet-alerts' 
+                    }).then((result) => {
+                        if (result.value) { this.startPage() }
+                    });
+                })
+            },
+            deleteRow(idrow: number){
+                Swal.fire({
+                    icon: 'warning',
+                    title: this.t('page-control.title-delete'),
+                    text: this.t('page-control.text-delete'),
+                    confirmButtonText: this.t('page-control.delete'),
+                    cancelButtonText: this.t('page-control.cancel'),
+                    showCancelButton: true,
+                    showCloseButton: true,
+                    padding: '2em',
+                    customClass: 'sweet-alerts',
+                }).then((result) => {
+                    if (result.value) {
+                        this.onDeleteCallback(idrow)
+                    }
                 });
-                this.items = this.items.filter((d) => !ids.includes(d.id as never));
-                this.datatable.clearSelectedRows();
-            }
-        }
             }
         }
     })
