@@ -101,7 +101,7 @@
                 <template #actions="data">
                     <div v-if="data.value.id > 0" class="flex gap-4 items-center justify-center">
                         <div v-if="dataType == 'Product'" class="btn btn-white w-4 cursor-pointer hover:text-secondary">
-                            <router-link to="/apps/categories/main-categories/edit" class="hover:text-info">
+                            <router-link to="/apps/categories/main-categories/edit" class="hover:text-secondary">
                                 <icon-gallery/>
                             </router-link>
                         </div>
@@ -206,7 +206,7 @@
                 search: '',
             }
         },
-        
+        async mounted() {},
         methods:{
             addRow(){
                 this.$emit('add')

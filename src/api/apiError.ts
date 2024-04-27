@@ -1,5 +1,5 @@
 import Swal from 'sweetalert2';
-// Notefication Form
+// Notification Form
 const toast = Swal.mixin({
     toast: true,
     showConfirmButton: false,

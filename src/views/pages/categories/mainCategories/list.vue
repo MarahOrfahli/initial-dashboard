@@ -13,77 +13,32 @@
         </div>
     </div>
     <!-- Modal -->
-    <TransitionRoot appear :show="addeditMainCategory" as="template">
-        <Dialog as="div" class="relative z-[51]">
-            <TransitionChild
-                as="template"
-                enter="duration-300 ease-out"
-                enter-from="opacity-0"
-                enter-to="opacity-100"
-                leave="duration-200 ease-in"
-                leave-from="opacity-100"
-                leave-to="opacity-0" >
-                <DialogOverlay class="fixed inset-0 bg-[black]/60" />
-            </TransitionChild>
-                                <div class="fixed inset-0 overflow-y-auto">
-                                    <div class="flex min-h-full items-start justify-center px-4 py-8">
-                                        <TransitionChild
-                                            as="template"
-                                            enter="duration-300 ease-out"
-                                            enter-from="opacity-0 scale-95"
-                                            enter-to="opacity-100 scale-100"
-                                            leave="duration-200 ease-in"
-                                            leave-from="opacity-100 scale-100"
-                                            leave-to="opacity-0 scale-95"
-                                        >
-                                            <DialogPanel class="panel border-0 p-0 rounded-lg overflow-hidden w-full max-w-lg text-black dark:text-white-dark">
-                                                <button
-                                                    type="button"
-                                                    class="absolute top-4 ltr:right-4 rtl:left-4 text-gray-400 hover:text-gray-800 dark:hover:text-gray-600 outline-none"
-                                                    @click="addeditMainCategory = false"
-                                                >
-                                                    <icon-x />
-                                                </button>
-                                                <div
-                                                    class="text-lg font-bold bg-[#fbfbfb] dark:bg-[#121c2c] ltr:pl-5 rtl:pr-5 py-3 ltr:pr-[50px] rtl:pl-[50px]"
-                                                >
-                                                    <span>{{ addedit }}</span>
-                                                </div>
-                                                <div class="p-5">
-                                                    <AddEditCategory :dataid="categoryID" :data="currentData" @load-data="startPage" @close="close" />
-                                                </div>
-                                            </DialogPanel>
-                                        </TransitionChild>
-                                    </div>
-                                </div>
-        </Dialog>
-    </TransitionRoot>
+    <Modal
+        v-if="addeditMainCategory"
+        :dataType="datatype"
+        :show="addeditMainCategory"
+        :dataID="categoryID"
+        :modalTitle="addedit"
+        :data="currentData"
+        @loadData="startPage"
+        @closeModal="close"
+    />
 </template>
 <script lang="ts">
     import { defineComponent } from 'vue';
     import { storeToRefs } from 'pinia'
     import { useI18n } from 'vue-i18n'
     import Swal from 'sweetalert2';
+    import Modal from '@/components/modal.vue';
     import DataTable from '@/components/datatable.vue';
     import { Categories } from '../../../../model/Classes'
     import { useConnectionStore } from '../../../../stores/module/DataModule'
-    import AddEditCategory from '@/views/pages/categories/mainCategories/add-edit.vue'
+    import { notificationStore } from '@/components/notifications'
     import { useMeta } from '@/composables/use-meta';
-    import { TransitionRoot, TransitionChild, Dialog, DialogPanel, DialogOverlay }
-     from '@headlessui/vue';
-    // Icon
-    import IconX from '@/components/icon/icon-x.vue';
     export default defineComponent({
         components: {
-            AddEditCategory,
             DataTable,
-            TransitionRoot,
-            TransitionChild,
-            DialogOverlay,
-            DialogPanel,
-            Dialog,
-            IconX,
-            ///////
+            Modal,
             Swal
         },
         setup(){
@@ -104,6 +59,7 @@
         data() {
             let currentData = new Categories()
             const DataStore = useConnectionStore()
+            const notification  = notificationStore()
             const { categories} = storeToRefs(DataStore)
             const { t, locale } = useI18n()
             return {
@@ -115,6 +71,7 @@
                 categoryID: 0,
                 ////////
                 currentData,
+                notification,
                 DataStore,
                 categories,
                 t,locale,
@@ -145,35 +102,8 @@
             ////////////////////////////////////
             ///// Delete Methods //////////////
             // Call a notification to confirm delete then delete the item
-            onDeleteCallback(idrow: number) {
-                this.DataStore.deleteData('Categories', idrow).then(() => {
-                    Swal.fire({ 
-                        title: this.t('page-control.delete.done'),
-                        text:  this.t('page-control.delete.text-success'),
-                        confirmButtonText: this.t('page-control.done'),
-                        icon: 'success',
-                        customClass: 'sweet-alerts' 
-                    }).then((result) => {
-                        if (result.value) { this.startPage() }
-                    });
-                })
-            },
             deleteRow(idrow: number){
-                Swal.fire({
-                    icon: 'warning',
-                    title: this.t('page-control.delete.check'),
-                    text: this.t('page-control.delete.text') + ' ' + this.t('page-control.delete.title'),
-                    confirmButtonText: this.t('page-control.delete.name'),
-                    cancelButtonText: this.t('page-control.cancel'),
-                    showCancelButton: true,
-                    showCloseButton: true,
-                    padding: '2em',
-                    customClass: 'sweet-alerts',
-                }).then((result) => {
-                    if (result.value) {
-                        this.onDeleteCallback(idrow)
-                    }
-                });
+                this.notification.deleteNotification(idrow, 'Categories')
             }
         }
     })

@@ -79,6 +79,18 @@ function APIURL(dname: string, type = 'List', num = 0) {
     //   return apiurl
     //   break
     // }
+    /////////////  Orders  ////////////////
+    // case 'order': {
+    //   if (type == 'GET' || type == 'Create') {
+    //     apiurl = 'order'
+    //   } else if (type == 'Edit' && num != 0) {
+    //     apiurl = `order/${num}`
+    //   } else if (type == 'Delete' && num != 0) {
+    //     apiurl = `order/${num}`
+    //   }
+    //   return apiurl
+    //   break
+    // }
     default: {
       console.log('Empty action received...\nThe dataName is: ' + dname + ' And the type is: ' + type)
       return apiurl

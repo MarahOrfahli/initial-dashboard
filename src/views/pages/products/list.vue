@@ -24,6 +24,7 @@
     import DataTable from '@/components/datatable.vue';
     import { Products } from '../../../model/Classes'
     import { useConnectionStore } from '../../../stores/module/DataModule'
+    import { notificationStore } from '@/components/notifications'
     export default defineComponent({
         components: {
             Swal,
@@ -53,6 +54,7 @@
             const { t, locale } = useI18n()
             const router = useRouter()
             const DataStore = useConnectionStore()
+            const notification = notificationStore()
             const { /*products,*/} = storeToRefs(DataStore)
             const products = [
                 {
@@ -93,6 +95,7 @@
                 // Data Connection
                 products,
                 DataStore,
+                notification,
                 currentData,
                 //////////
                 t,locale,
@@ -120,35 +123,8 @@
             ////////////////////////////////////
             ///// Delete Methods //////////////
             // Call a notification to confirm delete then delete the item
-            onDeleteCallback(idrow: number) {
-                this.DataStore.deleteData('Products', idrow).then(() => {
-                    Swal.fire({ 
-                        title: this.t('page-control.delete.done'),
-                        text:  this.t('page-control.delete.text-success'),
-                        confirmButtonText: this.t('page-control.done'),
-                        icon: 'success',
-                        customClass: 'sweet-alerts' 
-                    }).then((result) => {
-                        if (result.value) { this.startPage() }
-                    });
-                })
-            },
             deleteRow(idrow: number){
-                Swal.fire({
-                    icon: 'warning',
-                    title: this.t('page-control.delete.check'),
-                    text: this.t('page-control.delete.text') + ' ' + this.t('page-control.delete.title'),
-                    confirmButtonText: this.t('page-control.delete.name'),
-                    cancelButtonText: this.t('page-control.cancel'),
-                    showCancelButton: true,
-                    showCloseButton: true,
-                    padding: '2em',
-                    customClass: 'sweet-alerts',
-                }).then((result) => {
-                    if (result.value) {
-                        this.onDeleteCallback(idrow)
-                    }
-                });
+                this.notification.deleteNotification(idrow, 'Products')
             }
         }
     })
