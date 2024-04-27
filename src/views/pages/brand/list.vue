@@ -1,68 +1,17 @@
 <template>
-    <div>
-        <!-- Search Input -->
-        <div class="panel pb-0 mt-6">
-            <div class="grid sm:grid-cols-2 gap-3 mb-4.5 px-5">
-                    <div style="width: 160px"> <!-- Add Category Button -->
-                        <div @click="addbrand" class="btn btn-primary gap-2 hover:cursor-pointer">
-                            <icon-plus />
-                            {{ t('page-control.add') }}
-                        </div>
-                    </div>
-                    <div> <!-- Search Input -->
-                        <input v-model="search" type="text" class="form-input" :placeholder="t('page-control.search-placeholder')" />
-                    </div>
-            </div>
-            <!-- Datatable -->
-            <div class="datatable">
-                <vue3-datatable
-                    :rows="brand"
-                    :columns="cols"
-                    :totalRows="brand?.length"
-                    :hasCheckbox="false"
-                    :sortable="true"
-                    :search="search"
-                    :loading="loading"
-                    :noDataContent="t('page-control.table.no-data-content')"
-                    :showNumbersCount="tableOption.pagination.chunk"
-                    :pageSize="tableOption.perPage"
-                    :paginationInfo="t('page-control.table.rows-count', { from:'{0}', to:'{1}', count:'{2}'})"
-                    :pageSizeOptions="tableOption.perPageValues"
-                    skin="whitespace-nowrap bh-table-hover"
-                    :firstArrow= "firstArrow"
-                    :lastArrow="lastArrow"
-                    :previousArrow="previousArrow"
-                    :nextArrow="nextArrow"
-                >
-                <template #name="data">
-                        <div class="text-center" v-if="data.value.id > 0">{{ data.value.name }}</div>
-                    </template>
-                <template #logo="data">
-                        <div v-if="data.value.id > 0" class="flex items-center justify-center font-semibold">
-                            <div class="p-0.5 bg-white-dark/30 rounded-md w-max ltr:mr-2 rtl:ml-2">
-                                <img class="h-20 w-20 rounded-md object-cover" :src="`${imgLocation}${data.value.logo}`" />
-                            </div>
-                        </div>
-                    </template>
-                    <template #actions="data">
-                        <div  v-if="data.value.id > 0" class="flex gap-4 items-center justify-center">
-                            <div class="btn btn-white w-4 cursor-pointer hover:text-success" @click="editRow(data.value.id, data.value)">
-                                <button type="button">
-                                    <icon-edit />
-                                </button>
-                            </div>
-                            <div class="btn btn-white w-4 cursor-pointer hover:text-danger" @click="deleteRow(data.value.id)">
-                                <button type="button">
-                                    <icon-trash-lines />
-                                </button>
-                            </div>
-                            
-                        </div>
-                    </template>
-                </vue3-datatable>
-            </div>
+    <div class="panel pb-0 mt-6">
+        <div class="datatable">
+            <DataTable
+                :rows="brands"
+                :columns="cols"
+                :dataType="datatype"
+                :sortable="sort"
+                @add="add"
+                @edit="editRow"
+                @delete="deleteRow"
+            />
         </div>
-        <div>
+    </div>
                                 <!-- Modal -->
                                 <TransitionRoot appear :show="addeditbrand" as="template">
                             <Dialog as="div" class="relative z-[51]">
@@ -111,8 +60,6 @@
                                 </div>
                             </Dialog>
                         </TransitionRoot>
-                            </div>
-    </div>
 </template>
 <script lang="ts">
     // Import Vue & Pinia
@@ -126,30 +73,22 @@
     import AddEditBrand from '@/views/pages/brand/add-edit.vue'
     // Import Datatable & Modals
     import Swal from 'sweetalert2';
-    import Vue3Datatable from '@bhplugin/vue3-datatable';
+    import DataTable from '@/components/datatable.vue';
     import { TransitionRoot, TransitionChild, Dialog, DialogPanel, DialogOverlay }
     from '@headlessui/vue';
-    // Import Icons
-    import IconTrashLines from '@/components/icon/icon-trash-lines.vue';
+    // Icon
     import IconX from '@/components/icon/icon-x.vue';
-    import IconPlus from '@/components/icon/icon-plus.vue';
-    import IconEdit from '@/components/icon/icon-edit.vue';
-    import IconEye from '@/components/icon/icon-eye.vue';
     export default defineComponent({
         components: {
             AddEditBrand,
             // Datatable & Modals
-            Vue3Datatable,
+            DataTable,
             TransitionRoot,
             TransitionChild,
             DialogPanel,
             Dialog,
             // ICONS
-            IconTrashLines,
             IconX,
-            IconPlus,
-            IconEdit,
-            IconEye,
             Swal
         },
         setup(){
@@ -168,57 +107,24 @@
         },
         data() {
             let currentData = new Brands()
-            const datatable: any = null;
             const DataStore = useConnectionStore()
-            const { brand, loading, imgLocation,
-                firstArrow, lastArrow, previousArrow, nextArrow } = storeToRefs(DataStore)
+            const { brands } = storeToRefs(DataStore)
             const { t, locale } = useI18n()
-            const tableOption = {
-                perPage: 10,
-                perPageValues: [10, 20, 30, 50, 100],
-                skin: 'table-hover',
-                columnsClasses: { actions: 'actions !text-center w-1' },
-                pagination: { show: true, nav: 'scroll', chunk: 3 },
-                texts: {
-                    count: t('page-control.table.rows-count', { from:'{0}', to: '{1}', count: '{2}'}) , 
-                    filter: '',
-                    filterPlaceholder: t('page-control.search-placeholder'),
-                    limit: '',
-                },
-                resizableColumns: false,
-                sortable: ['name'],
-                sortIcon: {
-                    base: 'sort-icon-none',
-                    up: 'sort-icon-asc',
-                    down: 'sort-icon-desc'
-                }
-            };
             return {
-                // Arrows
-                firstArrow,
-                lastArrow,
-                previousArrow,
-                nextArrow,
+                sort: ['name'],
+                datatype: 'Brand',
                 // Data Connection
                 currentData,
                 DataStore,
-                brand,
-                loading,
-                imgLocation,
+                brands,
                 // Values
                 addedit: '',
-                // String..
-                search: '',
                 // Boolean..
                 addeditbrand: false,
                 // Numbers...
                 brandID: 0,
-                counter: 0,
                 ////////
-                datatable,
                 t,locale,
-                tableOption,
-                formData: new FormData(),
             }
         },
         async mounted() {
@@ -233,7 +139,7 @@
                 this.addeditbrand = false
             },
             // Add New Item
-            addbrand(){
+            add(){
                 this.addedit = this.t('pages.brand.modals.add-new-brand')
                 this.addeditbrand = true
                 this.brandID = 0

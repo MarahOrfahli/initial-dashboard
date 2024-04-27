@@ -72,7 +72,7 @@ export default defineComponent({
     data(props){
        const file = ref<File | null>(null);
         const DataStore = useConnectionStore()
-        const { brand, loading, imgLocation } = storeToRefs(DataStore)
+        const { brands, loading, imgLocation } = storeToRefs(DataStore)
         const { t, locale } = useI18n()
        const ID = props.dataid
        const fileImg = { name: 'image', url: '' }
@@ -80,7 +80,7 @@ export default defineComponent({
         return{
             t,
             // Data Connection
-            brand,
+            brands,
             loading,
             currentData,
             imgLocation,
@@ -115,7 +115,6 @@ export default defineComponent({
             const target = event.target as HTMLInputElement;
             if (target.files) {
                 this.file = target.files[0]
-                console.log(this.file)
             }
         },
         formValidate(){  // Validation Method
@@ -157,10 +156,9 @@ export default defineComponent({
         },
         // Prepare Data To Create New Brand
         getData(){
-        this.formData.append('id', this.ID)
         if (this.name != '' && this.name != null) this.formData.append('name', this.name)
         if (this.file != null) this.formData.append('logo', this.file)
-        this.formData.append('_method', "PUT")
+        if(this.ID != 0) this.formData.append('_method', "PUT")
         },
         ondismiss() {
         this.$emit('close')

@@ -71,9 +71,30 @@ const routes: RouteRecordRaw[] = [
         component: () => import('../views/pages/products/list.vue'),
     },
     {
-        path: '/pages/products/add',
+        path: '/pages/products/add-edit/:type',
         name: 'products-add',
-        component: () => import('../views/pages/products/add.vue'),
+        component: () => import('../views/pages/products/add-edit.vue'),
+        props: true,
+    },
+    {
+        path: '/pages/products/add-edit/:type/:id',
+        name: 'products-edit',
+        component: () => import('../views/pages/products/add-edit.vue'),
+        props: true,
+    },
+    ////////////////////////////////////////////
+    /* Customers */
+    {
+        path: '/pages/customers/list',
+        name: 'customers-list',
+        component: () => import('../views/pages/Customers/list.vue'),
+    },
+    ////////////////////////////////////////////
+    /* Orders */
+    {
+        path: '/pages/orders/list',
+        name: 'orders-list',
+        component: () => import('../views/pages/orders/list.vue'),
     },
     ////////////////////////////////////////////
     /* Apps */

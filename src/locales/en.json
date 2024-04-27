@@ -15,6 +15,8 @@
         "main_section":"Main sections",
         "sub_section":"Subsections",
         "products":"Products",
+        "orders":"Orders",
+        "customers":"Customers",
         "brand":"Brand",
         "store":"Store"
     },
@@ -25,6 +27,9 @@
     "**********************":"************************",
     "page-control":{
         "add": "Add",
+        "add-more":"Add More",
+        "yes":"Yes",
+        "no":"No",
         "save-changes":"Save Changes",
         "edit": "Edit",
         "done":"Done",
@@ -41,11 +46,13 @@
             "check":"Are you sure want to delete selected row ?",
             "text":"This item will be permanently deleted!",
             "text-success":"The Item has been deleted.",
-            "title":"do you want to continue?"
+            "title":"Do you want to continue?",
+            "unsave-data":"Changes You Made May Not Be Save"
         },
         "error-length":"Must be less than 30 characters",
         "upload-category-image":"Upload an image category",
         "upload-brand-image":"Upload an image logo",
+        "no-item":"No Items Available",
         "action":"Manage",
         "img":"Image"
     },
@@ -57,16 +64,100 @@
     },
     "****************":"******************************",
     "pages":{
+        "home":"Go Back To Homepage",
         "404": "404",
         "500": "500",
         "503": "503",
+        "error404":"The page you requested was not found!",
+        "error500":"Internal server error!",
+        "error503":"Service Unavailable!",
         "maintenence": "Maintenence",
         "workcharts":{},
         "*******":"******",
         "products_section":{
+            "fields": {
+                "color":"Color",
+                "color-code":"Code",
+                "add-product":"Add Product Information",
+                "edit-product":"Edit Product Information",
+                "add-product-store":"Add the product to stores",
+                "add-img-color-code":"Add Images, Color And Colors Codes",
+                "Manage-img-color-code":"Manage Images, Color And Colors Codes",
+                "price":"Price",
+                "model":"Model",
+                "name":"Product Name",
+                "belong-to":"Belong To",
+                "available":"Availavle",
+                "popular":"Popular",
+                "new":"New",
+                "back-product":"Go Back To Products List"
+            },
+            "modals":{
+                "title-arabic":"Title In Arabic",
+                "description-arabic":"Description In Arabic",
+                "title-english":"Title In English",
+                "description-english":"Description In English",
+                "main-category":"Main Category",
+                "sub-category":"Subategory",
+                "add-available":"Adding To Available Products List ? ",
+                "select-option":"Select An Option",
+                "main-image":"Main Image",
+                "add-image":"Add More Images",
+                "tags":"Tags",
+                "stores":"Stores",
+                "brands":"Brands",
+                "************":"******************************",
+                "enter-title":"Enter Title...",
+                "enter-price":"Enter A Price..",
+                "enter-model":"Enter A Model..",
+                "enter-descripe-arabic":"Descripe The Product in Arabic..",
+                "enter-descripe-english":"Descripe The Product in English..",
+                "***************":"****************************",
+                "next":"Next"
+            },
+            "errors":{
+                "code":"The code must be added along with the color",
+                "color":"The color must be added along with the code",
+                "upload-img-item":"You Must Add Image",
+                "***************":"****************************",
+                "price":"You must enter the price",
+                "model":"You must enter the model",
+                "brand":"You must choose a brand",
+                "category":"You must choose the main section",
+                "subcategory":"You must select a subsection",
+                "arabic-empty":"The title in arabic must not be empty",
+                "english-empty":"The title in english must not be empty",
+                "desc-arabic-empty":"The Description in arabic must not be empty",
+                "desc-english-empty":"The Description in english must not be empty",
+                "upload":"Please add an image file"
 
+            }
         },
         "***********":"**",
+        "customer":{
+            "fields": {
+                
+            },
+            "modals":{
+                
+            },
+            "errors":{
+                
+            }
+        },
+        "**********":"***",
+        "orders":{
+            "fields": {
+                
+            },
+            "modals":{
+                
+            },
+            "errors":{
+                
+            }
+        },
+        "**":"***********",
         "main_section":{
             "fields": {
                 "title-arabic":"Title In Arabic",
@@ -121,17 +212,19 @@
         "*":"**************",
         "store":{
             "fields": {
-                "title-arabic":"Title In Arabic",
-                "title-english":"Title In English"
+                "name":"Store Name",
+                "location":"Location"
             },
             "modals":{
-                "add-new-category":"Adding New Category",
-                "edit-category":"Edit Category"
+                "add-new-store":"Adding New Store",
+                "edit-store":"Edit Store Information",
+                "**********":"**********",
+                "enter-name":"Enter Store Name...",
+                "enter-location":"Enter Location Name..."
             },
             "errors":{
-                "arabic-empty":"",
-                "english-empty":"",
-                "upload":""
+                "name-empty":"The store name must not be empty",
+                "location-empty":"The store location must not be empty"
             }
         }
     }

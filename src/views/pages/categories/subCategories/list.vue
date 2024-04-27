@@ -1,67 +1,17 @@
 <template>
-    <div>
-        <div class="panel px-0 pb-1.5 border-[#e0e6ed] dark:border-[#1b2e4b]">
-            <div class="datatable invoice-table">
-                <div class="grid sm:grid-cols-2 gap-3 mb-4.5 px-5">
-                    <div style="width: 160px">
-                        <div @click="add" class="btn btn-primary gap-2 hover:cursor-pointer">
-                            <icon-plus />
-                            {{ t('page-control.add') }}
-                        </div>
-                    </div>
-                    <div>
-                        <input v-model="search" type="text" class="form-input" :placeholder="t('page-control.search-placeholder')" />
-                    </div>
-                </div>
-                <vue3-datatable
-                    ref="datatable"
-                    :rows="subcategories"
-                    :columns="cols"
-                    :totalRows="subcategories?.length"
-                    :hasCheckbox="false"
-                    :sortable="true"
-                    :search="search"
-                    :loading="loading"
-                    :noDataContent="t('page-control.table.no-data-content')"
-                    :showNumbersCount="tableOption.pagination.chunk"
-                    :pageSize="tableOption.perPage"
-                    :paginationInfo="t('page-control.table.rows-count', { from:'{0}', to:'{1}', count:'{2}'})"
-                    :pageSizeOptions="tableOption.perPageValues"
-                    skin="whitespace-nowrap bh-table-hover"
-                    :firstArrow= "firstArrow"
-                    :lastArrow="lastArrow"
-                    :previousArrow="previousArrow"
-                    :nextArrow="nextArrow"
-                >
-                <template #name_ar="data">
-                        <div class="text-center">{{ data.value.name_ar }}</div>
-                    </template>
-                    <template #name_en="data">
-                        <div class="text-center">{{ data.value.name_en }}</div>
-                    </template>
-                    <template #category_id="data">
-                        <div class="text-center">{{ data.value.category_name_ar }}-{{ data.value.category_name_en }}</div>
-                    </template>
-                    <template #actions="data">
-                        <div class="flex gap-4 items-center justify-center">
-                            <div class="btn btn-white w-4 cursor-pointer hover:text-success" @click="editRow(data.value.id, data.value)">
-                                <button type="button">
-                                    <icon-edit />
-                                </button>
-                            </div>
-                            <div class="btn btn-white w-4 cursor-pointer hover:text-danger" @click="deleteRow(data.value.id)">
-                                <button type="button">
-                                    <icon-trash-lines />
-                                </button>
-                            </div>
-                            
-                        </div>
-                    </template>
-                </vue3-datatable>
-            </div>
+    <div class="panel pb-0 mt-6">
+        <div class="datatable">
+            <DataTable
+                :rows="subcategories"
+                :columns="cols"
+                :dataType="datatype"
+                :sortable="sort"
+                @add="add"
+                @edit="editRow"
+                @delete="deleteRow"
+            />
         </div>
-
-        <div>
+    </div>
                                 <!-- Modal -->
                                 <TransitionRoot appear :show="addeditSubCategory" as="template">
                             <Dialog as="div" class="relative z-[51]">
@@ -110,8 +60,6 @@
                                 </div>
                             </Dialog>
                         </TransitionRoot>
-                            </div>
-    </div>
 </template>
 <script lang="ts">
     import { defineComponent } from 'vue';
@@ -121,29 +69,22 @@
     import { SubCategories } from '../../../../model/Classes'
     import { useConnectionStore } from '../../../../stores/module/DataModule'
     import AddEditCategory from '@/views/pages/categories/subCategories/add-edit.vue'
-    import Vue3Datatable from '@bhplugin/vue3-datatable';
+    import DataTable from '@/components/datatable.vue';
     import { useMeta } from '@/composables/use-meta';
-    import IconTrashLines from '@/components/icon/icon-trash-lines.vue';
-    import IconX from '@/components/icon/icon-x.vue';
-    import IconPlus from '@/components/icon/icon-plus.vue';
-    import IconEdit from '@/components/icon/icon-edit.vue';
-    import IconEye from '@/components/icon/icon-eye.vue';
     import { TransitionRoot, TransitionChild, Dialog, DialogPanel, DialogOverlay }
      from '@headlessui/vue';
+    // Icon
+    import IconX from '@/components/icon/icon-x.vue';
     export default defineComponent({
         components: {
             AddEditCategory,
-            Vue3Datatable,
+            DataTable,
             TransitionRoot,
             TransitionChild,
+            DialogOverlay,
             DialogPanel,
             Dialog,
-            // ICONS
             IconX,
-            IconPlus,
-            IconEdit,
-            IconEye,
-            IconTrashLines,
             /////
             Swal
         },
@@ -164,41 +105,16 @@
         },
         data() {
             let currentData = new SubCategories()
-            const datatable: any = null;
             const DataStore = useConnectionStore()
-            const { subcategories, loading , firstArrow, lastArrow, previousArrow, nextArrow} = storeToRefs(DataStore)
+            const { subcategories} = storeToRefs(DataStore)
             const { t, locale } = useI18n()
-            const tableOption = {
-                perPage: 10,
-                perPageValues: [10, 20, 30, 50, 100],
-                skin: 'table-hover',
-                columnsClasses: { actions: 'actions !text-center w-1' },
-                pagination: { show: true, nav: 'scroll', chunk: 3 },
-                texts: {
-                    count: t('page-control.table.rows-count', { from:'{0}', to: '{1}', count: '{2}'}) ,
-                    filter: '',
-                    filterPlaceholder: t('page-control.search-placeholder'),
-                    limit: '',
-                },
-                resizableColumns: false,
-                sortable: ['name_ar', 'name_en','category_id'],
-                sortIcon: {
-                    base: 'sort-icon-none',
-                    up: 'sort-icon-asc',
-                    down: 'sort-icon-desc',
-                },
-            };
             return {
-                // Arrows
-                firstArrow,
-                lastArrow,
-                previousArrow,
-                nextArrow,
+                sort: ['name_ar', 'name_en','category_id'],
+                datatype: 'S-Category',
                 // Data Connection
                 DataStore,
                 subcategories,
                 currentData,
-                loading,
                 // Values
                 addeditSubCategory: false,
                 addedit: '',
@@ -206,15 +122,13 @@
                 searchText: '',
                 categoryID: 0,
                 ////////
-                datatable,
                 t,locale,
-                tableOption
             }
         },
         async mounted() { this.startPage() },
         methods: {
             startPage(){
-                this.DataStore.getData('SubCategories').then(() => {})
+                this.DataStore.getData('SubCategories').then(() => { })
             },
             close(){ // Close The Add-Edit Modal
                 this.addeditSubCategory = false

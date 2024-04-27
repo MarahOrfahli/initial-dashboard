@@ -41,7 +41,17 @@
                                         </div>
                                     </router-link>
                                 </li>
-                                
+                                <li class="nav-item">
+                                    <router-link to="/pages/orders/list" class="group" @click="toggleMobileMenu">
+                                        <div class="flex items-center">
+                                            <icon-menu-charts class="group-hover:!text-primary shrink-0" />
+
+                                            <span class="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{{
+                                                $t('sidebar.orders')
+                                            }}</span>
+                                        </div>
+                                    </router-link>
+                                </li>
                                 <!-- <li class="nav-item">
                                     <router-link to="/" class="group" @click="toggleMobileMenu">
                                         <div class="flex items-center">
@@ -117,6 +127,17 @@
                                     </router-link>
                                 </li>
                                 <li class="nav-item">
+                                    <router-link to="/pages/customers/list" class="group" @click="toggleMobileMenu">
+                                        <div class="flex items-center">
+                                            <icon-menu-calendar class="group-hover:!text-primary shrink-0" />
+
+                                            <span class="ltr:pl-3 rtl:pr-3 text-black dark:text-[#506690] dark:group-hover:text-white-dark">{{
+                                                $t('sidebar.customers')
+                                            }}</span>
+                                        </div>
+                                    </router-link>
+                                </li>
+                                <li class="nav-item">
                                     <router-link to="/pages/brand/list" class="group" @click="toggleMobileMenu">
                                         <div class="flex items-center">
                                             <icon-menu-calendar class="group-hover:!text-primary shrink-0" />
@@ -138,7 +159,6 @@
                                         </div>
                                     </router-link>
                                 </li>
-
                             </ul>
                         </li>
                     </ul>

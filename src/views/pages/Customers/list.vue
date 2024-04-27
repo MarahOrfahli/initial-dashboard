@@ -2,7 +2,7 @@
     <div class="panel pb-0 mt-6">
         <div class="datatable">
             <DataTable
-                :rows="categories"
+                :rows="customer"
                 :columns="cols"
                 :dataType="datatype"
                 :sortable="sort"
@@ -13,7 +13,7 @@
         </div>
     </div>
     <!-- Modal -->
-    <TransitionRoot appear :show="addeditMainCategory" as="template">
+    <TransitionRoot appear :show="addeditcustomer" as="template">
         <Dialog as="div" class="relative z-[51]">
             <TransitionChild
                 as="template"
@@ -40,7 +40,7 @@
                                                 <button
                                                     type="button"
                                                     class="absolute top-4 ltr:right-4 rtl:left-4 text-gray-400 hover:text-gray-800 dark:hover:text-gray-600 outline-none"
-                                                    @click="addeditMainCategory = false"
+                                                    @click="addeditcustomer = false"
                                                 >
                                                     <icon-x />
                                                 </button>
@@ -50,7 +50,7 @@
                                                     <span>{{ addedit }}</span>
                                                 </div>
                                                 <div class="p-5">
-                                                    <AddEditCategory :dataid="categoryID" :data="currentData" @load-data="startPage" @close="close" />
+                                                    <AddEditCustomer :dataid="customerID" :data="currentData" @load-data="startPage" @close="close" />
                                                 </div>
                                             </DialogPanel>
                                         </TransitionChild>
@@ -64,89 +64,89 @@
     import { storeToRefs } from 'pinia'
     import { useI18n } from 'vue-i18n'
     import Swal from 'sweetalert2';
+    import { Customer } from '../../../model/Classes'
+    import { useConnectionStore } from '../../../stores/module/DataModule'
+    import AddEditCustomer from '@/views/pages/Customers/add-edit.vue'
     import DataTable from '@/components/datatable.vue';
-    import { Categories } from '../../../../model/Classes'
-    import { useConnectionStore } from '../../../../stores/module/DataModule'
-    import AddEditCategory from '@/views/pages/categories/mainCategories/add-edit.vue'
     import { useMeta } from '@/composables/use-meta';
+    import IconX from '@/components/icon/icon-x.vue';
     import { TransitionRoot, TransitionChild, Dialog, DialogPanel, DialogOverlay }
      from '@headlessui/vue';
-    // Icon
-    import IconX from '@/components/icon/icon-x.vue';
     export default defineComponent({
         components: {
-            AddEditCategory,
-            DataTable,
+            AddEditCustomer,
             TransitionRoot,
             TransitionChild,
             DialogOverlay,
             DialogPanel,
+            DataTable,
             Dialog,
+            // ICONS
             IconX,
-            ///////
+            /////
             Swal
         },
         setup(){
-            useMeta({ title: 'Main Category List' });
+            useMeta({ title: 'Customer List' });
         },
         computed:{
            cols(){
             let { t } = useI18n()
             let cols = [
-                { field: 'name_ar', title: t('pages.main_section.fields.title-arabic'), headerClass: 'justify-center' },
-                { field: 'name_en', title: t('pages.main_section.fields.title-english'), headerClass: 'justify-center'  }, 
-                { field: 'image', title: t('page-control.img'),sort: false, headerClass: 'justify-center' },
+                { field: 'name', title: t('pages.sub_section.fields.title-arabic'), headerClass: 'justify-center' },
+                { field: 'phone', title: t('pages.sub_section.fields.title-english'), headerClass: 'justify-center'  },
+                { field: 'address', title: t('pages.sub_section.fields.main-category'), headerClass: 'justify-center'  },
+                { field: 'email', title: t('pages.sub_section.fields.main-category'), headerClass: 'justify-center'  },
                 { field: 'actions', title: t('page-control.action') , sort: false, headerClass: 'justify-center' },
             ];
             return cols;
            },
         },
         data() {
-            let currentData = new Categories()
+            let currentData = new Customer()
             const DataStore = useConnectionStore()
-            const { categories} = storeToRefs(DataStore)
+            const { customer} = storeToRefs(DataStore)
             const { t, locale } = useI18n()
             return {
-                sort: ['name_ar', 'name_en'],
-                datatype: 'M-Category',
-                // Values
-                addeditMainCategory: false,
-                addedit: '',
-                categoryID: 0,
-                ////////
-                currentData,
+                datatype: 'Customer',
+                sort: ['name', 'address', 'phone','email'],
+                // Data Connection
                 DataStore,
-                categories,
-                t,locale,
+                customer,
+                currentData,
+                // Values
+                addeditcustomer: false,
+                addedit: '',
+                customerID: 0,
+                ////////
+                t,locale
             }
         },
-        async mounted() {
-            this.startPage()
-        },
+        async mounted() { this.startPage() },
         methods: {
             startPage(){
-                this.DataStore.getData('Categories').then(() => {})
+                this.DataStore.getData('Customer').then(() => {})
             },
             close(){ // Close The Add-Edit Modal
-                this.addeditMainCategory = false
+                this.addeditcustomer = false
             },
             add(){ // Add New Item
-                this.addeditMainCategory = true
-                this.addedit = this.t('pages.main_section.modals.add-new-category')
-                this.categoryID = 0
+                this.addeditcustomer = true
+                this.addedit = this.t('pages.sub_section.modals.add-new-category')
+                this.customerID = 0
             },
             // Edit the Item data
-            editRow(id: number, data:Categories){
-                this.addeditMainCategory = true
-                this.addedit = this.t('pages.main_section.modals.edit-category')
-                this.categoryID = id
+            editRow(id: number, data:Customer){
+                this.addeditcustomer = true
+                this.addedit = this.t('pages.sub_section.modals.edit-category')
+                this.customerID = id
                 this.currentData = data
             },
             ////////////////////////////////////
             ///// Delete Methods //////////////
             // Call a notification to confirm delete then delete the item
             onDeleteCallback(idrow: number) {
-                this.DataStore.deleteData('Categories', idrow).then(() => {
+                this.DataStore.deleteData('Customer', idrow).then(() => {
                     Swal.fire({ 
                         title: this.t('page-control.delete.done'),
                         text:  this.t('page-control.delete.text-success'),

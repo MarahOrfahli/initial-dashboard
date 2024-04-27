@@ -21,17 +21,18 @@
         </div>
         <!-------------------------------------------------------------------------------------------->
         <!--  -------------------------------  Select field  --------------------------------------  -->
-        <div :class="isSubmmit ? { 'has-error': errorS } : ''">
-            <label for="cat-img">{{ t('pages.sub_section.fields.select') }}</label>
+        <div :class="isSubmmit ? { 'has-error': errorS} : ''">
+            <label for="select">{{ t('pages.sub_section.fields.select') }}</label>
             <!-- searchable -->
             <multiselect
+            id="select"
             v-model="category"
             :options="options.names"
             @click="isSubmmit = false,errorS = false"
             @update:model-value="updateSelected"
             class="custom-multiselect"
             :searchable="true"
-            noResult="no data"
+            no-result-text="no data"
             :loading="loading"
             :placeholder="t('pages.sub_section.fields.select-option')"
             >
@@ -40,7 +41,7 @@
             <p class="text-danger mt-1">{{errorSelection}}</p>
             </template>
         </div>
-        
+        <br/><br/><br/><br/><br/><br/>
         <!---------------------------------------------------------------------------->
         <div class="flex justify-end items-center mt-8">
             <button type="button" @click="saveInfo" class="btn btn-primary ltr:ml-4 rtl:mr-4">

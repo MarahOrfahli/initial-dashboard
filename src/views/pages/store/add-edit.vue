@@ -2,8 +2,8 @@
     <div class="space-y-5">
         <!--  -------------------------------  Store title input field  --------------------------------------  -->
         <div :class="isSubmmit ? { 'has-error': errorn} : ''">
-            <label for="title-in-arabic">Store</label>
-            <input id="title-in-arabic" type="text" placeholder="Enter Store Name" class="form-input" 
+            <label for="name">{{ t('pages.store.fields.name') }}</label>
+            <input id="name" type="text" :placeholder="t('pages.store.modals.enter-name')" class="form-input" 
             @keyup="isSubmmit = false,errorn = false" v-model="storen" />
             <template v-if="isSubmmit && errorn == true">
             <p class="text-danger mt-1">{{errorName}}</p>
@@ -12,8 +12,8 @@
         <!-------------------------------------------------------------------------------------------->
         <!--  -------------------------------  Store location input field  --------------------------------------  -->
         <div :class="isSubmmit ? { 'has-error': errorl } : ''">
-            <label for="title-in-arabic">Store</label>
-            <input id="title-in-arabic" type="text" placeholder="Enter Store Location" class="form-input" 
+            <label for="title-in-arabic">{{ t('pages.store.fields.location') }}</label>
+            <input id="title-in-arabic" type="text" :placeholder="t('pages.store.modals.enter-location')" class="form-input" 
             @keyup="isSubmmit = false,errorl = false" v-model="storel" />
             <template v-if="isSubmmit && errorl == true">
             <p class="text-danger mt-1">{{errorLocation}}</p>
@@ -24,19 +24,21 @@
         <div class="flex justify-end items-center mt-8">
             <button type="button" @click="saveInfo" class="btn btn-primary ltr:ml-4 rtl:mr-4">
                 <div v-if="ID == 0">
-                    <span v-if="loading == false">Add Store</span>
+                    <span v-if="loading == false">
+                        {{ t('page-control.add') }}
+                    </span>
                     <span v-else>
                         <IconRefresh class="animate-[spin_1s_linear_infinite] w-5 h-5" />
                     </span>
                 </div>
                 <div v-else-if="ID != 0">
-                    <span v-if="loading == false">Edit Store</span>
+                    <span v-if="loading == false">{{ t('page-control.save-changes') }}</span>
                     <span v-else>
                         <IconRefresh class="animate-[spin_1s_linear_infinite] w-5 h-5" />
                     </span>
                 </div>
             </button>
-            <button type="button" @click="ondismiss" class="btn btn-outline-danger ltr:ml-4 rtl:mr-4">Discard</button>
+            <button type="button" @click="ondismiss" class="btn btn-outline-danger ltr:ml-4 rtl:mr-4">{{ t('page-control.cancel') }}</button>
         </div>
         
     </div>
@@ -62,8 +64,8 @@ export default defineComponent({
     },
     data(props){
         const DataStore = useConnectionStore()
-        const { store, loading } = storeToRefs(DataStore)
-        const { t, locale } = useI18n()
+        const { stores, loading } = storeToRefs(DataStore)
+        const { t } = useI18n()
         let currentData: Store = props.data
        const ID = props.dataid
         return{
@@ -72,7 +74,7 @@ export default defineComponent({
             currentData,
             DataStore,
             loading,
-            store,
+            stores,
             //// 
             ID,
             storen: '',
@@ -86,7 +88,7 @@ export default defineComponent({
             errorName: '',
         }
     },
-    async mounted(){ },
+    async mounted(){ this.FillData() },
     methods: {
         FillData(){
             if(this.ID != 0){
@@ -112,16 +114,16 @@ export default defineComponent({
             return this.counter
         },
         saveInfo(){
-            // Prepare Data To Create New Brand
+            // Prepare Data To Create New Store
             let DataConnect = { id: this.ID, name: this.storen, location: this.storel  }
             var isValid = this.formValidate()
             if (isValid == 0) {
-                if (this.ID === 0) { // Add New Brand
+                if (this.ID === 0) { // Add New Store
                     this.DataStore.createData('Store', DataConnect).then(() => {
                     this.$emit('load-data')
                     this.ondismiss()
                     })
-                } else { // Edit Brand
+                } else { // Edit Store
                     this.DataStore.updateData('Store', this.ID, DataConnect).then(() => {
                     this.$emit('load-data')
                     this.ondismiss()

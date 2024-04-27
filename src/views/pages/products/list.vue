@@ -1,120 +1,33 @@
 <template>
-    <div>
-        <div class="panel px-0 pb-1.5 border-[#e0e6ed] dark:border-[#1b2e4b]">
-            <div class="datatable invoice-table">
-                <div class="grid sm:grid-cols-2 gap-3 mb-4.5 px-5">
-                    <div style="width: 160px">
-                        <router-link to="/pages/products/add" class="btn btn-primary gap-2">
-                            <icon-plus />
-                            {{ t('page-control.add') }}
-                        </router-link>
-                    </div>
-                    <div>
-                        <input v-model="search" type="text" class="form-input" :placeholder="t('page-control.search-placeholder')" />
-                    </div>
-                </div>
-                <vue3-datatable
-                    ref="datatable"
-                    :rows="items"
-                    :columns="cols"
-                    :totalRows="items?.length"
-                    :hasCheckbox="false"
-                    :sortable="true"
-                    :search="search"
-                    :loading="loading"
-                    :noDataContent="t('page-control.table.no-data-content')"
-                    :showNumbersCount="tableOption.pagination.chunk"
-                    :pageSize="tableOption.perPage"
-                    :paginationInfo="t('page-control.table.rows-count', { from:'{0}', to:'{1}', count:'{2}'})"
-                    :pageSizeOptions="tableOption.perPageValues"
-                    skin="whitespace-nowrap bh-table-hover"
-                    :firstArrow= "firstArrow"
-                    :lastArrow="lastArrow"
-                    :previousArrow="previousArrow"
-                    :nextArrow="nextArrow"
-                    >
-                    <template #name="data">
-                        <div class="text-center">{{ data.value.name}}</div>
-                    </template>
-                    <template #model="data">
-                        <div class="text-center">{{ data.value.model}}</div>
-                    </template>
-                    <template #belongTo="data">
-                        <div class="text-center">{{ data.value.belongTo}}</div>
-                    </template>
-                    <template #price="data">
-                        <div class="text-center">{{ data.value.price}}</div>
-                    </template>
-                    <template #available="data">
-                        <div class="items-center justify-center">
-                            <div class="text-success text-center" v-if="data.value.available == true"><icon-circle-check class="w-6 h-6" /></div>
-                            <div class="text-danger text-center" v-else><icon-x-circle class="w-6 h-6" /></div>
-                        </div>
-                    </template>
-                    <template #popular="data">
-                        <div class="items-center justify-center">
-                            <div class="text-success" v-if="data.value.popular == true"><icon-circle-check class="w-6 h-6" /></div>
-                            <div class="text-danger" v-else><icon-x-circle class="w-6 h-6" /></div>
-                        </div>
-                    </template>
-                    <template #new="data">
-                        <div class="items-center justify-center">
-                            <div class="text-success" v-if="data.value.new == true"><icon-circle-check class="w-6 h-6" /></div>
-                            <div class="text-danger" v-else><icon-x-circle class="w-6 h-6" /></div>
-                        </div>
-                    </template>
-                    <template #actions="data">
-                        <div class="flex gap-4 items-center justify-center">
-                            <div class="btn btn-white w-4">
-                                <router-link to="/apps/categories/main-categories/edit" class="hover:text-info">
-                                    <icon-gallery/>
-                                </router-link>
-                            </div>
-                            <div class="btn btn-white w-4">
-                                <router-link to="/apps/categories/main-categories/edit" class="hover:text-success">
-                                    <icon-edit />
-                                </router-link>
-                            </div>
-                            <div class="btn btn-white w-4">
-                                <button type="button" @click="deleteRow(data.value.id)" class="hover:text-danger">
-                                    <icon-trash-lines />
-                                </button>
-                            </div>
-                            
-                        </div>
-                    </template>
-                </vue3-datatable>
-            </div>
+    <div class="panel pb-0 mt-6">
+        <div class="datatable">
+            <DataTable
+                :rows="products"
+                :columns="cols"
+                :dataType="datatype"
+                :sortable="sort"
+                @add="addProduct"
+                @edit="EditProduct"
+                @delete="deleteRow"
+            />
         </div>
     </div>
 </template>
 <script lang="ts">
     import { defineComponent } from 'vue';
+    // Vue-Router
+    import { useRouter } from 'vue-router'
     import { useI18n } from 'vue-i18n'
-    import Vue3Datatable from '@bhplugin/vue3-datatable';
     import { useMeta } from '@/composables/use-meta';
     import { storeToRefs } from 'pinia'
     import Swal from 'sweetalert2';
+    import DataTable from '@/components/datatable.vue';
     import { Products } from '../../../model/Classes'
     import { useConnectionStore } from '../../../stores/module/DataModule'
-    // Import Icons
-    import IconTrashLines from '@/components/icon/icon-trash-lines.vue';
-    import IconCircleCheck from '@/components/icon/icon-circle-check.vue';
-    import IconGallery from '@/components/icon/icon-gallery.vue';
-    import IconXCircle from '@/components/icon/icon-x-circle.vue';
-    import IconPlus from '@/components/icon/icon-plus.vue';
-    import IconEdit from '@/components/icon/icon-edit.vue';
-    import IconEye from '@/components/icon/icon-eye.vue';
     export default defineComponent({
         components: {
-            Vue3Datatable,
-            IconCircleCheck,
-            IconTrashLines,
-            IconGallery,
-            IconXCircle,
-            IconPlus,
-            IconEdit,
-            IconEye
+            Swal,
+            DataTable
         },
         setup(){
             useMeta({ title: 'Products List' });
@@ -123,26 +36,25 @@
            cols(){
             let { t } = useI18n()
             let cols = [
-                { field: 'name', title: t('name'), headerClass: 'justify-center' },
-                { field: 'model', title: t('model'), headerClass: 'justify-center'  },
-                { field: 'belongTo', title: 'Belong To', headerClass: 'justify-center'  },
-                { field: 'price', title: 'Price', headerClass: 'justify-center'  },
-                { field: 'available', title: 'Available', sort: false, headerClass: 'justify-center'  },
-                { field: 'popular', title: 'Popular', sort: false, headerClass: 'justify-center' },
-                { field: 'new', title: 'New', sort: false, headerClass: 'justify-center' },
-                { field: 'actions', title: t('action.name') , sort: false, headerClass: 'justify-center' },
+                { field: 'name', title: t('pages.products_section.fields.name'), headerClass: 'justify-center' },
+                { field: 'model', title: t('pages.products_section.fields.model'), headerClass: 'justify-center'  },
+                { field: 'belongTo', title: t('pages.products_section.fields.belong-to'), headerClass: 'justify-center'  },
+                { field: 'price', title: t('pages.products_section.fields.price'), headerClass: 'justify-center'  },
+                { field: 'available', title: t('pages.products_section.fields.available'), sort: false, headerClass: 'justify-center'  },
+                { field: 'popular', title: t('pages.products_section.fields.popular'), sort: false, headerClass: 'justify-center' },
+                { field: 'new', title: t('pages.products_section.fields.new'), sort: false, headerClass: 'justify-center' },
+                { field: 'actions', title: t('page-control.action') , sort: false, headerClass: 'justify-center' },
             ];
             return cols;
            }
         },
         data() {
-            const datatable: any = null;
+            let currentData = new Products()
             const { t, locale } = useI18n()
+            const router = useRouter()
             const DataStore = useConnectionStore()
-            const { products, loading , firstArrow, lastArrow, previousArrow, nextArrow} = storeToRefs(DataStore)
-            // firstArrow, lastArrow, previousArrow, nextArrow
-            const search = '';
-            const items = [
+            const { /*products,*/} = storeToRefs(DataStore)
+            const products = [
                 {
                     id: 1,
                     name: 'هايلايتر سائل',
@@ -174,46 +86,17 @@
                     new: false
                 },
             ];
-            const searchText = '';
-            const columns = ['id', 'name', 'model', 'belongTo', 'price', 'available', 'popular', 'new', 'actions'];
-            const tableOption = {
-                perPage: 10,
-                perPageValues: [10, 20, 30, 50, 100],
-                skin: 'table-hover',
-                columnsClasses: { actions: 'actions !text-center w-1' },
-                pagination: { show: true, nav: 'scroll', chunk: 3 },
-                texts: {
-                    count: t('page-control.table.rows-count', { from:'{0}', to: '{1}', count: '{2}'}) ,
-                    filter: '',
-                    filterPlaceholder: t('page-control.search-placeholder'),
-                    limit: '',
-                },
-                resizableColumns: false,
-                sortable: ['name', 'model', 'belongTo', 'price'],
-                sortIcon: {
-                    base: 'sort-icon-none',
-                    up: 'sort-icon-asc',
-                    down: 'sort-icon-desc',
-                },
-            };
             return {
-                // Arrows
-                firstArrow,
-                lastArrow,
-                previousArrow,
-                nextArrow,
-                /////////////////
+                router,
+                sort: ['name', 'model', 'belongTo', 'price'],
+                datatype: 'Product',
                 // Data Connection
-                products, loading,
+                products,
                 DataStore,
+                currentData,
                 //////////
-                datatable,
                 t,locale,
-                search,
-                items,
-                columns,
-                searchText,
-                tableOption
+                search: '',
             }
         },
         async mounted() { this.startPage() },
@@ -221,11 +104,27 @@
             startPage(){
                 this.DataStore.getData('Products').then(() => {})
             },
+            // Add And Edit the Item data
+            addProduct(){
+                this.router.push({
+                    name: 'products-add',
+                    params: { type: 'Create' }, // type: 'add' || type: 'edit'
+                })
+            },
+            EditProduct(productID: number){
+                this.router.push({
+                    name: 'products-edit',
+                    params: { type: 'Edit', id: productID }, // type: 'add' || type: 'edit'
+                })
+            },
+            ////////////////////////////////////
+            ///// Delete Methods //////////////
+            // Call a notification to confirm delete then delete the item
             onDeleteCallback(idrow: number) {
                 this.DataStore.deleteData('Products', idrow).then(() => {
                     Swal.fire({ 
-                        title: this.t('page-control.deleted'),
-                        text:  this.t('page-control.text-success-deleted'),
+                        title: this.t('page-control.delete.done'),
+                        text:  this.t('page-control.delete.text-success'),
                         confirmButtonText: this.t('page-control.done'),
                         icon: 'success',
                         customClass: 'sweet-alerts' 
@@ -237,9 +136,9 @@
             deleteRow(idrow: number){
                 Swal.fire({
                     icon: 'warning',
-                    title: this.t('page-control.title-delete'),
-                    text: this.t('page-control.text-delete'),
-                    confirmButtonText: this.t('page-control.delete'),
+                    title: this.t('page-control.delete.check'),
+                    text: this.t('page-control.delete.text') + ' ' + this.t('page-control.delete.title'),
+                    confirmButtonText: this.t('page-control.delete.name'),
                     cancelButtonText: this.t('page-control.cancel'),
                     showCancelButton: true,
                     showCloseButton: true,
@@ -253,6 +152,4 @@
             }
         }
     })
-
-
 </script>

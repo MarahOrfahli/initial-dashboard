@@ -1,36 +1,54 @@
 <template>
     <div class="space-y-5">
-        <!--  -------------------------------  Arabic title input field  --------------------------------------  -->
+        <!--  -------------------------------  Name input field  --------------------------------------  -->
         <div :class="isSubmmit ? { 'has-error': errora } : ''">
-            <label for="title-in-arabic">{{ t('pages.main_section.fields.title-arabic') }}</label>
-            <input id="title-in-arabic" type="text" :placeholder="t('pages.main_section.fields.enter-title')" 
+            <label for="name">{{ t('pages.main_section.fields.title-arabic') }}</label>
+            <input id="name" type="text" :placeholder="t('pages.main_section.fields.enter-title')" 
             class="form-input" @keyup="isSubmmit = false,errora = false" v-model="artitle" />
             <template v-if="isSubmmit && errora == true">
             <p class="text-danger mt-1">{{errorArabic}}</p>
             </template>
         </div>
         <!---------------------------------------------------------------------------------------------------------->
-        <!--  -------------------------------  English title input field  --------------------------------------  -->
+        <!--  -------------------------------  Phone Number input field  --------------------------------------  -->
         <div :class="isSubmmit ? { 'has-error': errorE} : ''">
-            <label for="title-in-english">{{ t('pages.main_section.fields.title-english') }}</label>
-            <input id="title-in-english" type="text" :placeholder="t('pages.main_section.fields.enter-title')"
+            <label for="phone_one">{{ t('pages.main_section.fields.title-english') }}</label>
+            <input id="phone_one" type="text" :placeholder="t('pages.main_section.fields.enter-title')"
             class="form-input" @keyup="isSubmmit = false,errorE = false" v-model="entitle" />
             <template v-if="isSubmmit && errorE == true">
             <p class="text-danger mt-1">{{errorEnglish}}</p>
             </template>
         </div>
         <!-------------------------------------------------------------------------------------------->
-        <!--  -------------------------------  Image field  --------------------------------------  -->
-        <div :class="isSubmmit ? { 'has-error': errorI } : ''">
-            <label for="cat-img">{{ t('page-control.upload-category-image') }}</label>
-            <input id="cat-img" type="file" class="" @change="handleFileUpload"
-            accept="image/*" :model-value="fileVal"/>
-            <template v-if="isSubmmit && errorI == true">
-                <p class="text-danger mt-1">{{errorImage}}</p>
+        <!--  -------------------------------  Anoter Phone input field  --------------------------------------  -->
+        <div :class="isSubmmit ? { 'has-error': errorE} : ''">
+            <label for="phone_two">{{ t('pages.main_section.fields.title-english') }}</label>
+            <input id="phone_two" type="text" :placeholder="t('pages.main_section.fields.enter-title')"
+            class="form-input" @keyup="isSubmmit = false,errorE = false" v-model="entitle" />
+            <template v-if="isSubmmit && errorE == true">
+            <p class="text-danger mt-1">{{errorEnglish}}</p>
             </template>
         </div>
-        
-        
+        <!-------------------------------------------------------------------------------------------->
+        <!--  -------------------------------  Email input field  --------------------------------------  -->
+        <div :class="isSubmmit ? { 'has-error': errorE} : ''">
+            <label for="email">{{ t('pages.main_section.fields.title-english') }}</label>
+            <input id="email" type="text" :placeholder="t('pages.main_section.fields.enter-title')"
+            class="form-input" @keyup="isSubmmit = false,errorE = false" v-model="entitle" />
+            <template v-if="isSubmmit && errorE == true">
+            <p class="text-danger mt-1">{{errorEnglish}}</p>
+            </template>
+        </div>
+        <!-------------------------------------------------------------------------------------------->
+        <!--  -------------------------------  Address input field  --------------------------------------  -->
+        <div :class="isSubmmit ? { 'has-error': errorE} : ''">
+            <label for="address">{{ t('pages.main_section.fields.title-english') }}</label>
+            <input id="address" type="text" :placeholder="t('pages.main_section.fields.enter-title')"
+            class="form-input" @keyup="isSubmmit = false,errorE = false" v-model="entitle" />
+            <template v-if="isSubmmit && errorE == true">
+            <p class="text-danger mt-1">{{errorEnglish}}</p>
+            </template>
+        </div>
         <!---------------------------------------------------------------------------->
         <div class="flex justify-end items-center mt-8">
             <button type="button" @click="saveInfo" class="btn btn-primary ltr:ml-4 rtl:mr-4">
@@ -59,7 +77,7 @@ import { ref, defineComponent } from 'vue';
 import { storeToRefs } from 'pinia'
 import { useI18n } from 'vue-i18n'
 import IconRefresh from '@/components/icon/icon-refresh.vue';
-import { useConnectionStore } from '../../../../stores/module/DataModule'
+import { useConnectionStore } from '../../../stores/module/DataModule'
 import { useMeta } from '@/composables/use-meta';
 import { Categories } from '@/model/Classes';
 
@@ -68,18 +86,10 @@ export default defineComponent({
     emits: ['close', 'load-data'],
     components: { IconRefresh },
     setup(){
-            useMeta({ title: 'Adding Main Category' });
+            useMeta({ title: 'Add-Edit Customer' });
     },
-    computed: {
-        fileVal(){
-            if(this.ID != 0) return this.fileImg
-            else return this.file
-        }
-    },
+    computed: { },
     data(props){
-        // Variables
-        let file = ref<File | null>(null);
-        const fileImg = { name: 'image', url: '' }
         let currentData: Categories = props.data
         const ID = props.dataid
         // Data & t-translate
@@ -93,10 +103,8 @@ export default defineComponent({
             imgLocation,
             DataStore,
             loading,
-            fileImg,
             ///////
             ID,
-            file,
             artitle: '',
             entitle: '',
             formData: new FormData(),
@@ -118,15 +126,6 @@ export default defineComponent({
             if(this.ID != 0){
                 this.artitle = this.currentData.name_ar
                 this.entitle = this.currentData.name_en
-                this.fileImg.url = str
-            }
-        },
-        handleFileUpload(event: Event){
-            this.isSubmmit = false
-            this.errorI = false
-            const target = event.target as HTMLInputElement;
-            if (target.files) {
-                this.file = target.files[0]
             }
         },
         formValidate(){
@@ -144,10 +143,6 @@ export default defineComponent({
             }else if(this.entitle.length > 29){
                 this.errorE = true
                 this.errorEnglish = this.t('page-control.error-length')
-            }
-            if(this.fileVal == null){
-                this.errorI = true
-                this.errorImage = this.t('pages.main_section.errors.upload')
             }
             if (this.errora == true || this.errorE == true || this.errorI == true) {
                 this.counter++
@@ -176,7 +171,6 @@ export default defineComponent({
         getData(){ // Use Form Data To Submit The Data Into Database
         if (this.artitle != '' && this.artitle != null) this.formData.append('name_ar', this.artitle)
         if (this.entitle != '' && this.entitle != null) this.formData.append('name_en', this.entitle)
-        if (this.file != null) this.formData.append('image', this.file)
         if(this.ID != 0) this.formData.append('_method', "PUT")
         },
         ondismiss() {

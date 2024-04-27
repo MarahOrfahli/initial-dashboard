@@ -9,8 +9,8 @@
                     alt="500"
                     class="mx-auto -mt-10 w-full max-w-xs object-cover md:-mt-14 md:max-w-xl"
                 />
-                <p class="mt-5 text-base dark:text-white">Internal server error!</p>
-                <router-link to="/" class="btn btn-gradient mx-auto !mt-7 w-max border-0 uppercase shadow-none">Home</router-link>
+                <p class="mt-5 text-base dark:text-white">{{ t('pages.error500') }}</p>
+                <router-link to="/" class="btn btn-gradient mx-auto !mt-7 w-max border-0 uppercase shadow-none">{{ t('pages.home') }}</router-link>
             </div>
         </div>
     </div>
@@ -18,6 +18,8 @@
 <script lang="ts" setup>
     import { useMeta } from '@/composables/use-meta';
     import { useAppStore } from '@/stores/index';
+    import { useI18n } from 'vue-i18n'
+    const { t } = useI18n()
     const store = useAppStore();
     useMeta({ title: 'Error 500' });
 </script>

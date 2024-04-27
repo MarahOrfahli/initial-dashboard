@@ -6,17 +6,17 @@ let apiUrlCode = apiOne
 function APIURL(dname: string, type = 'List', num = 0) {
   switch (dname) {
     /////////////  Store ////////////////
-    // case 'Store': {
-    //   if (type == 'GET' || type == 'Create') {
-    //     apiurl = 'store'
-    //   } else if (type == 'Edit' && num != 0) {
-    //     apiurl = `store/${num}`
-    //   } else if (type == 'Delete' && num != 0) {
-    //     apiurl = `store/${num}`
-    //   }
-    //   return apiurl
-    //   break
-    // }
+    case 'Store': {
+      if (type == 'GET' || type == 'Create') {
+        apiurl = 'warehouses'
+      } else if (type == 'Edit' && num != 0) {
+        apiurl = `warehouses/${num}`
+      } else if (type == 'Delete' && num != 0) {
+        apiurl = `warehouses/${num}`
+      }
+      return apiurl
+      break
+    }
     /////////////  Customer ////////////////
     // case 'Customer': {
     //   if (type == 'GET' || type == 'Create') {
@@ -61,6 +61,8 @@ function APIURL(dname: string, type = 'List', num = 0) {
         apiurl = `subcategories/${num}`
       } else if (type == 'Delete' && num != 0) {
         apiurl = `subcategories/${num}`
+      } else if (type == 'GET-byCategories' && num != 0) {
+        apiurl = `categories/${num}/subcategories`
       }
       return apiurl
       break
@@ -100,7 +102,7 @@ export async function getData(dataName: string, dataId = 0, type = 'GET'){
 export async function updateData(dataName: string, id:number, data: any, type = ''){
     try{
       let response
-      if(dataName == "SubCategories") response = await apiClient.put(APIURL(dataName, 'Edit', id), data)
+      if(dataName == "SubCategories" || dataName == "Store") response = await apiClient.put(APIURL(dataName, 'Edit', id), data)
         else{
           if(type == 'EditWithImg') response = await formDataApiClient.post(APIURL(dataName, 'Edit', id), data)
           else response = await apiClient.post(APIURL(dataName, 'Edit', id), data)
