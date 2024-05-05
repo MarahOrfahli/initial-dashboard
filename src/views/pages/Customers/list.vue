@@ -6,29 +6,20 @@
                 :columns="cols"
                 :dataType="datatype"
                 :sortable="sort"
-                @add="add"
-                @edit="editRow"
+                @add="addCustomer"
+                @edit="EditCustomer"
                 @delete="deleteRow"
             />
         </div>
     </div>
-    <!-- Modal -->
-    <Modal
-        v-if="addeditcustomer"
-        :dataType="datatype"
-        :show="addeditcustomer"
-        :dataID="customerID"
-        :modalTitle="addedit"
-        :data="currentData"
-        @loadData="startPage"
-        @closeModal="close"
-    />
 </template>
 <script lang="ts">
     import { defineComponent } from 'vue';
     import { storeToRefs } from 'pinia'
     import { useI18n } from 'vue-i18n'
     import Swal from 'sweetalert2';
+    // Vue-Router
+    import { useRouter } from 'vue-router'
     import Modal from '@/components/modal.vue';
     import { Customer } from '../../../model/Classes'
     import { useConnectionStore } from '../../../stores/module/DataModule'
@@ -48,10 +39,11 @@
            cols(){
             let { t } = useI18n()
             let cols = [
-                { field: 'name', title: t('pages.sub_section.fields.title-arabic'), headerClass: 'justify-center' },
-                { field: 'phone', title: t('pages.sub_section.fields.title-english'), headerClass: 'justify-center'  },
-                { field: 'address', title: t('pages.sub_section.fields.main-category'), headerClass: 'justify-center'  },
-                { field: 'email', title: t('pages.sub_section.fields.main-category'), headerClass: 'justify-center'  },
+                { field: 'name', title: t('pages.customer.fields.name'), headerClass: 'justify-center' },
+                { field: 'phone', title: t('pages.customer.fields.phone'), headerClass: 'justify-center'  },
+                { field: 'email', title: t('pages.customer.fields.email'), headerClass: 'justify-center'  },
+                { field: 'consumer', title: t('pages.customer.fields.type'), headerClass: 'justify-center'  },
+                { field: 'address', title: t('pages.customer.fields.address'), headerClass: 'justify-center'  },
                 { field: 'actions', title: t('page-control.action') , sort: false, headerClass: 'justify-center' },
             ];
             return cols;
@@ -59,11 +51,13 @@
         },
         data() {
             let currentData = new Customer()
+            const router = useRouter()
             const DataStore = useConnectionStore()
             const notification = notificationStore()
             const { customer} = storeToRefs(DataStore)
             const { t, locale } = useI18n()
             return {
+                router,
                 datatype: 'Customer',
                 sort: ['name', 'address', 'phone','email'],
                 // Data Connection
@@ -71,10 +65,6 @@
                 notification,
                 customer,
                 currentData,
-                // Values
-                addeditcustomer: false,
-                addedit: '',
-                customerID: 0,
                 ////////
                 t,locale
             }
@@ -84,20 +74,18 @@
             startPage(){
                 this.DataStore.getData('Customer').then(() => {})
             },
-            close(){ // Close The Add-Edit Modal
-                this.addeditcustomer = false
+            // Add And Edit the Item data
+            addCustomer(){
+                this.router.push({
+                    name: 'customers-add',
+                    params: { type: 'Create' }, // type: 'add' || type: 'edit'
+                })
             },
-            add(){ // Add New Item
-                this.addeditcustomer = true
-                this.addedit = this.t('pages.sub_section.modals.add-new-category')
-                this.customerID = 0
-            },
-            // Edit the Item data
-            editRow(id: number, data:Customer){
-                this.addeditcustomer = true
-                this.addedit = this.t('pages.sub_section.modals.edit-category')
-                this.customerID = id
-                this.currentData = data
+            EditCustomer(customerID: number){
+                this.router.push({
+                    name: 'customers-edit',
+                    params: { type: 'Edit', id: customerID }, // type: 'add' || type: 'edit'
+                })
             },
             ////////////////////////////////////
             ///// Delete Methods //////////////

@@ -1,55 +1,145 @@
 <template>
-    <div class="space-y-5">
-        <!--  -------------------------------  Name input field  --------------------------------------  -->
-        <div :class="isSubmmit ? { 'has-error': errora } : ''">
-            <label for="name">{{ t('pages.main_section.fields.title-arabic') }}</label>
-            <input id="name" type="text" :placeholder="t('pages.main_section.fields.enter-title')" 
-            class="form-input" @keyup="isSubmmit = false,errora = false" v-model="artitle" />
-            <template v-if="isSubmmit && errora == true">
-            <p class="text-danger mt-1">{{errorArabic}}</p>
-            </template>
+    <div class="mb-4.5 px-5 flex md:items-center md:flex-row flex-col gap-5">
+        <div class="flex items-center gap-2"></div>
+        <div class="ltr:ml-auto rtl:mr-auto">
+            <router-link to="/pages/orders/list" class="btn btn-secondary gap-2">
+                {{ t('pages.customer.fields.back-customer') }}
+            </router-link>
         </div>
+    </div>
+    <div class="panel space-y-5">
+        <div class=" text-xl">
+            <strong v-if="pageType == 'Create'">{{ t('pages.customer.fields.add-customer') }}</strong>
+            <strong v-if="pageType == 'Edit'">{{ t('pages.customer.fields.edit-customer') }}</strong>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <!--  -------------------------------  Name input field  --------------------------------------  -->
+            <div class="p-3">
+                <div :class="isSubmmit ? { 'has-error': errora } : ''">
+                    <label for="name">{{ t('pages.customer.fields.name') }}</label>
+                    <input id="name" type="text" :placeholder="t('pages.customer.modals.enter-name')" 
+                    class="form-input" @keyup="isSubmmit = false,errora = false" v-model="artitle" />
+                    <template v-if="isSubmmit && errora == true">
+                    <p class="text-danger mt-1">{{errorArabic}}</p>
+                    </template>
+                </div>
+            </div>
         <!---------------------------------------------------------------------------------------------------------->
         <!--  -------------------------------  Phone Number input field  --------------------------------------  -->
-        <div :class="isSubmmit ? { 'has-error': errorE} : ''">
-            <label for="phone_one">{{ t('pages.main_section.fields.title-english') }}</label>
-            <input id="phone_one" type="text" :placeholder="t('pages.main_section.fields.enter-title')"
-            class="form-input" @keyup="isSubmmit = false,errorE = false" v-model="entitle" />
-            <template v-if="isSubmmit && errorE == true">
-            <p class="text-danger mt-1">{{errorEnglish}}</p>
-            </template>
+        <div class="p-3">
+            <div :class="isSubmmit ? { 'has-error': errorE} : ''">
+                <label for="phone_one">{{ t('pages.customer.fields.phone') }}</label>
+                <input id="phone_one" type="text" :placeholder="t('pages.customer.modals.enter-phone')"
+                class="form-input" @keyup="isSubmmit = false,errorE = false" v-model="entitle" />
+                <template v-if="isSubmmit && errorE == true">
+                <p class="text-danger mt-1">{{errorEnglish}}</p>
+                </template>
+            </div>
         </div>
         <!-------------------------------------------------------------------------------------------->
         <!--  -------------------------------  Anoter Phone input field  --------------------------------------  -->
-        <div :class="isSubmmit ? { 'has-error': errorE} : ''">
-            <label for="phone_two">{{ t('pages.main_section.fields.title-english') }}</label>
-            <input id="phone_two" type="text" :placeholder="t('pages.main_section.fields.enter-title')"
-            class="form-input" @keyup="isSubmmit = false,errorE = false" v-model="entitle" />
-            <template v-if="isSubmmit && errorE == true">
-            <p class="text-danger mt-1">{{errorEnglish}}</p>
-            </template>
+        <div class="p-3">
+            <div :class="isSubmmit ? { 'has-error': errorE} : ''">
+                <label for="phone_two">{{ t('pages.customer.fields.phone2') }}</label>
+                <input id="phone_two" type="text" :placeholder="t('pages.customer.modals.enter-phone')"
+                class="form-input" @keyup="isSubmmit = false,errorE = false" v-model="entitle" />
+                <template v-if="isSubmmit && errorE == true">
+                <p class="text-danger mt-1">{{errorEnglish}}</p>
+                </template>
+            </div>
         </div>
         <!-------------------------------------------------------------------------------------------->
-        <!--  -------------------------------  Email input field  --------------------------------------  -->
-        <div :class="isSubmmit ? { 'has-error': errorE} : ''">
-            <label for="email">{{ t('pages.main_section.fields.title-english') }}</label>
-            <input id="email" type="text" :placeholder="t('pages.main_section.fields.enter-title')"
-            class="form-input" @keyup="isSubmmit = false,errorE = false" v-model="entitle" />
-            <template v-if="isSubmmit && errorE == true">
-            <p class="text-danger mt-1">{{errorEnglish}}</p>
-            </template>
-        </div>
-        <!-------------------------------------------------------------------------------------------->
-        <!--  -------------------------------  Address input field  --------------------------------------  -->
-        <div :class="isSubmmit ? { 'has-error': errorE} : ''">
-            <label for="address">{{ t('pages.main_section.fields.title-english') }}</label>
-            <input id="address" type="text" :placeholder="t('pages.main_section.fields.enter-title')"
-            class="form-input" @keyup="isSubmmit = false,errorE = false" v-model="entitle" />
-            <template v-if="isSubmmit && errorE == true">
-            <p class="text-danger mt-1">{{errorEnglish}}</p>
-            </template>
+        <!--  -------------------------------  Email input field  ------------------------------------->
+        <div class="p-3">
+            <div :class="isSubmmit ? { 'has-error': errorE} : ''">
+                <label for="email">{{ t('pages.customer.fields.email2') }}</label>
+                <input id="email" type="text" :placeholder="t('pages.customer.modals.enter-email')"
+                class="form-input" @keyup="isSubmmit = false,errorE = false" v-model="entitle" />
+                <template v-if="isSubmmit && errorE == true">
+                <p class="text-danger mt-1">{{errorEnglish}}</p>
+                </template>
+            </div>
         </div>
         <!---------------------------------------------------------------------------->
+        <!--  -------------------------------  Select field  --------------------------------------  -->
+        <div class="p-3">
+            <div :class="isSubmmit ? { 'has-error': city.error} : ''">
+                <label for="store" class="ltr:mr-2 rtl:ml-2 mb-0">{{ t('pages.customer.fields.city') }}</label>
+                <!-- searchable -->
+                <multiselect
+                id="store"
+                v-model="city_name"
+                :options="citiesOption.names"
+                @click="isSubmmit = false,city.error = false"
+                @update:model-value="update_selected('city')"
+                class="custom-multiselect"
+                :searchable="true"
+                :loading="loading_city"
+                :placeholder="t('page-control.select-option')"
+                ></multiselect>
+                <template v-if="isSubmmit && city.error == true">
+                <p class="text-danger mt-1">{{city.message}}</p>
+                </template>
+            </div>
+        </div>
+        <!---------------------------------------------------------------------------->
+        <!--  -------------------------------  Select field  --------------------------------------  -->
+        <div class="p-3">
+            <div :class="isSubmmit ? { 'has-error': area.error} : ''">
+                <label for="store" class="ltr:mr-2 rtl:ml-2 mb-0">{{ t('pages.customer.fields.area') }}</label>
+                <!-- searchable -->
+                <multiselect
+                id="store"
+                v-model="area_name"
+                :options="areasOption.names"
+                @click="isSubmmit = false,area.error = false"
+                @update:model-value="update_selected('area')"
+                class="custom-multiselect"
+                :searchable="true"
+                :loading="loading_area"
+                :placeholder="t('page-control.select-option')"
+                ></multiselect>
+                <template v-if="isSubmmit && area.error == true">
+                <p class="text-danger mt-1">{{area.message}}</p>
+                </template>
+            </div>
+        </div>
+        <!-------------------------------------------------------------------------------------------->
+        <!--  -------------------------------  Address input field  ----------------------------------->
+        <div class="p-3">
+            <div :class="isSubmmit ? { 'has-error': errorE} : ''">
+                <label for="address">{{ t('pages.customer.fields.address') }}</label>
+                <input id="address" type="text" :placeholder="t('pages.customer.modals.enter-address')"
+                class="form-input" @keyup="isSubmmit = false,errorE = false" v-model="entitle" />
+                <template v-if="isSubmmit && errorE == true">
+                <p class="text-danger mt-1">{{errorEnglish}}</p>
+                </template>
+            </div>
+        </div>
+        <!---------------------------------------------------------------------------->
+        <!--  -------------------------------  Select field  --------------------------------------  -->
+        <div class="p-3">
+            <div :class="isSubmmit ? { 'has-error': type.error} : ''">
+                <label for="store" class="ltr:mr-2 rtl:ml-2 mb-0">{{ t('pages.customer.fields.type') }}</label>
+                <!-- searchable -->
+                <multiselect
+                id="store"
+                v-model="city_name"
+                :options="citiesOption.names"
+                @click="isSubmmit = false,type.error = false"
+                @update:model-value="update_selected('type')"
+                class="custom-multiselect"
+                :searchable="true"
+                :loading="loading_city"
+                :placeholder="t('page-control.select-option')"
+                ></multiselect>
+                <template v-if="isSubmmit && type.error == true">
+                <p class="text-danger mt-1">{{type.message}}</p>
+                </template>
+            </div>
+        </div>
+    </div>
+        
         <div class="flex justify-end items-center mt-8">
             <button type="button" @click="saveInfo" class="btn btn-primary ltr:ml-4 rtl:mr-4">
                 <div v-if="ID == 0">
@@ -77,39 +167,57 @@ import { ref, defineComponent } from 'vue';
 import { storeToRefs } from 'pinia'
 import { useI18n } from 'vue-i18n'
 import IconRefresh from '@/components/icon/icon-refresh.vue';
+import { validationStore } from '@/components/validation'
 import { useConnectionStore } from '../../../stores/module/DataModule'
 import { useMeta } from '@/composables/use-meta';
-import { Categories } from '@/model/Classes';
+// Multiselect
+import Multiselect from '@suadelabs/vue3-multiselect';
+import '@suadelabs/vue3-multiselect/dist/vue3-multiselect.css';
 
 export default defineComponent({
-    props: ['dataid','data'],
-    emits: ['close', 'load-data'],
-    components: { IconRefresh },
+    props:['type','id'],
+    components: {
+        Multiselect,
+        IconRefresh
+    },
     setup(){
             useMeta({ title: 'Add-Edit Customer' });
     },
     computed: { },
     data(props){
-        let currentData: Categories = props.data
-        const ID = props.dataid
+       // let currentData: Categories = props.data
+       const ID = props.id
+        const pageType = props.type
         // Data & t-translate
         const DataStore = useConnectionStore()
-        const { loading, imgLocation } = storeToRefs(DataStore)
+        const validationForm = validationStore()
+            const { isSubmmit, city, area, type, name } = storeToRefs(validationForm)
+        const { loading, imgLocation, loading_city, loading_area } = storeToRefs(DataStore)
         const { t } = useI18n()
         return{
             t,
             // Data Connection
-            currentData,
+            pageType,
             imgLocation,
             DataStore,
             loading,
+            loading_city,
+            loading_area,
             ///////
             ID,
+            citiesOption: { ids: [], names: [] },
+            areasOption: { ids: [], names: [] },
             artitle: '',
             entitle: '',
+            city,
+            area,
+            type,
+            name,
             formData: new FormData(),
             ///////// Validation  ////
-            isSubmmit: false,
+            isSubmmit,
+            city_name: '',
+            area_name: '',
             errora: false,
             errorE: false,
             errorI: false,
@@ -122,11 +230,10 @@ export default defineComponent({
     async mounted(){ this.FillData() },
     methods: {
         FillData(){
-            let str = this.imgLocation + this.currentData.image
-            if(this.ID != 0){
-                this.artitle = this.currentData.name_ar
-                this.entitle = this.currentData.name_en
-            }
+            // if(this.ID != 0){
+            //     this.artitle = this.currentData.name_ar
+            //     this.entitle = this.currentData.name_en
+            // }
         },
         formValidate(){
             this.isSubmmit = true
@@ -150,6 +257,9 @@ export default defineComponent({
                 this.counter = 0
             }
             return this.counter
+        },
+        update_selected(type: string){
+
         },
         saveInfo(){
             var isValid = this.formValidate()

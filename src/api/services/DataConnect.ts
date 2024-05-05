@@ -68,29 +68,29 @@ function APIURL(dname: string, type = 'List', num = 0) {
       break
     }
     /////////////  Products ////////////////
-    // case 'Products': {
-    //   if (type == 'GET' || type == 'Create') {
-    //     apiurl = 'products'
-    //   } else if (type == 'Edit' && num != 0) {
-    //     apiurl = `products/${num}`
-    //   } else if (type == 'Delete' && num != 0) {
-    //     apiurl = `products/${num}`
-    //   }
-    //   return apiurl
-    //   break
-    // }
+    case 'Products': {
+      if (type == 'GET' || type == 'Create') {
+        apiurl = 'products'
+      } else if (type == 'Edit' && num != 0) {
+        apiurl = `products/${num}`
+      } else if (type == 'Delete' && num != 0) {
+        apiurl = `products/${num}`
+      }
+      return apiurl
+      break
+    }
     /////////////  Orders  ////////////////
-    // case 'order': {
-    //   if (type == 'GET' || type == 'Create') {
-    //     apiurl = 'order'
-    //   } else if (type == 'Edit' && num != 0) {
-    //     apiurl = `order/${num}`
-    //   } else if (type == 'Delete' && num != 0) {
-    //     apiurl = `order/${num}`
-    //   }
-    //   return apiurl
-    //   break
-    // }
+    case 'Orders': {
+      if (type == 'GET' || type == 'Create') {
+        apiurl = 'orders'
+      } else if (type == 'Edit' && num != 0) {
+        apiurl = `orders/${num}`
+      } else if (type == 'Delete' && num != 0) {
+        apiurl = `orders/${num}`
+      }
+      return apiurl
+      break
+    }
     default: {
       console.log('Empty action received...\nThe dataName is: ' + dname + ' And the type is: ' + type)
       return apiurl
@@ -102,6 +102,7 @@ function APIURL(dname: string, type = 'List', num = 0) {
 ////////////////////////////////////////////////
 // Get Data From Database
 export async function getData(dataName: string, dataId = 0, type = 'GET'){
+ // console.log(APIURL(dataName, type, dataId))
     try{
         const response = await apiClient.get(APIURL(dataName, type, dataId))
         return response.data.data

@@ -1,22 +1,22 @@
 <template>
     <div class="space-y-5">
         <!--  -------------------------------  Store title input field  --------------------------------------  -->
-        <div :class="isSubmmit ? { 'has-error': errorn} : ''">
+        <div :class="isSubmmit ? { 'has-error': name.error} : ''">
             <label for="name">{{ t('pages.store.fields.name') }}</label>
             <input id="name" type="text" :placeholder="t('pages.store.modals.enter-name')" class="form-input" 
-            @keyup="isSubmmit = false,errorn = false" v-model="storen" />
-            <template v-if="isSubmmit && errorn == true">
-            <p class="text-danger mt-1">{{errorName}}</p>
+            @keyup="isSubmmit = false,name.error = false" v-model="storen" />
+            <template v-if="isSubmmit && name.error == true">
+            <p class="text-danger mt-1">{{name.message}}</p>
             </template>
         </div>
         <!-------------------------------------------------------------------------------------------->
         <!--  -------------------------------  Store location input field  --------------------------------------  -->
-        <div :class="isSubmmit ? { 'has-error': errorl } : ''">
-            <label for="title-in-arabic">{{ t('pages.store.fields.location') }}</label>
-            <input id="title-in-arabic" type="text" :placeholder="t('pages.store.modals.enter-location')" class="form-input" 
-            @keyup="isSubmmit = false,errorl = false" v-model="storel" />
-            <template v-if="isSubmmit && errorl == true">
-            <p class="text-danger mt-1">{{errorLocation}}</p>
+        <div :class="isSubmmit ? { 'has-error': storelocation.error } : ''">
+            <label for="location">{{ t('pages.store.fields.location') }}</label>
+            <input id="location" type="text" :placeholder="t('pages.store.modals.enter-location')" class="form-input" 
+            @keyup="isSubmmit = false,storelocation.error = false" v-model="storel" />
+            <template v-if="isSubmmit && storelocation.error == true">
+            <p class="text-danger mt-1">{{storelocation.message}}</p>
             </template>
         </div>
         
@@ -48,6 +48,7 @@
 import { defineComponent } from 'vue';
 import { storeToRefs } from 'pinia'
 import { useI18n } from 'vue-i18n'
+import { validationStore } from '@/components/validation'
 import { useConnectionStore } from '../../../stores/module/DataModule'
 import { useMeta } from '@/composables/use-meta';
 import IconRefresh from '@/components/icon/icon-refresh.vue';
@@ -64,6 +65,8 @@ export default defineComponent({
     },
     data(props){
         const DataStore = useConnectionStore()
+        const validationForm = validationStore()
+        const { isSubmmit, storelocation, name } = storeToRefs(validationForm)
         const { stores, loading } = storeToRefs(DataStore)
         const { t } = useI18n()
         let currentData: Store = props.data
@@ -79,44 +82,26 @@ export default defineComponent({
             ID,
             storen: '',
             storel: '',
-            counter: 0,
             ///////// Validation  ////
-            isSubmmit: false,
-            errorn: false,
-            errorl: false,
-            errorLocation: '',
-            errorName: '',
+            validationForm,
+            name,
+            isSubmmit,
+            storelocation
         }
     },
     async mounted(){ this.FillData() },
     methods: {
         FillData(){
+            this.validationForm.clear()
             if(this.ID != 0){
                 this.storen = this.currentData.name
                 this.storel = this.currentData.location
             }
         },
-        formValidate(){  // Validation Method
-            this.isSubmmit = true
-            if(this.storen == ''){
-                this.errorn = true
-                this.errorName = 'Please fill the Name'
-            }
-            if(this.storel == ''){
-                this.errorl = true
-                this.errorLocation = 'Please fill the Location'
-            }
-            if (this.errorn == true || this.errorl == true) {
-                this.counter++
-            } else {
-                this.counter = 0
-            }
-            return this.counter
-        },
         saveInfo(){
             // Prepare Data To Create New Store
             let DataConnect = { id: this.ID, name: this.storen, location: this.storel  }
-            var isValid = this.formValidate()
+            var isValid = this.validationForm.checkStoreInfo(this.storen, this.storel)
             if (isValid == 0) {
                 if (this.ID === 0) { // Add New Store
                     this.DataStore.createData('Store', DataConnect).then(() => {

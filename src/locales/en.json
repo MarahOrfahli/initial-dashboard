@@ -30,6 +30,7 @@
         "add-more":"Add More",
         "yes":"Yes",
         "no":"No",
+        "export":"Export",
         "save-changes":"Save Changes",
         "edit": "Edit",
         "done":"Done",
@@ -53,7 +54,9 @@
         "upload-category-image":"Upload an image category",
         "upload-brand-image":"Upload an image logo",
         "no-item":"No Items Available",
+        "select-option":"Select An Option",
         "action":"Manage",
+        "total":"Total",
         "img":"Image"
     },
     "*********************":"*************************",
@@ -76,11 +79,13 @@
         "*******":"******",
         "products_section":{
             "fields": {
+                "product":"Product",
                 "color":"Color",
                 "color-code":"Code",
                 "add-product":"Add Product Information",
                 "edit-product":"Edit Product Information",
                 "add-product-store":"Add the product to stores",
+                "img-color-code":"Images, Color And Colors Codes",
                 "add-img-color-code":"Add Images, Color And Colors Codes",
                 "Manage-img-color-code":"Manage Images, Color And Colors Codes",
                 "price":"Price",
@@ -100,7 +105,6 @@
                 "main-category":"Main Category",
                 "sub-category":"Subategory",
                 "add-available":"Adding To Available Products List ? ",
-                "select-option":"Select An Option",
                 "main-image":"Main Image",
                 "add-image":"Add More Images",
                 "tags":"Tags",
@@ -136,10 +140,28 @@
         "***********":"**",
         "customer":{
             "fields": {
-                
+                "name":"Client Name",
+                "email":"Email",
+                "email2":"Email  (Optional)",
+                "phone":"Phone Number",
+                "phone2":"Phone Number (Optional)",
+                "type":"Client Type",
+                "consumer":"Consumer",
+                "wholesaler":"Wholesaler",
+                "city-name":"City",
+                "city":"Choose City",
+                "area":"Choose Area",
+                "address":"Address",
+                "***********":"**",
+                "back-customer":"Go Back To Customers List",
+                "add-customer":"Add Customer Information",
+                "edit-customer":"Edit Customer Information"
             },
             "modals":{
-                
+                "enter-name":"Enter Client Name...",
+                "enter-phone":"Enter Phone Number...",
+                "enter-email":"Enter Email...",
+                "enter-address":"Enter Client Address..."
             },
             "errors":{
                 
@@ -147,11 +169,45 @@
         },
         "**********":"***",
         "orders":{
+            "details":{
+                "customerInfo":"Customer Information",
+                "contactInfo":"Contact Information",
+                "shippingInfo":"Shipping Information",
+                "mod":"Manage Order Details",
+                "add-product":"Add Product",
+                "add-discount":"Add Discount",
+                "remove-discount":"Remove Discount"
+            },
+            "status":{
+                "pending":"Pending",
+                "preparing":"Preparing",
+                "rtus":"Ready To Upload Shipping",
+                "us":"Upload Shipping",
+                "shipping":"Shipping",
+                "replacement":"Replacement",
+                "delivered":"Delivered",
+                "returned":"Returned",
+                "canceled":"Canceled"
+            },
             "fields": {
-                
+                "order":"Order",
+                "order-date":"Order Date",
+                "shipping-company":"Shipping Company",
+                "shipping-date":"Shipping Date",
+                "shipping-price":"Shipping Price",
+                "delivery-date":"Delivery Date",
+                "created-by":"Created By",
+                "status":"Order Status",
+                "note":"Note",
+                "discount":"Add Discount To This Order",
+                "back-order":"Go Back To Orders List",
+                "change-order-status":"Change Order Status"
             },
             "modals":{
-                
+                "add-new-order":"Adding New Order",
+                "edit-order":"Edit Order",
+                "order-details":"Order Details",
+                "enter-note":"Enter A Note"
             },
             "errors":{
                 
@@ -181,7 +237,6 @@
                 "title-english":"Title In English",
                 "main-category":"Main Category",
                 "enter-title":"Enter Title...",
-                "select-option":"Select An Option",
                 "select":"Choose one of these categories"
             },
             "modals":{
@@ -213,14 +268,24 @@
         "store":{
             "fields": {
                 "name":"Store Name",
-                "location":"Location"
+                "details":"Store Details",
+                "location":"Location",
+                "quantities":"Quantities",
+                "quantity":"Quantity"
             },
             "modals":{
                 "add-new-store":"Adding New Store",
                 "edit-store":"Edit Store Information",
-                "**********":"**********",
                 "enter-name":"Enter Store Name...",
-                "enter-location":"Enter Location Name..."
+                "enter-location":"Enter Location Name...",
+                "**********":"**********",
+                "alert-values":"Alert Notifications Values",
+                "specific-value":"Choose a specific value for each store separately",
+                "value-for-all":"Choose a value for all selected stores",
+                "***********":"*********",
+                "set":"Set the quantity for all stores",
+                "choose-alert":"Choose a value to be alerted if the quantity reaches it",
+                "back-store":"Go Back To Stores List"
             },
             "errors":{
                 "name-empty":"The store name must not be empty",

@@ -11,119 +11,137 @@
         </div>
     </div>
     <vue3-datatable
-                    :rows="rows"
-                    :columns="columns"
-                    :totalRows="rows?.length"
-                    :hasCheckbox="false"
-                    :sortable="true"
-                    :search="search"
-                    :loading="loading"
-                    :noDataContent="t('page-control.table.no-data-content')"
-                    :showNumbersCount="tableOption.pagination.chunk"
-                    :pageSize="tableOption.perPage"
-                    :paginationInfo="t('page-control.table.rows-count', { from:'{0}', to:'{1}', count:'{2}'})"
-                    :pageSizeOptions="tableOption.perPageValues"
-                    skin="whitespace-nowrap bh-table-hover"
-                    :firstArrow= "firstArrow"
-                    :lastArrow="lastArrow"
-                    :previousArrow="previousArrow"
-                    :nextArrow="nextArrow"
-                >
-                <!-- Store -->
-                <template v-if="dataType == 'Store' || dataType == 'Brand' || dataType == 'Product'" #name="data">
-                        <div class="text-center" v-if="data.value.id > 0">{{ data.value.name }}</div>
-                </template>
-                <template v-if="dataType == 'Store'" #location="data">
-                    <div class="text-center" v-if="data.value.id > 0">{{ data.value.location }}</div>
-                </template>
-                <template v-if="dataType == 'Brand'" #logo="data">
-                    <div v-if="data.value.id > 0" class="flex items-center justify-center font-semibold">
-                        <div class="p-0.5 bg-white-dark/30 rounded-md w-max ltr:mr-2 rtl:ml-2">
-                            <img class="h-20 w-20 rounded-md object-cover" :src="`${imgLocation}${data.value.logo}`" />
-                        </div>
-                    </div>
-                </template>
-                <template v-if="dataType == 'M-Category' || dataType == 'S-Category'" #name_ar="data">
-                    <div class="text-center">{{ data.value.name_ar }}</div>
-                </template>
-                <template v-if="dataType == 'M-Category' || dataType == 'S-Category'" #name_en="data">
-                    <div class="text-center">{{ data.value.name_en }}</div>
-                </template>
-                <template v-if="dataType == 'S-Category'" #category_id="data">
+        :rows="rows"
+        :columns="columns"
+        :totalRows="rows?.length"
+        :hasCheckbox="false"
+        :sortable="true"
+        :search="search"
+        :loading="loading"
+        :noDataContent="t('page-control.table.no-data-content')"
+        :showNumbersCount="tableOption.pagination.chunk"
+        :pageSize="tableOption.perPage"
+        :paginationInfo="t('page-control.table.rows-count', { from:'{0}', to:'{1}', count:'{2}'})"
+        :pageSizeOptions="tableOption.perPageValues"
+        skin="whitespace-nowrap bh-table-hover"
+        :firstArrow= "firstArrow"
+        :lastArrow="lastArrow"
+        :previousArrow="previousArrow"
+        :nextArrow="nextArrow">
+        <!-- Store -->
+        <template v-if="dataType == 'Store' || dataType == 'Brand' || dataType == 'Product'" #name="data">
+            <div class="text-center" v-if="data.value.id > 0">{{ data.value.name }}</div>
+        </template>
+        <template v-if="dataType == 'Store'" #location="data">
+            <div class="text-center" v-if="data.value.id > 0">{{ data.value.location }}</div>
+        </template>
+        <template v-if="dataType == 'Order'" #ordernum="data">
+            <div class="text-center cursor-pointer text-purple-600" @click="showOrderDetails(data.value.id)"
+            v-if="data.value.id > 0">{{ data.value.ordernum }}</div>
+        </template>
+        <template v-if="dataType == 'Order'" #date="data">
+            <div class="text-center" v-if="data.value.id > 0">{{ DateFormatDetails(data.value.date) }}</div>
+        </template>
+        <template v-if="dataType == 'Order'" #shippingcompany="data">
+            <div class="text-center" v-if="data.value.id > 0">{{ data.value.shippingcompany }}</div>
+        </template>
+        <template v-if="dataType == 'Order'" #status="data">
+            <div class="text-center" v-if="data.value.id > 0">
+                <span class="badge" :class="`bg-${statusColor(data.value.status)}`">{{ statusTitle(data.value.status) }}</span>
+            </div>
+        </template>
+        <template v-if="dataType == 'Brand'" #logo="data">
+            <div v-if="data.value.id > 0" class="flex items-center justify-center font-semibold">
+                <div class="p-0.5 bg-white-dark/30 rounded-md w-max ltr:mr-2 rtl:ml-2">
+                    <img class="h-20 w-20 rounded-md object-cover" :src="`${imgLocation}${data.value.logo}`" />
+                </div>
+            </div>
+        </template>
+        <template v-if="dataType == 'M-Category' || dataType == 'S-Category'" #name_ar="data">
+            <div class="text-center">{{ data.value.name_ar }}</div>
+        </template>
+        <template v-if="dataType == 'M-Category' || dataType == 'S-Category'" #name_en="data">
+            <div class="text-center">{{ data.value.name_en }}</div>
+        </template>
+        <template v-if="dataType == 'S-Category'" #category_id="data">
                     <div class="text-center">{{ data.value.category_name_ar }}-{{ data.value.category_name_en }}</div>
-                </template>
-                <template v-if="dataType == 'M-Category'" #image="data">
-                    <div v-if="data.value.id > 0" class="flex items-center justify-center font-semibold">
-                        <div class="p-0.5 bg-white-dark/30 rounded-md w-max ltr:mr-2 rtl:ml-2">
-                            <img class="h-20 w-20 rounded-md object-cover" :src="`${imgLocation}${data.value.image}`" />
-                        </div>
-                    </div>
-                </template>
-                <template v-if="dataType == 'Customer'" #name="data">
-                    <div class="text-center">{{ data.value.name }}</div>
-                </template>
-                <template v-if="dataType == 'Customer'" #phone="data">
-                    <div class="text-center">{{ data.value.phone_number }}</div>
-                </template>
-                <template v-if="dataType == 'Customer'" #address="data">
-                    <div class="text-center">{{ data.value.city }}</div>
-                </template>
-                <template v-if="dataType == 'Customer'" #email="data">
-                    <div class="text-center">{{ data.value.email }}</div>
-                </template>
-                <template v-if="dataType == 'Product'" #model="data">
-                        <div class="text-center">{{ data.value.model}}</div>
-                </template>
-                <template v-if="dataType == 'Product'" #belongTo="data">
-                    <div class="text-center">{{ data.value.belongTo}}</div>
-                </template>
-                <template v-if="dataType == 'Product'" #price="data">
-                    <div class="text-center">{{ data.value.price}}</div>
-                </template>
-                <template v-if="dataType == 'Product'" #available="data">
-                    <div class="items-center justify-center">
-                        <div class="text-success text-center" v-if="data.value.available == true"><icon-circle-check class="w-6 h-6" /></div>
-                        <div class="text-danger text-center" v-else><icon-x-circle class="w-6 h-6" /></div>
-                    </div>
-                </template>
-                <template v-if="dataType == 'Product'" #popular="data">
-                    <div class="items-center justify-center">
-                        <div class="text-success" v-if="data.value.popular == true"><icon-circle-check class="w-6 h-6" /></div>
-                        <div class="text-danger" v-else><icon-x-circle class="w-6 h-6" /></div>
-                    </div>
-                </template>
-                <template v-if="dataType == 'Product'" #new="data">
-                    <div class="items-center justify-center">
-                        <div class="text-success" v-if="data.value.new == true"><icon-circle-check class="w-6 h-6" /></div>
-                        <div class="text-danger" v-else><icon-x-circle class="w-6 h-6" /></div>
-                    </div>
-                </template>
-                <template #actions="data">
-                    <div v-if="data.value.id > 0" class="flex gap-4 items-center justify-center">
-                        <div v-if="dataType == 'Product'" class="btn btn-white w-4 cursor-pointer hover:text-secondary">
-                            <router-link to="/apps/categories/main-categories/edit" class="hover:text-secondary">
-                                <icon-gallery/>
-                            </router-link>
-                        </div>
-                        <div class="btn btn-white w-4 cursor-pointer hover:text-success" @click="editRow(data.value.id, data.value)">
-                            <button type="button">
-                                <icon-edit />
-                            </button>
-                        </div>
-                        <div v-if="dataType == 'Store'" class="btn btn-white w-4 cursor-pointer hover:text-info" @click="previewRow(data.value.id)">
-                            <button type="button">
-                                <IconEye/>
-                            </button>
-                        </div>
-                        <div class="btn btn-white w-4 cursor-pointer hover:text-danger" @click="deleteRow(data.value.id)">
-                            <button type="button">
-                                <icon-trash-lines />
-                            </button>
-                        </div>
-                            
-                        </div>
-                    </template>
-                </vue3-datatable>
+        </template>
+        <template v-if="dataType == 'M-Category'" #image="data">
+            <div v-if="data.value.id > 0" class="flex items-center justify-center font-semibold">
+                <div class="p-0.5 bg-white-dark/30 rounded-md w-max ltr:mr-2 rtl:ml-2">
+                    <img class="h-20 w-20 rounded-md object-cover" :src="`${imgLocation}${data.value.image}`" />
+                </div>
+            </div>
+        </template>
+        <template v-if="dataType == 'Customer'" #name="data">
+            <div class="text-center">{{ data.value.name }}</div>
+        </template>
+        <template v-if="dataType == 'Customer'" #phone="data">
+            <div class="text-center">{{ data.value.phone_number }}</div>
+        </template>
+        <template v-if="dataType == 'Customer'" #address="data">
+            <div class="text-center">{{ data.value.city }}</div>
+        </template>
+        <template v-if="dataType == 'Customer'" #email="data">
+            <div class="text-center">{{ data.value.email }}</div>
+        </template>
+        <template v-if="dataType == 'Product'" #model="data">
+            <div class="text-center">{{ data.value.model}}</div>
+        </template>
+        <template v-if="dataType == 'Product'" #belongTo="data">
+            <div class="text-center">{{ data.value.belongTo}}</div>
+        </template>
+        <template v-if="dataType == 'Product'" #price="data">
+            <div class="text-center">{{ data.value.price}}</div>
+        </template>
+        <template v-if="dataType == 'Product'" #available="data">
+            <div v-if="data.value.id > 0" class="items-center justify-center">
+                <div class="text-success text-center" v-if="data.value.available == true"><icon-circle-check class="w-6 h-6" /></div>
+                <div class="text-danger text-center" v-else><icon-x-circle class="w-6 h-6" /></div>
+            </div>
+        </template>
+        <template v-if="dataType == 'Product'" #popular="data">
+            <div v-if="data.value.id > 0" class="items-center justify-center">
+                <div class="text-success" v-if="data.value.popular == true"><icon-circle-check class="w-6 h-6" /></div>
+                <div class="text-danger" v-else><icon-x-circle class="w-6 h-6" /></div>
+            </div>
+        </template>
+        <template v-if="dataType == 'Product'" #new="data">
+            <div v-if="data.value.id > 0" class="items-center justify-center">
+                <div class="text-success" v-if="data.value.new == true"><icon-circle-check class="w-6 h-6" /></div>
+                <div class="text-danger" v-else><icon-x-circle class="w-6 h-6" /></div>
+            </div>
+        </template>
+        <template #actions="data">
+            <div v-if="data.value.id > 0" class="flex gap-4 items-center justify-center">
+                <div v-if="dataType == 'Product'" class="btn btn-white w-4 cursor-pointer hover:text-secondary" @click="ManageProductImages(data.value.id)">
+                    <button type="button">
+                        <icon-gallery/>
+                    </button>
+                </div>
+                <div class="btn btn-white w-4 cursor-pointer hover:text-success" @click="editRow(data.value.id, data.value)">
+                    <button type="button">
+                        <icon-edit />
+                    </button>
+                </div>
+                <div v-if="dataType == 'Store'" class="btn btn-white w-4 cursor-pointer hover:text-info" @click="previewRow(data.value.id)">
+                    <button type="button">
+                        <IconEye/>
+                    </button>
+                </div>
+                <div v-if="dataType == 'Order'" class="btn btn-white w-4 cursor-pointer hover:text-orange-600" @click="showTimeLine(data.value.id)">
+                    <button>
+                        <icon-clock  />
+                    </button>
+                </div>
+                <div class="btn btn-white w-4 cursor-pointer hover:text-danger" @click="deleteRow(data.value.id)">
+                    <button type="button">
+                        <icon-trash-lines />
+                    </button>
+                </div>      
+            </div>
+        </template>
+    </vue3-datatable>
 </template>
 <script lang="ts">
     // Import Vue & Pinia
@@ -133,6 +151,7 @@
     import Vue3Datatable from '@bhplugin/vue3-datatable';
     import { useConnectionStore } from '../stores/module/DataModule'
     // Import Icons
+    import IconClock from '@/components/icon/icon-clock.vue';
     import IconTrashLines from '@/components/icon/icon-trash-lines.vue';
     import IconCircleCheck from '@/components/icon/icon-circle-check.vue';
     import IconGallery from '@/components/icon/icon-gallery.vue';
@@ -144,11 +163,12 @@
 
     export default defineComponent({
         props:['dataType','rows','columns','sortable'],
-        emits: ['edit', 'preview','delete','add'],
+        emits: ['edit', 'preview','delete','add','showTimeLine','showOrderDetails','ManageProductImages'],
         components: {
             Vue3Datatable,
             IconTrashLines,
             IconCircleCheck,
+            IconClock,
             IconGallery,
             IconXCircle,
             IconX,
@@ -156,7 +176,35 @@
             IconEdit,
             IconEye
         },
-        computed:{},
+        computed:{
+            pendingTitle(){
+                return this.t('pages.orders.status.pending')
+            },
+            preparingTitle(){
+                return this.t('pages.orders.status.preparing')
+            },
+            rtusTitle(){
+                return this.t('pages.orders.status.rtus')
+            },
+            usTitle(){
+                return this.t('pages.orders.status.us')
+            },
+            shippingTitle(){
+                return this.t('pages.orders.status.shipping')
+            },
+            replacementTitle(){
+                return this.t('pages.orders.status.replacement')
+            },
+            deliveredTitle(){
+                return this.t('pages.orders.status.delivered')
+            },
+            returnedTitle(){
+                return this.t('pages.orders.status.returned')
+            },
+            canceledTitle(){
+                return this.t('pages.orders.status.canceled')
+            }
+        },
         data(props){
             const dataType = props.dataType
             const rows = props.rows
@@ -164,11 +212,12 @@
             const sortable = props.sortable
             //////////////////
             const DataStore = useConnectionStore()
-            const { loading, imgLocation, firstArrow, lastArrow, previousArrow, nextArrow } = storeToRefs(DataStore)
+            const { loading, imgLocation, firstArrow, lastArrow, previousArrow, nextArrow } 
+            = storeToRefs(DataStore)
             const { t, locale } = useI18n()
             const tableOption = {
-                perPage: 10,
-                perPageValues: [10, 20, 30, 50, 100],
+                perPage: 15,
+                perPageValues: [15], //  20, 30, 50, 100
                 skin: 'table-hover',
                 columnsClasses: { actions: 'actions !text-center w-1' },
                 pagination: { show: true, nav: 'scroll', chunk: 3 },
@@ -186,7 +235,19 @@
                     down: 'sort-icon-desc'
                 }
             };
+            const status_colors = [
+                { status: 'pending', color: 'primary' },
+                { status: 'preparing', color: 'secondary' },
+                { status: 'ready_to_upload_shipping', color: 'warning' },
+                { status: 'upload_shipping', color: 'gray-700' },
+                { status: 'shipping', color: 'orange' },
+                { status: 'replacement', color: 'info' },
+                { status: 'delivered', color: 'success' },
+                { status: 'returned', color: 'red-400' },
+                { status: 'canceled', color: 'danger' }
+            ]
             return{
+                status_colors,
                 // Arrows
                 firstArrow,
                 lastArrow,
@@ -208,6 +269,36 @@
         },
         async mounted() {},
         methods:{
+            statusColor(status: string){
+                for (let index = 0; index < this.status_colors.length; index++) {
+                    if(this.status_colors[index].status == status){
+                        return this.status_colors[index].color
+                    }
+                }
+            },
+            statusTitle(status: string){
+                if(status == 'pending') return this.pendingTitle
+                else if(status == 'preparing') return this.preparingTitle
+                else if(status == 'rtus') return this.rtusTitle
+                else if(status == 'us') return this.usTitle
+                else if(status == 'shipping') return this.shippingTitle
+                else if(status == 'replacement') return this.replacementTitle
+                else if(status == 'delivered') return this.deliveredTitle
+                else if(status == 'returned') return this.returnedTitle
+                else if(status == 'canceled') return this.canceledTitle
+            },
+            DateFormatDetails(date: any) {
+                let time
+                let hours
+                const dateTime = new Date(`${date}`)
+                var month = dateTime.toLocaleString('default', { month: 'short' })
+                if (dateTime.getHours() < 12) time = 'AM'
+                else time = 'PM'
+                if (dateTime.getHours() > 12) hours = dateTime.getHours() - 12
+                else hours = dateTime.getHours()
+                return `${dateTime.getFullYear()}, ${month} ${dateTime.getDate()} | ${hours} : ${dateTime.getMinutes()}  ${time}`
+            },
+            ///////////////////////////
             addRow(){
                 this.$emit('add')
             },
@@ -219,6 +310,15 @@
             },
             deleteRow(id: number){
                 this.$emit('delete', id)
+            },
+            showTimeLine(id: number){
+                this.$emit('showTimeLine', id)
+            },
+            showOrderDetails(id: number){
+                this.$emit('showOrderDetails', id)
+            },
+            ManageProductImages(id: number){
+                this.$emit('ManageProductImages', id)
             }
         }
     })

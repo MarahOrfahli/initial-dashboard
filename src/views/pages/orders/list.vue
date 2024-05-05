@@ -6,22 +6,14 @@
                 :columns="cols"
                 :dataType="datatype"
                 :sortable="sort"
-                @add="add"
-                @edit="editRow"
+                @add="addOrder"
+                @edit="EditOrder"
                 @delete="deleteRow"
+                @showOrderDetails="showOrderDetails"
+                @showTimeLine="showTimeLine"
             />
         </div>
     </div>
-    <Modal
-        v-if="addeditorder"
-        :dataType="datatype"
-        :show="addeditorder"
-        :dataID="orderID"
-        :modalTitle="addedit"
-        :data="currentData"
-        @loadData="startPage"
-        @closeModal="close"
-    />
 </template>
 <script lang="ts">
     // Import Vue & Pinia
@@ -29,19 +21,19 @@
     import { storeToRefs } from 'pinia'
     import { useMeta } from '@/composables/use-meta';
     import { useI18n } from 'vue-i18n'
-    // Import Class Brands && EditBrand Page && useConnectionStore
-    import { Brands } from '../../../model/Classes'
+    // Vue-Router
+    import { useRouter } from 'vue-router'
+    // Import Class Orders && EditBrand Page && useConnectionStore
+    import {  Orders } from '../../../model/Classes'
     import { useConnectionStore } from '../../../stores/module/DataModule'
     import { notificationStore } from '@/components/notifications'
     // Import Datatable & Modals
     import Swal from 'sweetalert2';
-    import Modal from '@/components/modal.vue';
     import DataTable from '@/components/datatable.vue';
     export default defineComponent({
         components: {
             // Datatable & Modals
             DataTable,
-            Modal,
             Swal
         },
         setup(){
@@ -51,20 +43,24 @@
            cols(){
             let { t } = useI18n()
             let cols = [
-                { field: 'name', title: t('pages.brand.fields.brand-name'), headerClass: 'justify-center' },
-                { field: 'logo', title: t('page-control.img'), search: false, sort: false, headerClass: 'justify-center'  },
+                { field: 'ordernum', title: t('pages.orders.fields.order'),search: false , sort: false, headerClass: 'justify-center' },
+                { field: 'date', title: t('pages.orders.fields.order-date'), sort: false, headerClass: 'justify-center' },
+                { field: 'shippingcompany', title: t('pages.orders.fields.shipping-company'), headerClass: 'justify-center' },
+                { field: 'status', title: t('pages.orders.fields.status'), headerClass: 'justify-center' },
                 { field: 'actions', title: t('page-control.action') , search: false , sort: false, headerClass: 'justify-center' },
             ];
             return cols;
            },
         },
         data() {
-            let currentData = new Brands()
+            let currentData = new Orders()
+            const router = useRouter()
             const DataStore = useConnectionStore()
             const notification = notificationStore()
             const { orders } = storeToRefs(DataStore)
             const { t, locale } = useI18n()
             return {
+                router,
                 sort: ['name'],
                 datatype: 'Order',
                 // Data Connection
@@ -73,9 +69,6 @@
                 DataStore,
                 orders,
                 // Values
-                addedit: '',
-                addeditorder: false,
-                orderID: 0,
                 ////////
                 t,locale,
             }
@@ -87,22 +80,30 @@
             startPage(){
                 this.DataStore.getData('Orders').then(() => { })
             },
-            // Close The Add-Edit Modal
-            close(){
-                this.addeditorder = false
+            // Add And Edit the Item data
+            addOrder(){
+                this.router.push({
+                    name: 'orders-add',
+                    params: { type: 'Create' }, // type: 'add' || type: 'edit'
+                })
             },
-            // Add New Item
-            add(){
-                this.addedit = this.t('pages.brand.modals.add-new-brand')
-                this.addeditorder = true
-                this.orderID = 0
+            EditOrder(orderID: number){
+                this.router.push({
+                    name: 'orders-edit',
+                    params: { type: 'Edit', id: orderID }, // type: 'add' || type: 'edit'
+                })
             },
-            // Edit the Item data
-            editRow(id: number,data: Brands){
-                this.addedit = this.t('pages.brand.modals.edit-brand')
-                this.orderID = id
-                this.currentData = data
-                this.addeditorder = true
+            showOrderDetails(id: number){
+                this.router.push({
+                    name: 'orders-details',
+                    params: { id: id },
+                })
+            },
+            showTimeLine(id: number){
+                this.router.push({
+                    name: 'orders-timeline',
+                    params: { id: id },
+                })
             },
             ////////////////////////////////////
             ///// Delete Methods //////////////
@@ -112,6 +113,4 @@
             }
         }
     })
-
-
 </script>

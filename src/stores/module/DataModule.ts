@@ -47,18 +47,24 @@ import {
         customer: [Customer],
         categories: [Categories],
         subcategories: [SubCategories],
+        /////////////
+        storeDetails: [],
         /// Loading.........
         loading: false,
         loading_brand: false,
         loading_create: false,
         loading_store: false,
+        loading_city: false,
+        loading_client: false,
+        loading_status: false,
+        loading_area: false,
         loading_subcategory: false,
       }
     },
     actions: {
       // Main Actions /////////////////////////////////////////////////
       // Get The Data
-        async getData(dataName: string, dataId = 0, type = '') {
+        async getData(dataName: string, dataId = 0, type = 'GET') {
             try {
                 this.loading = true
                 if (dataName == 'Categories') {

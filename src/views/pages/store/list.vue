@@ -31,6 +31,8 @@
     import { storeToRefs } from 'pinia'
     import { useMeta } from '@/composables/use-meta';
     import { useI18n } from 'vue-i18n'
+    // Vue-Router
+    import { useRouter } from 'vue-router'
     // Import Class Store && AddEditStore Page && useConnectionStore
     import { Store } from '../../../model/Classes'
     import { useConnectionStore } from '../../../stores/module/DataModule'
@@ -61,11 +63,13 @@
         },
         data() {
             let currentData = new Store()
+            const router = useRouter()
             const DataStore = useConnectionStore()
             const notification = notificationStore()
             const { stores } = storeToRefs(DataStore) // store,
             const { t, locale } = useI18n()
             return {
+                router,
                 // Data Connection
                 currentData,
                 DataStore,
@@ -102,8 +106,11 @@
                 this.storeID = id
                 this.currentData = data
             },
-            previewRow(id: number){
-
+            previewRow(idrow: number){
+                this.router.push({
+                    name: 'store-details',
+                    params: { id: idrow },
+                })
             },
             ////////////////////////////////////
             ///// Delete Methods //////////////

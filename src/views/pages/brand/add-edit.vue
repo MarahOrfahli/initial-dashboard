@@ -1,25 +1,30 @@
 <template>
     <div class="space-y-5">
         <!--  -------------------------------  Brand name input field  --------------------------------------  -->
-        <div :class="isSubmmit ? { 'has-error': errorn } : ''">
+        <div :class="isSubmmit ? { 'has-error': name.error } : ''">
             <label for="name">{{ t('pages.brand.fields.brand-name') }}</label>
             <input id="name" type="text" :placeholder="t('pages.brand.fields.enter-title')" class="form-input" 
-            @keyup="isSubmmit = false,errorn = false" v-model="name" />
-            <template v-if="isSubmmit && errorn == true">
-            <p class="text-danger mt-1">{{errorName}}</p>
+            @keyup="isSubmmit = false,name.error = false" v-model="storename" />
+            <template v-if="isSubmmit && name.error == true">
+            <p class="text-danger mt-1">{{name.message}}</p>
             </template>
         </div>
         <!-------------------------------------------------------------------------------------------->
         <!--  -------------------------------  Image field  --------------------------------------  -->
-        <div :class="isSubmmit ? { 'has-error': errorI, 'has-success': !errorI } : ''">
-            <label for="cat-img">{{ t('page-control.upload-brand-image') }}</label>
-            <input id="cat-img" type="file" class="" @change="handleFileUpload"
-            accept="image/*" @click="" :model-value="fileVal"/>
-            <template v-if="isSubmmit && errorI == true">
-            <p class="text-danger mt-1">{{errorImage}}</p>
-            </template>
+        <div :class="isSubmmit ? { 'has-error': file.error } : ''">
+                <label for="cat-img" class="ltr:mr-2 rtl:ml-2 mb-0">{{ t('page-control.upload-brand-image') }}</label>
+                    <input id="cat-img" type="file" @click="isSubmmit = false,file.error = false"
+                    :model-value="fileVal" @change="handleFileUpload" accept="image/*"
+                    class="form-input file:py-2 file:px-4 file:border-0 file:font-semibold p-0 file:bg-primary/90 ltr:file:mr-5 rtl:file:ml-5 file:text-white file:hover:bg-primary" required />
+                    <template v-if="isSubmmit && file.error == true">
+                        <p class="text-danger mt-1">{{file.message}}</p>
+                    </template>
         </div>
-        
+        <div class="mb-10">
+            <div class="mt-8 border-slate-500 rounded-md drop-shadow-lg" v-if="imageUrl != ''">
+                <img :src="imageUrl" class="rounded-md w-40">
+            </div>
+        </div>
         <!---------------------------------------------------------------------------->
         <div class="flex justify-end items-center mt-8">
             <button type="button" @click="saveInfo" class="btn btn-primary ltr:ml-4 rtl:mr-4">
@@ -49,6 +54,7 @@
 import { ref, defineComponent } from 'vue';
 import { storeToRefs } from 'pinia'
 import { useI18n } from 'vue-i18n'
+import { validationStore } from '@/components/validation'
 import { useConnectionStore } from '../../../stores/module/DataModule'
 import IconRefresh from '@/components/icon/icon-refresh.vue';
 import { Brands } from '@/model/Classes';
@@ -65,17 +71,18 @@ export default defineComponent({
     },
     computed: {
         fileVal(){
-            if(this.ID != 0) return this.fileImg
-            else return this.file
+            if(this.ID != 0) return this.imageUrl
+            else return this.image_file
         }
     },
     data(props){
-       const file = ref<File | null>(null);
+       const image_file = ref<File | null>(null);
         const DataStore = useConnectionStore()
+        const validationForm = validationStore()
+        const { isSubmmit, file, name } = storeToRefs(validationForm)
         const { brands, loading, imgLocation } = storeToRefs(DataStore)
-        const { t, locale } = useI18n()
+        const { t } = useI18n()
        const ID = props.dataid
-       const fileImg = { name: 'image', url: '' }
        let currentData: Brands = props.data
         return{
             t,
@@ -88,57 +95,42 @@ export default defineComponent({
             //// Variabls
             ID,
             file,
-            fileImg,
-            name: '',
-            counter: 0,
+            storename: '',
+            imageUrl: '',
             formData: new FormData(),
             ///////// Validation  ////
-            isSubmmit: false,
-            errorn: false,
-            errorI: false,
-            errorImage: '',
-            errorName: '',
+            validationForm,
+            isSubmmit,
+            image_file,
+            name,
         }
     },
     async mounted(){ this.FillData()},
     methods: {
         FillData(){
+            this.validationForm.clear()
             let str = this.imgLocation + this.currentData.logo
             if(this.ID != 0){
-                this.name = this.currentData.name
-                this.fileImg.url = str
+                this.storename = this.currentData.name
+                this.imageUrl = str
             }
         },
         handleFileUpload(event: Event){ // Get The File data..
             this.isSubmmit = false
-            this.errorI = false
+            this.file.error = false
             const target = event.target as HTMLInputElement;
             if (target.files) {
-                this.file = target.files[0]
+                this.image_file = target.files[0]
             }
+            this.uploadImage()
         },
-        formValidate(){  // Validation Method
-            this.isSubmmit = true
-            if(this.name == ''){
-                this.errorn = true
-                this.errorName = this.t('pages.brand.errors.brand-empty')
-            }else if(this.name.length > 29){
-                this.errorn = true
-                this.errorName = this.t('page-control.error-length')
+        uploadImage() {
+            if (this.image_file) {
+                this.imageUrl = URL.createObjectURL(this.image_file);
             }
-            if(this.fileVal == null){
-                this.errorI = true
-                this.errorImage = this.t('pages.brand.errors.upload')
-            }
-            if (this.errorn == true || this.errorI == true) {
-                this.counter++
-            } else {
-                this.counter = 0
-            }
-            return this.counter
         },
         saveInfo(){
-            var isValid = this.formValidate()
+            var isValid = this.validationForm.checkBrandInfo(this.storename, this.fileVal)
             if (isValid == 0) {
                 this.getData()
                 if (this.ID === 0) { // Add New Brand
@@ -156,8 +148,8 @@ export default defineComponent({
         },
         // Prepare Data To Create New Brand
         getData(){
-        if (this.name != '' && this.name != null) this.formData.append('name', this.name)
-        if (this.file != null) this.formData.append('logo', this.file)
+        if (this.storename != '' && this.name != null) this.formData.append('name', this.storename)
+        if (this.image_file != null) this.formData.append('logo', this.image_file)
         if(this.ID != 0) this.formData.append('_method', "PUT")
         },
         ondismiss() {

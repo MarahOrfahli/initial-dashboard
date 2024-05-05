@@ -49,6 +49,11 @@ const routes: RouteRecordRaw[] = [
         name: 'store-list',
         component: () => import('../views/pages/store/list.vue'),
     },
+    {
+        path: '/pages/store/details',
+        name: 'store-details',
+        component: () => import('../views/pages/store/details.vue'),
+    },
     ////////////////////////////////
     /* Main Categories */
     {
@@ -82,6 +87,12 @@ const routes: RouteRecordRaw[] = [
         component: () => import('../views/pages/products/add-edit.vue'),
         props: true,
     },
+    {
+        path: '/pages/products/ManageImages/:id',
+        name: 'products-manageImages',
+        component: () => import('../views/pages/products/manageProductImages.vue'),
+        props: true,
+    },
     ////////////////////////////////////////////
     /* Customers */
     {
@@ -89,12 +100,42 @@ const routes: RouteRecordRaw[] = [
         name: 'customers-list',
         component: () => import('../views/pages/Customers/list.vue'),
     },
+    {
+        path: '/pages/customers/add-edit/:type',
+        name: 'customers-add',
+        component: () => import('../views/pages/Customers/add-edit.vue'),
+        props: true,
+    },
+    {
+        path: '/pages/customers/add-edit/:type/:id',
+        name: 'customers-edit',
+        component: () => import('../views/pages/Customers/add-edit.vue'),
+        props: true,
+    },
     ////////////////////////////////////////////
     /* Orders */
     {
         path: '/pages/orders/list',
         name: 'orders-list',
         component: () => import('../views/pages/orders/list.vue'),
+    },
+    {
+        path: '/pages/orders/add-edit/:type',
+        name: 'orders-add',
+        component: () => import('../views/pages/orders/add-edit.vue'),
+        props: true,
+    },
+    {
+        path: '/pages/orders/add-edit/:type/:id',
+        name: 'orders-edit',
+        component: () => import('../views/pages/orders/add-edit.vue'),
+        props: true,
+    },
+    {
+        path: '/pages/orders/details/:id',
+        name: 'orders-details',
+        component: () => import('../views/pages/orders/details.vue'),
+        props: true,
     },
     ////////////////////////////////////////////
     /* Apps */

@@ -1,44 +1,44 @@
 <template>
     <div class="space-y-5">
         <!--  -------------------------------  Arabic title input field  --------------------------------------  -->
-        <div :class="isSubmmit ? { 'has-error': errora } : ''">
+        <div :class="isSubmmit ? { 'has-error': titlearabic.error } : ''">
             <label for="title-in-arabic">{{ t('pages.sub_section.fields.title-arabic') }}</label>
             <input id="title-in-arabic" type="text" :placeholder="t('pages.sub_section.fields.enter-title')" class="form-input" 
-            @keyup="isSubmmit = false,errora = false" v-model="artitle" />
-            <template v-if="isSubmmit && errora == true">
-            <p class="text-danger mt-1">{{errorArabic}}</p>
+            @keyup="isSubmmit = false,titlearabic.error  = false" v-model="artitle" />
+            <template v-if="isSubmmit && titlearabic.error  == true">
+            <p class="text-danger mt-1">{{titlearabic.message}}</p>
             </template>
         </div>
         <!---------------------------------------------------------------------------------------------------------->
         <!--  -------------------------------  English title input field  --------------------------------------  -->
-        <div :class="isSubmmit ? { 'has-error': errorE } : ''">
+        <div :class="isSubmmit ? { 'has-error': titleenglish.error } : ''">
             <label for="title-in-english">{{ t('pages.sub_section.fields.title-english') }}</label>
             <input id="title-in-english" type="text" :placeholder="t('pages.sub_section.fields.enter-title')" class="form-input" 
-            @keyup="isSubmmit = false,errorE = false" v-model="entitle" />
-            <template v-if="isSubmmit && errorE == true">
-            <p class="text-danger mt-1">{{errorEnglish}}</p>
+            @keyup="isSubmmit = false,titleenglish.error = false" v-model="entitle" />
+            <template v-if="isSubmmit && titleenglish.error == true">
+            <p class="text-danger mt-1">{{titleenglish.message}}</p>
             </template>
         </div>
         <!-------------------------------------------------------------------------------------------->
         <!--  -------------------------------  Select field  --------------------------------------  -->
-        <div :class="isSubmmit ? { 'has-error': errorS} : ''">
+        <div :class="isSubmmit ? { 'has-error': categorySelect.error } : ''">
             <label for="select">{{ t('pages.sub_section.fields.select') }}</label>
             <!-- searchable -->
             <multiselect
             id="select"
             v-model="category"
             :options="options.names"
-            @click="isSubmmit = false,errorS = false"
+            @click="isSubmmit = false,categorySelect.error = false"
             @update:model-value="updateSelected"
             class="custom-multiselect"
             :searchable="true"
             no-result-text="no data"
             :loading="loading"
-            :placeholder="t('pages.sub_section.fields.select-option')"
+            :placeholder="t('page-control.select-option')"
             >
         </multiselect>
-            <template v-if="isSubmmit && errorS == true">
-            <p class="text-danger mt-1">{{errorSelection}}</p>
+            <template v-if="isSubmmit && categorySelect.error == true">
+            <p class="text-danger mt-1">{{categorySelect.message}}</p>
             </template>
         </div>
         <br/><br/><br/><br/><br/><br/>
@@ -60,7 +60,9 @@
                     </span>
                 </div>
             </button>
-            <button type="button" @click="ondismiss" class="btn btn-outline-danger ltr:ml-4 rtl:mr-4">{{ t('page-control.cancel') }}</button>
+            <button type="button" @click="ondismiss" class="btn btn-outline-danger ltr:ml-4 rtl:mr-4">
+                {{ t('page-control.cancel') }}
+            </button>
         </div>
     </div>
 </template>
@@ -69,10 +71,11 @@
 import { defineComponent } from 'vue';
 import { storeToRefs } from 'pinia'
 import { useI18n } from 'vue-i18n'
+import { validationStore } from '@/components/validation'
 import { useConnectionStore } from '../../../../stores/module/DataModule'
 import { useMeta } from '@/composables/use-meta';
 import IconRefresh from '@/components/icon/icon-refresh.vue';
-import { SubCategories, Categories } from '@/model/Classes';
+import { SubCategories } from '@/model/Classes';
 import Multiselect from '@suadelabs/vue3-multiselect';
 import '@suadelabs/vue3-multiselect/dist/vue3-multiselect.css';
 
@@ -89,10 +92,11 @@ export default defineComponent({
     data(props){
        const ID = props.dataid
        const DataStore = useConnectionStore()
+        const validationForm = validationStore()
+        const { isSubmmit, titlearabic, titleenglish, categorySelect } = storeToRefs(validationForm)
         const { categories, subcategories, loading } = storeToRefs(DataStore)
-        const { t, locale } = useI18n()
+        const { t } = useI18n()
         let currentData: SubCategories = props.data
-        let options : typeof Categories[] = []
         return{
             /// Data Connection
             subcategories, loading,
@@ -102,20 +106,16 @@ export default defineComponent({
             //// 
             ID, t,
             categoryID: 0,
-            counter: 0,
             category: '',
             artitle: '',
             entitle: '',
-            update: '',
             options: { ids: [], names: [] },
             ///////// Validation  ////
-            isSubmmit: false,
-            errora: false,
-            errorE: false,
-            errorS: false,
-            errorEnglish: '',
-            errorSelection: '',
-            errorArabic: '',
+            isSubmmit,
+            validationForm,
+            titlearabic,
+            titleenglish,
+            categorySelect,
         }
     },
     async mounted(){ 
@@ -130,6 +130,7 @@ export default defineComponent({
             }
         },
         startPage(){
+            this.validationForm.clear()
             this.DataStore.getData('Categories').then(() => {
                 this.categories.forEach(element => {
                     let name = element.name_ar + '-' + element.name_en
@@ -152,37 +153,10 @@ export default defineComponent({
                 }
             }
         },
-        formValidate(){
-            this.isSubmmit = true
-            if(this.artitle == ''){
-                this.errora = true
-                this.errorArabic = this.t('pages.sub_section.errors.arabic-empty')
-            }else if(this.artitle.length > 29){
-                this.errora = true
-                this.errorArabic = this.t('page-control.error-length')
-            }
-            if(this.entitle == ''){
-                this.errorE = true
-                this.errorEnglish = this.t('pages.sub_section.errors.english-empty')
-            }else if(this.entitle.length > 29){
-                this.errorE = true
-                this.errorEnglish = this.t('page-control.error-length')
-            }
-            if(this.category == ''){
-                this.errorS = true
-                this.errorSelection = this.t('pages.sub_section.errors.select')
-            }
-            if (this.errora == true || this.errorE == true || this.errorS == true) {
-                this.counter++
-            } else {
-                this.counter = 0
-            }
-            return this.counter
-        },
         saveInfo(){
             // Use JSON Data To Submit The Data Into Database
             let data = { name_ar: this.artitle, name_en: this.entitle, category_id: this.categoryID }
-            var isValid = this.formValidate()
+            var isValid = this.validationForm.checkSubcategoryInfo(this.artitle, this.entitle, this.category )
             if (isValid == 0) {
                 if (this.ID === 0) { // Create Data
                     this.DataStore.createData('SubCategories', data).then(() => {

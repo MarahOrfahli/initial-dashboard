@@ -40,12 +40,6 @@
                                 <div class="p-5" v-if="dataType == 'S-Category'">
                                     <AddEditSubcategory :dataid="ID" @close="closeModal" :data="data" @load-data="loadData"/>
                                 </div>
-                                <div class="p-5" v-if="dataType == 'Customer'">
-                                    <AddEditCustomer :dataid="ID" @close="closeModal" :data="data" @load-data="loadData"/>
-                                </div>
-                                <div class="p-5" v-if="dataType == 'Order'">
-                                    <AddEditOrder :dataid="ID" @close="closeModal" :data="data" @load-data="loadData"/>
-                                </div>
                                 <div class="p-5" v-if="dataType == 'Store'">
                                     <AddEditStore :dataid="ID" @close="closeModal" :data="data" @load-data="loadData"/>
                                 </div>
@@ -64,8 +58,6 @@ import { TransitionRoot, TransitionChild, Dialog, DialogPanel, DialogOverlay }
 import AddEditBrand from '@/views/pages/brand/add-edit.vue'
 import AddEditCategory from '@/views/pages/categories/mainCategories/add-edit.vue'
 import AddEditSubcategory from '@/views/pages/categories/subCategories/add-edit.vue'
-import AddEditCustomer from '@/views/pages/Customers/add-edit.vue'
-import AddEditOrder from '@/views/pages/orders/add-edit.vue'
 import AddEditStore from '@/views/pages/store/add-edit.vue'
 // Icon
 import IconX from '@/components/icon/icon-x.vue';
@@ -74,8 +66,7 @@ export default defineComponent({
     emits: ['loadData','closeModal'],
     components: {
         TransitionRoot, TransitionChild, Dialog, DialogPanel, DialogOverlay, IconX,
-        AddEditBrand, AddEditCategory, AddEditSubcategory, AddEditCustomer,
-        AddEditOrder, AddEditStore, 
+        AddEditBrand, AddEditCategory, AddEditSubcategory, AddEditStore, 
     },
     data(props){
         const dataType = props.dataType

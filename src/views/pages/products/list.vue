@@ -1,4 +1,5 @@
 <template>
+    <div @click="EditProduct(1)">test</div>
     <div class="panel pb-0 mt-6">
         <div class="datatable">
             <DataTable
@@ -55,39 +56,39 @@
             const router = useRouter()
             const DataStore = useConnectionStore()
             const notification = notificationStore()
-            const { /*products,*/} = storeToRefs(DataStore)
-            const products = [
-                {
-                    id: 1,
-                    name: 'هايلايتر سائل',
-                    model: 1584,
-                    belongTo: 'هاي لايترز - وجه',
-                    price: 35,
-                    available: true,
-                    popular: false,
-                    new: true
-                },
-                {
-                    id: 2,
-                    name: 'نيو ليب ستيك',
-                    model: 2503,
-                    belongTo: 'ليب ستيك - شفاة',
-                    price: 15,
-                    available: false,
-                    popular: true,
-                    new: false
-                },
-                {
-                    id: 3,
-                    name: 'مخمرية - ست عطور',
-                    model: 1997,
-                    belongTo: 'مخمرية - عناية بالجسم',
-                    price: 0,
-                    available: true,
-                    popular: true,
-                    new: false
-                },
-            ];
+            const { products} = storeToRefs(DataStore)
+            // const products = [
+            //     {
+            //         id: 1,
+            //         name: 'هايلايتر سائل',
+            //         model: 1584,
+            //         belongTo: 'هاي لايترز - وجه',
+            //         price: 35,
+            //         available: true,
+            //         popular: false,
+            //         new: true
+            //     },
+            //     {
+            //         id: 2,
+            //         name: 'نيو ليب ستيك',
+            //         model: 2503,
+            //         belongTo: 'ليب ستيك - شفاة',
+            //         price: 15,
+            //         available: false,
+            //         popular: true,
+            //         new: false
+            //     },
+            //     {
+            //         id: 3,
+            //         name: 'مخمرية - ست عطور',
+            //         model: 1997,
+            //         belongTo: 'مخمرية - عناية بالجسم',
+            //         price: 0,
+            //         available: true,
+            //         popular: true,
+            //         new: false
+            //     },
+            // ];
             return {
                 router,
                 sort: ['name', 'model', 'belongTo', 'price'],
@@ -118,6 +119,12 @@
                 this.router.push({
                     name: 'products-edit',
                     params: { type: 'Edit', id: productID }, // type: 'add' || type: 'edit'
+                })
+            },
+            ManageProductImages(productID: number){
+                this.router.push({
+                    name: 'products-manageImages',
+                    params: { id: productID },
                 })
             },
             ////////////////////////////////////
