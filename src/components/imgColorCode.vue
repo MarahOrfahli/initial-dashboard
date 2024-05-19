@@ -81,7 +81,6 @@
     import { ref,defineComponent } from 'vue';
     import { useI18n } from 'vue-i18n'
     import { storeToRefs } from 'pinia'
-    import { Items } from '../model/Classes'
     import { validationStore } from '@/components/validation'
     import { useConnectionStore } from '../stores/module/DataModule'
     import IconTrashLines from '@/components/icon/icon-trash-lines.vue';
@@ -151,7 +150,6 @@
                     theItems.errorCode_items = ''
                     theItems.error_color = false
                     theItems.errorColor_items = ''
-                    console.log(theItems.image)
                     if(theItems.image == null){
                         theItems.errorF = true
                         theItems.errorFile_items = this.t('pages.products_section.errors.upload-img-item')
@@ -207,7 +205,6 @@
             getUpdateItem(){
                 this.itemEntry.error = false
                 setTimeout(() => {
-                    console.log(this.items)
                     var valid = this.items_formValidate()
                     this.$emit('getUpdateItem',this.items,  valid)
                 }, 0.3);

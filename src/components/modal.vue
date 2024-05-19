@@ -43,6 +43,9 @@
                                 <div class="p-5" v-if="dataType == 'Store'">
                                     <AddEditStore :dataid="ID" @close="closeModal" :data="data" @load-data="loadData"/>
                                 </div>
+                                <div class="p-5" v-if="dataType == 'Region'">
+                                    <AddEditRegion :dataid="ID" @close="closeModal" :data="data" @load-data="loadData"/>
+                                </div>
                             </DialogPanel>
                     </TransitionChild>
                 </div>
@@ -59,6 +62,7 @@ import AddEditBrand from '@/views/pages/brand/add-edit.vue'
 import AddEditCategory from '@/views/pages/categories/mainCategories/add-edit.vue'
 import AddEditSubcategory from '@/views/pages/categories/subCategories/add-edit.vue'
 import AddEditStore from '@/views/pages/store/add-edit.vue'
+import AddEditRegion from '@/views/pages/regions/add-edit.vue'
 // Icon
 import IconX from '@/components/icon/icon-x.vue';
 export default defineComponent({
@@ -66,7 +70,7 @@ export default defineComponent({
     emits: ['loadData','closeModal'],
     components: {
         TransitionRoot, TransitionChild, Dialog, DialogPanel, DialogOverlay, IconX,
-        AddEditBrand, AddEditCategory, AddEditSubcategory, AddEditStore, 
+        AddEditBrand, AddEditCategory, AddEditSubcategory, AddEditStore, AddEditRegion,
     },
     data(props){
         const dataType = props.dataType

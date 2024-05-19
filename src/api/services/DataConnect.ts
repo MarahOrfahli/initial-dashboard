@@ -9,26 +9,48 @@ function APIURL(dname: string, type = 'List', num = 0) {
     case 'Store': {
       if (type == 'GET' || type == 'Create') {
         apiurl = 'warehouses'
-      } else if (type == 'Edit' && num != 0) {
-        apiurl = `warehouses/${num}`
-      } else if (type == 'Delete' && num != 0) {
+      } else if (num != 0) {
         apiurl = `warehouses/${num}`
       }
       return apiurl
       break
     }
+    // Cities & Areas //////////////////////
+    case 'City': {
+      // apiurl = 'cities'
+      // return apiurl
+      // break
+      if (type == 'GET' || type == 'Create') {
+        apiurl = 'cities'
+      } else if ( num != 0) {
+        apiurl = `cities/${num}`
+      }
+      return apiurl
+      break
+    }
+    case 'Region': {
+      if (type == 'GET' || type == 'Create') {
+        apiurl = 'areas'
+      } else if (type == 'Edit' && num != 0) {
+        apiurl = `areas/${num}`
+      } else if (type == 'Delete' && num != 0) {
+        apiurl = `areas/${num}`
+      } else if (type == 'GET-byCities' && num != 0) { // 'GET-byCities'
+        apiurl = `cities/${num}/areas`
+      }
+      return apiurl
+      break
+    }
     /////////////  Customer ////////////////
-    // case 'Customer': {
-    //   if (type == 'GET' || type == 'Create') {
-    //     apiurl = 'Customer'
-    //   } else if (type == 'Edit' && num != 0) {
-    //     apiurl = `Customer/${num}`
-    //   } else if (type == 'Delete' && num != 0) {
-    //     apiurl = `Customer/${num}`
-    //   }
-    //   return apiurl
-    //   break
-    // }
+    case 'Customer': {
+      if (type == 'GET' || type == 'Create') {
+        apiurl = 'customers'
+      } else if (num != 0) {
+        apiurl = `customers/${num}`
+      }
+      return apiurl
+      break
+    }
     /////////////  Brands ////////////////
     case 'Brands': {
       if (type == 'GET' || type == 'Create') {
@@ -71,9 +93,7 @@ function APIURL(dname: string, type = 'List', num = 0) {
     case 'Products': {
       if (type == 'GET' || type == 'Create') {
         apiurl = 'products'
-      } else if (type == 'Edit' && num != 0) {
-        apiurl = `products/${num}`
-      } else if (type == 'Delete' && num != 0) {
+      } else if (num != 0) {
         apiurl = `products/${num}`
       }
       return apiurl
@@ -101,11 +121,11 @@ function APIURL(dname: string, type = 'List', num = 0) {
 /////////////// Main Methods For Connection ////
 ////////////////////////////////////////////////
 // Get Data From Database
-export async function getData(dataName: string, dataId = 0, type = 'GET'){
- // console.log(APIURL(dataName, type, dataId))
+export async function getData(dataName: string, dataId = 0, type = 'GET',res = 'data'){
     try{
         const response = await apiClient.get(APIURL(dataName, type, dataId))
-        return response.data.data
+        if (res == 'data') return response.data.data
+        else return response.data
     } catch (error) {
         console.log(error)
         throw error
@@ -115,12 +135,13 @@ export async function getData(dataName: string, dataId = 0, type = 'GET'){
 export async function updateData(dataName: string, id:number, data: any, type = ''){
     try{
       let response
-      if(dataName == "SubCategories" || dataName == "Store") response = await apiClient.put(APIURL(dataName, 'Edit', id), data)
+      if(dataName == "SubCategories" || dataName == "Store" || dataName == "City" ||
+      dataName == "Customer") response = await apiClient.put(APIURL(dataName, 'Edit', id), data)
         else{
           if(type == 'EditWithImg') response = await formDataApiClient.post(APIURL(dataName, 'Edit', id), data)
           else response = await apiClient.post(APIURL(dataName, 'Edit', id), data)
         }
-      if (!response.data.status) throw { message: response.data.errors.general }
+     // if (!response.data.status) throw { message: response.data.errors.general }
       return response.data.data
     } catch (error) {
         console.log(error)
@@ -136,7 +157,7 @@ export async function createData(dataName: string, data: any, type = 'Create'){
       }else{
         response = await apiClient.post(APIURL(dataName, type), data)
       }
-        if (!response.data.status) throw { message: response.data.errors.general }
+      //  if (!response.data.status) throw { message: response.data.errors.general }
         return response.data.data
     } catch (error) {
         if (type == 'CreateWithImg') console.error('Image upload error:', error)

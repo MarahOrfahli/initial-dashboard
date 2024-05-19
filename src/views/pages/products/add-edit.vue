@@ -1,4 +1,19 @@
 <template>
+    <!-- 
+        All Inputs:
+        - Title In Arabic
+        - Title In English
+        - Price
+        - Model
+        - Description In Arabic
+        - Description In English
+        - Select Main Category
+        - Select Subcategory
+        - Select Brand
+        - Is Available
+        - storeItems
+        - imgColorCodeItems
+     -->
     <div class="mb-4.5 px-5 flex md:items-center md:flex-row flex-col gap-5">
         <div class="flex items-center gap-2"></div>
         <div class="ltr:ml-auto rtl:mr-auto">
@@ -12,11 +27,13 @@
         <strong v-if="pageType == 'Create'">{{ t('pages.products_section.fields.add-product') }}</strong>
         <strong v-if="pageType == 'Edit'">{{ t('pages.products_section.fields.edit-product') }}</strong>
     </div>
+    <!-------------------------------------->
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
         <div class="p-3"> <!-- Title In Arabic -->
             <div :class="isSubmmit ? { 'has-error': titlearabic.error } : ''">
                 <label for="title-arabic" class="ltr:mr-2 rtl:ml-2 mb-0">{{ t('pages.products_section.modals.title-arabic') }}</label>
-                <input id="title-arabic" type="text" :placeholder="t('pages.products_section.modals.enter-title')" 
+                <input id="title-arabic" type="text" :disabled="loading_product" :class="loading_product ? 'bg-white-dark opacity-30 text-black' : ''"
+                :placeholder="t('pages.products_section.modals.enter-title')" 
                 class="form-input" @keyup="isSubmmit = false,titlearabic.error = false" v-model="values.title_ar" />
                 <template v-if="isSubmmit && titlearabic.error == true">
                     <p class="text-danger mt-1">{{titlearabic.message}}</p>
@@ -26,7 +43,8 @@
         <div class="p-3"> <!-- Title In English -->
             <div :class="isSubmmit ? { 'has-error': titleenglish.error } : ''">
                 <label for="title-english" class="ltr:mr-2 rtl:ml-2 mb-0">{{ t('pages.products_section.modals.title-english') }}</label>
-                <input id="title-english" type="text" :placeholder="t('pages.products_section.modals.enter-title')" 
+                <input id="title-english" type="text" :disabled="loading_product" :class="loading_product ? 'bg-white-dark opacity-30 text-black' : ''"
+                :placeholder="t('pages.products_section.modals.enter-title')" 
                 class="form-input" @keyup="isSubmmit = false,titleenglish.error = false" v-model="values.title_en" />
                 <template v-if="isSubmmit && titleenglish.error == true">
                     <p class="text-danger mt-1">{{titleenglish.message}}</p>
@@ -36,7 +54,8 @@
         <div class="p-3"> <!-- Price -->
             <div :class="isSubmmit ? { 'has-error': price.error } : ''">
                 <label for="price" class="ltr:mr-2 rtl:ml-2 mb-0">{{ t('pages.products_section.fields.price') }}</label>
-                <input id="price" type="number" :placeholder="t('pages.products_section.modals.enter-price')" 
+                <input id="price" type="number" :disabled="loading_product" :class="loading_product ? 'bg-white-dark opacity-30 text-black' : ''"
+                :placeholder="t('pages.products_section.modals.enter-price')" 
                 class="form-input" @keyup="isSubmmit = false,price.error = false" v-model="values.price" />
                 <template v-if="isSubmmit && price.error == true">
                     <p class="text-danger mt-1">{{price.message}}</p>
@@ -46,7 +65,8 @@
         <div class="p-3"> <!-- Model -->
             <div :class="isSubmmit ? { 'has-error': productmodel.error } : ''">
                 <label for="model" class="ltr:mr-2 rtl:ml-2 mb-0">{{ t('pages.products_section.fields.model') }}</label>
-                <input id="model" type="text" :placeholder="t('pages.products_section.modals.enter-model')" 
+                <input id="model" type="text" :disabled="loading_product" :class="loading_product ? 'bg-white-dark opacity-30 text-black' : ''"
+                :placeholder="t('pages.products_section.modals.enter-model')" 
                 class="form-input" @keyup="isSubmmit = false,productmodel.error = false" v-model="values.model" />
                 <template v-if="isSubmmit && productmodel.error == true">
                     <p class="text-danger mt-1">{{productmodel.message}}</p>
@@ -56,7 +76,8 @@
         <div class="p-3"> <!-- Description In Arabic -->
             <div :class="isSubmmit ? { 'has-error': productdescarabic.error } : ''">
                 <label for="des-arabic" class="ltr:mr-2 rtl:ml-2 mb-0">{{ t('pages.products_section.modals.description-arabic') }}</label>
-                <textarea id="des-arabic" rows="3" :placeholder="t('pages.products_section.modals.enter-descripe-arabic')" 
+                <textarea id="des-arabic" rows="3" :disabled="loading_product" :class="loading_product ? 'bg-white-dark opacity-30 text-black' : ''"
+                :placeholder="t('pages.products_section.modals.enter-descripe-arabic')" 
                 class="form-textarea" @keyup="isSubmmit = false,productdescarabic.error = false" v-model="values.desc_ar" required></textarea>
                 <template v-if="isSubmmit && productdescarabic.error == true">
                     <p class="text-danger mt-1">{{productdescarabic.message}}</p>
@@ -66,7 +87,8 @@
         <div class="p-3"> <!-- Description In English -->
             <div :class="isSubmmit ? { 'has-error': productdescenglish.error } : ''">
                 <label for="des-english" class="ltr:mr-2 rtl:ml-2 mb-0">{{ t('pages.products_section.modals.description-english') }}</label>
-                <textarea id="des-english" rows="3" :placeholder="t('pages.products_section.modals.enter-descripe-english')" 
+                <textarea id="des-english" rows="3" :disabled="loading_product" :class="loading_product ? 'bg-white-dark opacity-30 text-black' : ''"
+                :placeholder="t('pages.products_section.modals.enter-descripe-english')" 
                 class="form-textarea" @keyup="isSubmmit = false,productdescenglish.error = false" v-model="values.desc_en" required></textarea>
                 <template v-if="isSubmmit && productdescenglish.error == true">
                     <p class="text-danger mt-1">{{productdescenglish.message}}</p>
@@ -80,6 +102,8 @@
                     <!-- searchable -->
                     <multiselect
                     id="main-category"
+                    :disabled="loading_product"
+                    :class="loading_product ? 'bg-white-dark opacity-30 text-black' : ''"
                     v-model="values.category.field"
                     :options="category_options.names" 
                     @click="isSubmmit = false,productMcategory.error = false"
@@ -101,6 +125,8 @@
                     <!-- searchable -->
                     <multiselect
                     id="sub-category"
+                    :disabled="loading_product"
+                    :class="loading_product ? 'bg-white-dark opacity-30 text-black' : ''"
                     v-model="values.subcategory.field"
                     :options="subcategory_options.names"
                     @click="isSubmmit = false,productScategory.error = false"
@@ -122,6 +148,8 @@
                     <!-- searchable -->
                     <multiselect
                     id="brand"
+                    :disabled="loading_product"
+                    :class="loading_product ? 'bg-white-dark opacity-30 text-black' : ''"
                     v-model="values.brand.field"
                     :options="brand_options.names"
                     @click="isSubmmit = false,productbrand.error = false"
@@ -176,20 +204,20 @@
 <imgColorCodeItems v-if="pageType == 'Create'" :type="pageType"  @getUpdateItem="getUpdateItem"/>
 <!--------------------------------------------------------------------------------------------------------------->
 <div  class="mt-5">
-    <button type="button" @click="onSubmit" class="btn btn-primary !mt-6">
+    <button type="button" @click="onSubmit" :disabled="loading_create" class="btn btn-primary !mt-6">
         <div v-if="ID == 0 || ID == undefined">
-                    <span v-if="loading_create == false">
-                        {{ t('page-control.add') }}
-                    </span>
-                    <span v-else>
-                        <IconRefresh class="animate-[spin_1s_linear_infinite] w-5 h-5" />
-                    </span>
+            <span v-if="loading_create == false">
+                {{ t('page-control.add') }}
+            </span>
+            <span v-else>
+                <IconRefresh class="animate-[spin_1s_linear_infinite] w-5 h-5" />
+            </span>
         </div>
         <div v-else-if="ID != 0">
-                    <span v-if="loading_create == false">{{ t('page-control.save-changes') }}</span>
-                    <span v-else>
-                        <IconRefresh class="animate-[spin_1s_linear_infinite] w-5 h-5" />
-                    </span>
+            <span v-if="loading_create == false">{{ t('page-control.save-changes') }}</span>
+                <span v-else>
+                    <IconRefresh class="animate-[spin_1s_linear_infinite] w-5 h-5" />
+            </span>
         </div>
     </button>
 </div>
@@ -252,29 +280,31 @@ import { ref, defineComponent } from 'vue';
             let temp: item[] = []
             const ID = props.id
             const pageType = props.type
-            const { t } = useI18n()
+            const { t, locale } = useI18n()
             const router = useRouter()
             const DataStore = useConnectionStore()
             const validationForm = validationStore()
             const { isSubmmit, titlearabic, titleenglish, productdescarabic, productdescenglish, file,
                 price, productmodel, productMcategory, productScategory, productbrand,
             } = storeToRefs(validationForm)
-            const { products, brands, subcategories, categories, loading,
-                loading_subcategory, loading_brand, loading_create} = storeToRefs(DataStore)
+            const { productByID, brands, subcategories, categories, loading, imgLocation,
+                loading_subcategory, loading_brand, loading_create, loading_product} = storeToRefs(DataStore)
             return{
                 loadPage: true,
-                t, router,
+                t, router, locale,
                 // Data Connection
                 ID,
                 pageType,
-                products,
+                productByID,
                 categories,
                 subcategories,
                 brands,
                 DataStore,
+                imgLocation,
                 loading,
                 loading_brand,
                 loading_create,
+                loading_product,
                 loading_subcategory,
                 /// Variables
                 values : { title_ar : '', title_en : '', desc_ar: '' , desc_en: '',
@@ -330,7 +360,8 @@ import { ref, defineComponent } from 'vue';
                 for (let index = 0; index < item.length; index++) {
                     if(item[index].image != null){
                         this.values.items.vals.images.push(item[index].image)
-                        this.values.items.vals.colors.push(item[index].color)
+                        if(item[index].color == '') this.values.items.vals.colors.push(null)
+                        else this.values.items.vals.colors.push(item[index].color)
                         this.values.items.vals.codes.push(item[index].color_code)
                     }
                 }
@@ -339,20 +370,18 @@ import { ref, defineComponent } from 'vue';
             ////////////////////  Sending Data   //////////////////
             onSubmit(){
                 this.loadPage = false
-                var isValid = this.validationForm.checkProductInfo(this.pageType,this.values)
-                if (isValid == 0) {
-                this.getData()
-                    // if (this.pageType == 'Create') { // Add New Product
-                    //     this.DataStore.createData('Products', this.formData, 'CreateWithImg').then(() => {
-                    //     this.$emit('load-data')
-                    //     this.ondismiss()
-                    //     })
-                    // } else if(this.pageType == 'Edit') { // Edit Product
-                    //     this.DataStore.updateData('Products', this.ID, this.formData, 'EditWithImg').then(() => {
-                    //     this.$emit('load-data')
-                    //     this.ondismiss()
-                    //     })
-                    // }
+                var isValid = this.validationForm.checkProductInfo(this.pageType,this.values, this.imageUrl)
+                if (isValid = 0) {
+                    this.getData()
+                    if (this.pageType == 'Create') { // Add New Product
+                        this.DataStore.createData('Products', this.formData, 'CreateWithImg').then(() => {
+                        this.ondismiss()
+                        })
+                    } else if(this.pageType == 'Edit') { // Edit Product
+                        this.DataStore.updateData('Products', this.ID, this.formData, 'EditWithImg').then(() => {
+                        this.ondismiss()
+                        })
+                    }
                 }
             },
             // Prepare Data To Create New product
@@ -360,6 +389,7 @@ import { ref, defineComponent } from 'vue';
                 let arr_images = []
                 let arr_codes = []
                 let arr_hex = []
+                let arr_warehouses: any = this.intoArray(this.values.store.vals)
             if(this.pageType == 'Create'){
                 for (let index = 0; index < this.values.items.vals.images.length; index++) {
                     arr_images.push(this.values.items.vals.images[index])
@@ -370,19 +400,21 @@ import { ref, defineComponent } from 'vue';
                 for (let index = 0; index < this.values.items.vals.codes.length; index++) {
                     arr_hex.push(this.values.items.vals.colors[index])
                 }
-                console.log('Codes')
-                console.log(arr_codes)
-                console.log('Hex')
-                console.log(arr_hex)
-                console.log('images')
-                console.log(arr_images)
-                console.log('Warehouses')
-                console.log(this.intoArray(this.values.store.vals))
-                console.log('////////////////////////////////////////////////////')
-                this.formData.append('images', `${arr_images}`)
-                this.formData.append('color_codes', `${arr_codes}`)
-                this.formData.append('hex', `${arr_hex}`)
-                this.formData.append('warehouses', `${this.intoArray(this.values.store.vals)}`)
+                //this.formData.append('images', `${arr_images}`)
+                for (let i = 0; i < arr_images.length; i++) {
+                    this.formData.append(`images[${i}]`, arr_images[i]); // warehouses[${i}][id]
+                }
+                for (let i = 0; i < arr_codes.length; i++) {
+                    this.formData.append(`color_codes[${i}]`, arr_codes[i]); // warehouses[${i}][id]
+                }
+                for (let i = 0; i < arr_hex.length; i++) {
+                    this.formData.append(`hex[${i}]`, arr_hex[i]);
+                }
+                for (let i = 0; i < arr_warehouses.length; i++) {
+                    this.formData.append(`warehouses[${i}][id]`, arr_warehouses[i].id); // warehouses[${i}][id]
+                    this.formData.append(`warehouses[${i}][quantity]`, arr_warehouses[i].quantity);
+                    this.formData.append(`warehouses[${i}][alert_quantity]`, arr_warehouses[i].alert_quantity);
+                }
             }
             if (this.values.subcategory.id > 0) this.formData.append('sub_category_id', `${this.values.subcategory.id}`)
             if (this.values.brand.id > 0) this.formData.append('brand_id', `${this.values.brand.id}`)
@@ -409,18 +441,24 @@ import { ref, defineComponent } from 'vue';
                 this.getData_ToOptions('Brands')
                 this.getData_ToOptions('Categories')
                 if(this.ID != 0 && this.ID != undefined && this.pageType == 'Edit'){
-                    this.DataStore.getData('Products',this.ID ).then(() => {
-                      //  console.log(this.products)
-                        // this.values.title_ar = this.products.name_ar
-                        // this.values.title_en = this.products.name_en
-                        // this.values.desc_ar = this.products.description_ar
-                        // this.values.desc_en = this.products.description_en
-                        // this.values.price = this.products.price
-                        // this.values.model = this.products.model
-                        // this.values.brand.id = this.products.brand_id
-                        // this.available = this.products.is_available
-                        // this.imageUrl = this.products.image
-                        // this.values.subcategory.id = this.products.sub_category_id
+                    this.DataStore.getData('Products',this.ID, 'GETByID').then(() => {
+                        console.log(this.productByID)
+                        this.values.title_ar = this.productByID.name_ar
+                        this.values.title_en = this.productByID.name_en
+                        this.values.desc_ar = this.productByID.description_ar
+                        this.values.desc_en = this.productByID.description_en
+                        this.values.price = this.productByID.price
+                        this.values.model = this.productByID.model
+                        this.values.brand.id = this.productByID.brand_id
+                        this.values.brand.field = this.productByID.brand.name
+                        if(this.productByID.is_available == 1) this.available = true
+                        else this.available = false
+                        
+                        this.imageUrl = this.imgLocation + this.productByID.image
+                        console.log(this.imageUrl)
+                        this.values.subcategory.id = this.productByID.sub_category_id
+                        if(this.locale == 'eg') this.values.subcategory.field = this.productByID.subCategory.name_ar
+                        if(this.locale == 'en') this.values.subcategory.field = this.productByID.subCategory.name_en
                     }).then(()=>{
                         this.values.category.field = this.category_options.names[0]
                         for (let index = 0; index < this.category_options.names.length; index++) {
@@ -487,9 +525,10 @@ import { ref, defineComponent } from 'vue';
                     }
                     if(type == 'Categories'){
                         this.categories.forEach(element => {
-                            let name = element.name_ar + '-' + element.name_en
+                            if(this.locale == 'eg') this.category_options.names.push(element.name_ar)
+                            else if(this.locale == 'en') this.category_options.names.push(element.name_en)
                             this.category_options.ids.push(element.id)
-                            this.category_options.names.push(name)
+                            
                         });
                     }
                 })
@@ -497,10 +536,10 @@ import { ref, defineComponent } from 'vue';
             async getSubcategoryData(id_category){
                 this.DataStore.getData('SubCategories', id_category  , 'GET-byCategories' ).then(() => { // Subcategory Connection
                         this.subcategories.forEach(element => { // Subcategory Connection Data into Subcategory_options object
-                            let name = element.name_ar + '-' + element.name_en
                             this.subcategory_options.ids.push(element.id)
                             this.subcategory_options.categoryIds.push(element.category_id)
-                            this.subcategory_options.names.push(name)
+                            if(this.locale == 'eg') this.subcategory_options.names.push(element.name_ar)
+                            else if(this.locale == 'en') this.subcategory_options.names.push(element.name_en)
                         });
                 })
             },

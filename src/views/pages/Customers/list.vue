@@ -2,7 +2,7 @@
     <div class="panel pb-0 mt-6">
         <div class="datatable">
             <DataTable
-                :rows="customer"
+                :rows="customers"
                 :columns="cols"
                 :dataType="datatype"
                 :sortable="sort"
@@ -41,8 +41,6 @@
             let cols = [
                 { field: 'name', title: t('pages.customer.fields.name'), headerClass: 'justify-center' },
                 { field: 'phone', title: t('pages.customer.fields.phone'), headerClass: 'justify-center'  },
-                { field: 'email', title: t('pages.customer.fields.email'), headerClass: 'justify-center'  },
-                { field: 'consumer', title: t('pages.customer.fields.type'), headerClass: 'justify-center'  },
                 { field: 'address', title: t('pages.customer.fields.address'), headerClass: 'justify-center'  },
                 { field: 'actions', title: t('page-control.action') , sort: false, headerClass: 'justify-center' },
             ];
@@ -54,7 +52,7 @@
             const router = useRouter()
             const DataStore = useConnectionStore()
             const notification = notificationStore()
-            const { customer} = storeToRefs(DataStore)
+            const { customers} = storeToRefs(DataStore)
             const { t, locale } = useI18n()
             return {
                 router,
@@ -63,18 +61,20 @@
                 // Data Connection
                 DataStore,
                 notification,
-                customer,
+                customers,
                 currentData,
                 ////////
                 t,locale
             }
         },
-        async mounted() { this.startPage() },
+        async mounted() {
+             this.startPage() },
         methods: {
             startPage(){
-                this.DataStore.getData('Customer').then(() => {})
+                this.DataStore.getData('Customer').then(() => { })
             },
-            // Add And Edit the Item data
+            ////////////////////////////////////////////////
+            // Add And Edit the Item data (Using Vue-Router)
             addCustomer(){
                 this.router.push({
                     name: 'customers-add',

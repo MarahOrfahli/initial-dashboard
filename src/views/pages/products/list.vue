@@ -1,5 +1,4 @@
 <template>
-    <div @click="EditProduct(1)">test</div>
     <div class="panel pb-0 mt-6">
         <div class="datatable">
             <DataTable
@@ -10,6 +9,7 @@
                 @add="addProduct"
                 @edit="EditProduct"
                 @delete="deleteRow"
+                @ManageProductImages="ManageProductImages"
             />
         </div>
     </div>
@@ -42,7 +42,7 @@
                 { field: 'model', title: t('pages.products_section.fields.model'), headerClass: 'justify-center'  },
                 { field: 'belongTo', title: t('pages.products_section.fields.belong-to'), headerClass: 'justify-center'  },
                 { field: 'price', title: t('pages.products_section.fields.price'), headerClass: 'justify-center'  },
-                { field: 'available', title: t('pages.products_section.fields.available'), sort: false, headerClass: 'justify-center'  },
+                { field: 'is_available', title: t('pages.products_section.fields.available'), sort: false, headerClass: 'justify-center'  },
                 { field: 'popular', title: t('pages.products_section.fields.popular'), sort: false, headerClass: 'justify-center' },
                 { field: 'new', title: t('pages.products_section.fields.new'), sort: false, headerClass: 'justify-center' },
                 { field: 'actions', title: t('page-control.action') , sort: false, headerClass: 'justify-center' },
@@ -57,38 +57,6 @@
             const DataStore = useConnectionStore()
             const notification = notificationStore()
             const { products} = storeToRefs(DataStore)
-            // const products = [
-            //     {
-            //         id: 1,
-            //         name: 'هايلايتر سائل',
-            //         model: 1584,
-            //         belongTo: 'هاي لايترز - وجه',
-            //         price: 35,
-            //         available: true,
-            //         popular: false,
-            //         new: true
-            //     },
-            //     {
-            //         id: 2,
-            //         name: 'نيو ليب ستيك',
-            //         model: 2503,
-            //         belongTo: 'ليب ستيك - شفاة',
-            //         price: 15,
-            //         available: false,
-            //         popular: true,
-            //         new: false
-            //     },
-            //     {
-            //         id: 3,
-            //         name: 'مخمرية - ست عطور',
-            //         model: 1997,
-            //         belongTo: 'مخمرية - عناية بالجسم',
-            //         price: 0,
-            //         available: true,
-            //         popular: true,
-            //         new: false
-            //     },
-            // ];
             return {
                 router,
                 sort: ['name', 'model', 'belongTo', 'price'],
@@ -106,7 +74,7 @@
         async mounted() { this.startPage() },
         methods: {
             startPage(){
-                this.DataStore.getData('Products').then(() => {})
+                this.DataStore.getData('Products').then(() => { })
             },
             // Add And Edit the Item data
             addProduct(){

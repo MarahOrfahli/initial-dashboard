@@ -1,12 +1,23 @@
 <template>
+    <!-- 
+        All Inputs:
+        - Customer name
+        - Phone Number
+        - Another Phone Number
+        - Select City
+        - Select Area After Select City
+        - Address
+     -->
+    <!--  (Back Button) => Back To List  -->
     <div class="mb-4.5 px-5 flex md:items-center md:flex-row flex-col gap-5">
         <div class="flex items-center gap-2"></div>
         <div class="ltr:ml-auto rtl:mr-auto">
-            <router-link to="/pages/orders/list" class="btn btn-secondary gap-2">
+            <router-link to="/pages/customers/list" class="btn btn-secondary gap-2">
                 {{ t('pages.customer.fields.back-customer') }}
             </router-link>
         </div>
     </div>
+    <!-- Form Fields -->
     <div class="panel space-y-5">
         <div class=" text-xl">
             <strong v-if="pageType == 'Create'">{{ t('pages.customer.fields.add-customer') }}</strong>
@@ -15,63 +26,52 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
             <!--  -------------------------------  Name input field  --------------------------------------  -->
             <div class="p-3">
-                <div :class="isSubmmit ? { 'has-error': errora } : ''">
+                <div :class="isSubmmit ? { 'has-error': name.error } : ''">
                     <label for="name">{{ t('pages.customer.fields.name') }}</label>
-                    <input id="name" type="text" :placeholder="t('pages.customer.modals.enter-name')" 
-                    class="form-input" @keyup="isSubmmit = false,errora = false" v-model="artitle" />
-                    <template v-if="isSubmmit && errora == true">
-                    <p class="text-danger mt-1">{{errorArabic}}</p>
+                    <input id="name" type="text" :disabled="loading_client"
+                    :class="loading_client ? 'bg-white-dark opacity-30 text-black' : ''"
+                    :placeholder="t('pages.customer.modals.enter-name')" 
+                    class="form-input" @keyup="isSubmmit = false,name.error = false" v-model="cus_name" />
+                    <template v-if="isSubmmit && name.error == true">
+                    <p class="text-danger mt-1">{{name.message}}</p>
                     </template>
                 </div>
             </div>
         <!---------------------------------------------------------------------------------------------------------->
         <!--  -------------------------------  Phone Number input field  --------------------------------------  -->
         <div class="p-3">
-            <div :class="isSubmmit ? { 'has-error': errorE} : ''">
+            <div :class="isSubmmit ? { 'has-error': phone.error} : ''">
                 <label for="phone_one">{{ t('pages.customer.fields.phone') }}</label>
-                <input id="phone_one" type="text" :placeholder="t('pages.customer.modals.enter-phone')"
-                class="form-input" @keyup="isSubmmit = false,errorE = false" v-model="entitle" />
-                <template v-if="isSubmmit && errorE == true">
-                <p class="text-danger mt-1">{{errorEnglish}}</p>
+                <input id="phone_one" type="text" @keypress="isNumber($event)"
+                :disabled="loading_client" :class="loading_client ? 'bg-white-dark opacity-30 text-black' : ''"
+                :placeholder="t('pages.customer.modals.enter-phone')" maxlength="20" minlength="11"
+                class="form-input" @keyup="isSubmmit = false,phone.error = false" v-model="cus_phone" />
+                <template v-if="isSubmmit && phone.error == true">
+                <p class="text-danger mt-1">{{phone.message}}</p>
                 </template>
             </div>
         </div>
         <!-------------------------------------------------------------------------------------------->
         <!--  -------------------------------  Anoter Phone input field  --------------------------------------  -->
         <div class="p-3">
-            <div :class="isSubmmit ? { 'has-error': errorE} : ''">
-                <label for="phone_two">{{ t('pages.customer.fields.phone2') }}</label>
-                <input id="phone_two" type="text" :placeholder="t('pages.customer.modals.enter-phone')"
-                class="form-input" @keyup="isSubmmit = false,errorE = false" v-model="entitle" />
-                <template v-if="isSubmmit && errorE == true">
-                <p class="text-danger mt-1">{{errorEnglish}}</p>
-                </template>
-            </div>
-        </div>
-        <!-------------------------------------------------------------------------------------------->
-        <!--  -------------------------------  Email input field  ------------------------------------->
-        <div class="p-3">
-            <div :class="isSubmmit ? { 'has-error': errorE} : ''">
-                <label for="email">{{ t('pages.customer.fields.email2') }}</label>
-                <input id="email" type="text" :placeholder="t('pages.customer.modals.enter-email')"
-                class="form-input" @keyup="isSubmmit = false,errorE = false" v-model="entitle" />
-                <template v-if="isSubmmit && errorE == true">
-                <p class="text-danger mt-1">{{errorEnglish}}</p>
-                </template>
-            </div>
+            <label for="phone_two">{{ t('pages.customer.fields.phone2') }}</label>
+            <input id="phone_two" type="text" @keypress="isNumber($event)"
+            :disabled="loading_client" :class="loading_client ? 'bg-white-dark opacity-30 text-black' : ''"
+            :placeholder="t('pages.customer.modals.enter-phone')" maxlength="20" minlength="11"
+            class="form-input" @keyup="isSubmmit = false" v-model="cus_phone_two" />
         </div>
         <!---------------------------------------------------------------------------->
         <!--  -------------------------------  Select field  --------------------------------------  -->
         <div class="p-3">
             <div :class="isSubmmit ? { 'has-error': city.error} : ''">
                 <label for="store" class="ltr:mr-2 rtl:ml-2 mb-0">{{ t('pages.customer.fields.city') }}</label>
-                <!-- searchable -->
                 <multiselect
                 id="store"
-                v-model="city_name"
+                v-model="city_name" :disabled="loading_client"
+                :class="loading_client ? 'bg-white-dark opacity-30 text-black' : ''"
                 :options="citiesOption.names"
                 @click="isSubmmit = false,city.error = false"
-                @update:model-value="update_selected('city')"
+                @update:model-value="update_selected('City')"
                 class="custom-multiselect"
                 :searchable="true"
                 :loading="loading_city"
@@ -86,14 +86,15 @@
         <!--  -------------------------------  Select field  --------------------------------------  -->
         <div class="p-3">
             <div :class="isSubmmit ? { 'has-error': area.error} : ''">
-                <label for="store" class="ltr:mr-2 rtl:ml-2 mb-0">{{ t('pages.customer.fields.area') }}</label>
+                <label for="area" class="ltr:mr-2 rtl:ml-2 mb-0">{{ t('pages.customer.fields.area') }}</label>
                 <!-- searchable -->
                 <multiselect
-                id="store"
-                v-model="area_name"
+                id="area"
+                v-model="area_name" :disabled="loading_client"
+                :class="loading_client ? 'bg-white-dark opacity-30 text-black' : ''"
                 :options="areasOption.names"
                 @click="isSubmmit = false,area.error = false"
-                @update:model-value="update_selected('area')"
+                @update:model-value="update_selected('Area')"
                 class="custom-multiselect"
                 :searchable="true"
                 :loading="loading_area"
@@ -107,42 +108,22 @@
         <!-------------------------------------------------------------------------------------------->
         <!--  -------------------------------  Address input field  ----------------------------------->
         <div class="p-3">
-            <div :class="isSubmmit ? { 'has-error': errorE} : ''">
+            <div :class="isSubmmit ? { 'has-error': address.error} : ''">
                 <label for="address">{{ t('pages.customer.fields.address') }}</label>
-                <input id="address" type="text" :placeholder="t('pages.customer.modals.enter-address')"
-                class="form-input" @keyup="isSubmmit = false,errorE = false" v-model="entitle" />
-                <template v-if="isSubmmit && errorE == true">
-                <p class="text-danger mt-1">{{errorEnglish}}</p>
-                </template>
-            </div>
-        </div>
-        <!---------------------------------------------------------------------------->
-        <!--  -------------------------------  Select field  --------------------------------------  -->
-        <div class="p-3">
-            <div :class="isSubmmit ? { 'has-error': type.error} : ''">
-                <label for="store" class="ltr:mr-2 rtl:ml-2 mb-0">{{ t('pages.customer.fields.type') }}</label>
-                <!-- searchable -->
-                <multiselect
-                id="store"
-                v-model="city_name"
-                :options="citiesOption.names"
-                @click="isSubmmit = false,type.error = false"
-                @update:model-value="update_selected('type')"
-                class="custom-multiselect"
-                :searchable="true"
-                :loading="loading_city"
-                :placeholder="t('page-control.select-option')"
-                ></multiselect>
-                <template v-if="isSubmmit && type.error == true">
-                <p class="text-danger mt-1">{{type.message}}</p>
+                <input id="address" type="text" :disabled="loading_client"
+                :class="loading_client ? 'bg-white-dark opacity-30 text-black' : ''"
+                :placeholder="t('pages.customer.modals.enter-address')"
+                class="form-input" @keyup="isSubmmit = false,address.error = false" v-model="cus_address" />
+                <template v-if="isSubmmit && address.error == true">
+                <p class="text-danger mt-1">{{address.message}}</p>
                 </template>
             </div>
         </div>
     </div>
-        
+        <!------------------------------------------------------------------->
         <div class="flex justify-end items-center mt-8">
-            <button type="button" @click="saveInfo" class="btn btn-primary ltr:ml-4 rtl:mr-4">
-                <div v-if="ID == 0">
+            <button type="button" @click="saveInfo" :disabled="loading" class="btn btn-primary ltr:ml-4 rtl:mr-4">
+                <div v-if="pageType == 'Create'">
                     <span v-if="loading == false">
                         {{ t('page-control.add') }}
                     </span>
@@ -150,7 +131,7 @@
                         <IconRefresh class="animate-[spin_1s_linear_infinite] w-5 h-5" />
                     </span>
                 </div>
-                <div v-else-if="ID != 0">
+                <div v-else-if="pageType == 'Edit'">
                     <span v-if="loading == false">{{ t('page-control.save-changes') }}</span>
                     <span v-else>
                         <IconRefresh class="animate-[spin_1s_linear_infinite] w-5 h-5" />
@@ -163,13 +144,15 @@
 </template>
 <script lang="ts">
 
-import { ref, defineComponent } from 'vue';
+import { defineComponent } from 'vue';
 import { storeToRefs } from 'pinia'
 import { useI18n } from 'vue-i18n'
 import IconRefresh from '@/components/icon/icon-refresh.vue';
 import { validationStore } from '@/components/validation'
 import { useConnectionStore } from '../../../stores/module/DataModule'
 import { useMeta } from '@/composables/use-meta';
+// Vue-Router
+import { useRouter } from 'vue-router'
 // Multiselect
 import Multiselect from '@suadelabs/vue3-multiselect';
 import '@suadelabs/vue3-multiselect/dist/vue3-multiselect.css';
@@ -180,6 +163,23 @@ export default defineComponent({
         Multiselect,
         IconRefresh
     },
+    ////// Alert Window ///////////
+    beforeMount() {
+      window.addEventListener('beforeunload', this.preventNav)
+    },
+    beforeDestroy() {
+      window.removeEventListener('beforeunload', this.preventNav)
+    },
+    beforeRouteLeave(to, from, next) {
+      if (this.loadPage) {
+        if (!window.confirm(this.t('page-control.delete.title') + ' ' + this.t('page-control.delete.unsave-data'))) {
+          return
+        }
+      }
+      next()
+      window.removeEventListener('beforeunload', this.preventNav)
+    },
+    /////////////////
     setup(){
             useMeta({ title: 'Add-Edit Customer' });
     },
@@ -189,103 +189,175 @@ export default defineComponent({
        const ID = props.id
         const pageType = props.type
         // Data & t-translate
+        const router = useRouter()
         const DataStore = useConnectionStore()
         const validationForm = validationStore()
-            const { isSubmmit, city, area, type, name } = storeToRefs(validationForm)
-        const { loading, imgLocation, loading_city, loading_area } = storeToRefs(DataStore)
-        const { t } = useI18n()
+            const { isSubmmit, area, phone, address, name, city } = storeToRefs(validationForm)
+        const { regions, customerByID, cities, loading, loading_area, loading_city, loading_client } = storeToRefs(DataStore)
+        const { t, locale } = useI18n()
         return{
-            t,
+            loadPage: true,
+            /////////////////
+            t,router,locale,
             // Data Connection
+            regions,
+            cities,
+            customerByID,
             pageType,
-            imgLocation,
             DataStore,
             loading,
-            loading_city,
             loading_area,
+            loading_city,
+            loading_client,
             ///////
             ID,
+            //citiesOption: { ids: [], names: [] },
+            areasOption: { ids: [], names: [], cities: [] },
             citiesOption: { ids: [], names: [] },
-            areasOption: { ids: [], names: [] },
-            artitle: '',
-            entitle: '',
-            city,
-            area,
-            type,
-            name,
-            formData: new FormData(),
+            cus_name: '',
+            cus_phone: '',
+            cus_phone_two: '',
+            cus_address: '',
+            area_name: '',
+            city_name: '',
+            areaID: 0,
+            cityID: 0,
             ///////// Validation  ////
             isSubmmit,
-            city_name: '',
-            area_name: '',
-            errora: false,
-            errorE: false,
-            errorI: false,
-            errorEnglish: '',
-            errorImage: '',
-            errorArabic: '',
-            counter: 0,
+            validationForm,
+            phone,
+            area,
+            name,
+            city,
+            address,
         }
     },
-    async mounted(){ this.FillData() },
+    async mounted(){ this.startPage() },
     methods: {
-        FillData(){
-            // if(this.ID != 0){
-            //     this.artitle = this.currentData.name_ar
-            //     this.entitle = this.currentData.name_en
-            // }
+        ///////////////////Prevent Page From Loading/////////////
+        preventNav(event) {
+            if (!this.loadPage) return
+            event.preventDefault()
+            // Chrome requires returnValue to be set.
+            event.returnValue = ''
         },
-        formValidate(){
-            this.isSubmmit = true
-            if(this.artitle == ''){
-                this.errora = true
-                this.errorArabic = this.t('pages.main_section.errors.arabic-empty')
-            }else if(this.artitle.length > 29){
-                this.errora = true
-                this.errorArabic = this.t('page-control.error-length')
+        startPage(){ // Start The Page............
+            this.validationForm.clear()
+            if(this.pageType == 'Create'){
+                this.getCityOption().then(()=>{
+                    this.getAreaOption()
+                })
+            }else if(this.pageType == 'Edit'){
+                this.getCityOption()
+                this.DataStore.getData('Customer',this.ID, 'GETByID').then(() => {
+                   this.areaID = this.customerByID.area_id
+                   this.cityID = this.customerByID.city_id
+                   this.cus_name = this.customerByID.name
+                   this.cus_phone = this.customerByID.phone
+                   this.cus_phone_two = this.customerByID.phone2
+                   this.cus_address = this.customerByID.address
+                }).then(()=>{
+                    this.check('City','id')
+                }).then(()=>{
+                    this.getAreaOption()
+                })
+            } 
+        },
+        // Get The City Option Data...........
+        async getCityOption(){
+            this.DataStore.getData('City').then(() => {
+                this.cities.forEach(element => {
+                    this.citiesOption.ids.push(element.id)
+                    if(this.locale == 'eg') this.citiesOption.names.push(element.name_ar)
+                    else this.citiesOption.names.push(element.name_en)
+                })
+                if(this.pageType == 'Create'){
+                    this.cityID = this.citiesOption.ids[0]
+                    this.city_name = this.citiesOption.names[0]
+                }
+            })
+        },
+        // Check the (City_ID / City_Name) || (Area_ID / Area_Name)...
+        check(type: string, value: string){
+            if(type == 'City' && value == 'id'){
+                for (let index = 0;  index < this.citiesOption.names.length; index++) {
+                    if(this.citiesOption.ids[index] == this.cityID){
+                        this.city_name = this.citiesOption.names[index]
+                    }
+                }
+            }else if(type == 'City' && value == 'name'){
+                for (let index = 0;  index < this.citiesOption.names.length; index++) {
+                    if(this.citiesOption.names[index] == this.city_name){
+                        this.cityID = this.citiesOption.ids[index]
+                    }
+                }
+            }else if(type == 'Area' && value == 'id'){
+                for (let index = 0;  index < this.areasOption.names.length; index++) {
+                    if(this.areasOption.ids[index] == this.areaID){
+                        this.area_name = this.areasOption.names[index]
+                    }
+                }
+            }else if(type == 'Area' && value == 'name'){
+                for (let index = 0;  index < this.areasOption.names.length; index++) {
+                    if(this.areasOption.names[index] == this.area_name){
+                        this.areaID = this.areasOption.ids[index]
+                    }
+                }
             }
-            if(this.entitle == ''){
-                this.errorE = true
-                this.errorEnglish = this.t('pages.main_section.errors.english-empty')
-            }else if(this.entitle.length > 29){
-                this.errorE = true
-                this.errorEnglish = this.t('page-control.error-length')
-            }
-            if (this.errora == true || this.errorE == true || this.errorI == true) {
-                this.counter++
-            } else {
-                this.counter = 0
-            }
-            return this.counter
+        },
+        // Get The Area Option Data (Deppending On CityID)
+        getAreaOption(select: boolean = false){
+            this.areasOption.ids = []
+            this.areasOption.names = []
+            this.areasOption.cities = []
+            this.DataStore.getData('Region').then(() => {
+                this.regions.forEach(element => {
+                    if(this.cityID == element.city_id){
+                        this.areasOption.ids.push(element.id)
+                        if(this.locale == 'eg') this.areasOption.names.push(element.name_ar)
+                        else this.areasOption.names.push(element.name_en)
+                        this.areasOption.cities.push(element.city_id)
+                    }
+                });
+            }).then(()=>{
+                if(this.pageType == 'Edit' && select == false) this.check('Area','id')
+            })
         },
         update_selected(type: string){
-
+            this.check(type,'name')
+            if(type == 'City') this.getAreaOption()
         },
         saveInfo(){
-            var isValid = this.formValidate()
+            this.loadPage = false
+            let data = { 
+                name: this.cus_name, phone: this.cus_phone, city_id: this.cityID,
+                area_id: this.areaID, address: this.cus_address, phone2: this.cus_phone_two 
+            }
+            var isValid = this.validationForm.checkCustomerInfo(this.cus_name, this.cus_phone, this.area_name,this.cus_address)
             if (isValid == 0) {
-                this.getData()
-                if (this.ID === 0) { // Create Data
-                    this.DataStore.createData('Categories', this.formData, 'CreateWithImg').then(() => {
-                    this.$emit('load-data')
+                
+                if (this.pageType == 'Create') { // Create Data
+                    this.DataStore.createData('Customer', data).then(() => {
                     this.ondismiss()
                     })
-                } else { // Update Data
-                    this.DataStore.updateData('Categories', this.ID, this.formData, 'EditWithImg').then(() => {
-                    this.$emit('load-data')
+                } else if(this.pageType == 'Edit') { // Update Data
+                    this.DataStore.updateData('Customer', this.ID, data).then(() => {
                     this.ondismiss()
                     })
                 }
             }
         },
-        getData(){ // Use Form Data To Submit The Data Into Database
-        if (this.artitle != '' && this.artitle != null) this.formData.append('name_ar', this.artitle)
-        if (this.entitle != '' && this.entitle != null) this.formData.append('name_en', this.entitle)
-        if(this.ID != 0) this.formData.append('_method', "PUT")
+        isNumber(evt) {
+        const charCode = evt.which ? evt.which : evt.keyCode
+        if (charCode > 31 && (charCode < 48 || charCode > 57) && charCode !== 46) {
+          evt.preventDefault()
+        }
         },
-        ondismiss() {
-        this.$emit('close')
-        },
+        ondismiss(){
+            this.router.push({
+                name: 'customers-list',
+            })
+        }
     }
 })
 

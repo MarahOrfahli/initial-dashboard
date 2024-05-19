@@ -1,4 +1,9 @@
 <template>
+    <!-- 
+        All Inputs:
+        - Brand name
+        - Image field (Logo)
+     -->
     <div class="space-y-5">
         <!--  -------------------------------  Brand name input field  --------------------------------------  -->
         <div :class="isSubmmit ? { 'has-error': name.error } : ''">
@@ -20,14 +25,14 @@
                         <p class="text-danger mt-1">{{file.message}}</p>
                     </template>
         </div>
-        <div class="mb-10">
+        <div class="mb-10"> <!-- Show Logo -->
             <div class="mt-8 border-slate-500 rounded-md drop-shadow-lg" v-if="imageUrl != ''">
                 <img :src="imageUrl" class="rounded-md w-40">
             </div>
         </div>
         <!---------------------------------------------------------------------------->
         <div class="flex justify-end items-center mt-8">
-            <button type="button" @click="saveInfo" class="btn btn-primary ltr:ml-4 rtl:mr-4">
+            <button type="button" @click="saveInfo" :disabled="loading" class="btn btn-primary ltr:ml-4 rtl:mr-4">
                 <div v-if="ID == 0">
                     <span v-if="loading == false">
                         {{ t('page-control.add') }}
@@ -133,7 +138,7 @@ export default defineComponent({
             var isValid = this.validationForm.checkBrandInfo(this.storename, this.fileVal)
             if (isValid == 0) {
                 this.getData()
-                if (this.ID === 0) { // Add New Brand
+                if (this.ID == 0) { // Add New Brand
                     this.DataStore.createData('Brands', this.formData, 'CreateWithImg').then(() => {
                     this.$emit('load-data')
                     this.ondismiss()

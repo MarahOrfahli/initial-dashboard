@@ -19,7 +19,8 @@ import {
     Store,
     Customer,
     Products,
-    Orders
+    Orders,
+    Region
   } from '../../model/Classes'
   /// Make Data Connection Store 
   // Put the data into objects..
@@ -29,7 +30,7 @@ import {
       const storeSetting = useAppStore();
       return {
         // Project Name
-        project_name: 'ZanobiaMarket',
+        project_name: 'Trendy Beauty',
         // Arrows
         firstArrow: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"> <path d="M13 19L7 12L13 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> <path opacity="0.5" d="M16.9998 19L10.9998 12L16.9998 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg>`,
         lastArrow: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-4.5 h-4.5 rtl:rotate-180"> <path d="M11 19L17 12L11 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path opacity="0.5" d="M6.99976 19L12.9998 12L6.99976 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/> </svg>`,
@@ -40,17 +41,25 @@ import {
         // variable for images storage
         imgLocation : 'https://api.mightcinema.com/storage/',
         // Variables For Connection
+        regions: [Region],
+        cities: [],
         brands: [Brands],
         stores: [Store],
         orders: [Orders],
+        orderByID: [Orders],
         products: [Products],
-        customer: [Customer],
+        productByID: [Products],
+        customers: [Customer],
+        customerByID: [Customer],
         categories: [Categories],
         subcategories: [SubCategories],
         /////////////
+        storesTrack: [],
         storeDetails: [],
         /// Loading.........
         loading: false,
+        loading_product: false,
+        loading_order: false,
         loading_brand: false,
         loading_create: false,
         loading_store: false,
@@ -69,6 +78,7 @@ import {
                 this.loading = true
                 if (dataName == 'Categories') {
                   this.categories = await getData(dataName, dataId)
+                //  console.log(await getData(dataName, dataId,'GET','test'))
                 } else if (dataName == 'SubCategories') {
                   this.loading_subcategory = true
                   this.subcategories = await getData(dataName, dataId, type)
@@ -79,20 +89,46 @@ import {
                   this.loading_store = true
                   this.stores = await getData(dataName, dataId)
                 } else if (dataName == 'Products') {
-                  this.products = await getData(dataName, dataId)
+                  if(type == 'GETByID'){
+                    this.loading_product = true
+                    this.productByID = await getData(dataName, dataId, type)
+                  }else{
+                    this.products = await getData(dataName, dataId, type)
+                  }
+                //  if(type == 'GET') console.log(await getData(dataName, dataId,'GET','test'))
                 } else if (dataName == 'Customer') {
-                  this.customer = await getData(dataName, dataId)
+                  if(type == 'GETByID'){
+                    this.loading_client = true
+                    this.customerByID = await getData(dataName, dataId, type)
+                  }else{
+                    this.customers = await getData(dataName, dataId,type)
+                  }
                 } else if (dataName == 'Orders') {
-                  this.orders = await getData(dataName, dataId)
+                  if(type == 'GETByID'){
+                    this.loading_order = true
+                    this.orderByID = await getData(dataName, dataId, type)
+                  }else{
+                    this.orders = await getData(dataName, dataId, type)
+                  }
+                } else if (dataName == 'Region') {
+                  this.loading_area = true
+                  this.regions = await getData(dataName, dataId)
+                } else if (dataName == 'City') {
+                  this.loading_city = true
+                  this.cities = await getData(dataName, dataId)
                 }
             } catch (error) {
               handleApiError(error, this.storeSetting.rtlClass)
-              this.categories = []
             } finally {
               this.loading = false
+              this.loading_area = false
+              this.loading_city = false
               this.loading_store = false
               this.loading_brand = false
               this.loading_subcategory = false
+              this.loading_product = false
+              this.loading_client = false
+              this.loading_order = false
             }
         },
         /////////////////////////////////////////
@@ -142,14 +178,19 @@ import {
                 this.products.splice(index, 1, DataType)
               }
             }else if (dataName == 'Customer') {
-              index = this.customer.findIndex((t: any) => t.id === DataType.id)
+              index = this.customers.findIndex((t: any) => t.id === DataType.id)
               if (index !== -1) {
-                this.customer.splice(index, 1, DataType)
+                this.customers.splice(index, 1, DataType)
               }
             }else if (dataName == 'Orders') {
               index = this.orders.findIndex((t: any) => t.id === DataType.id)
               if (index !== -1) {
                 this.orders.splice(index, 1, DataType)
+              }
+            }else if (dataName == 'Region') {
+              index = this.regions.findIndex((t: any) => t.id === DataType.id)
+              if (index !== -1) {
+                this.regions.splice(index, 1, DataType)
               }
             }
           } catch (error) {
@@ -175,9 +216,11 @@ import {
             } else if (dataName == 'Products') {
               this.products = this.products.filter((t: any) => t.id !== dataId)
             } else if (dataName == 'Customer') {
-              this.customer = this.customer.filter((t: any) => t.id !== dataId)
+              this.customers = this.customers.filter((t: any) => t.id !== dataId)
             }else if (dataName == 'Orders') {
               this.orders = this.orders.filter((t: any) => t.id !== dataId)
+            }else if (dataName == 'Region') {
+              this.regions = this.regions.filter((t: any) => t.id !== dataId)
             }
           } catch (error) {
             handleApiError(error, this.storeSetting.rtlClass)

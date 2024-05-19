@@ -26,11 +26,11 @@ export class Customer { // Customer
     name = ''
     address= ''
     phone = ''
-    phone2 = ''
+    phone_2 = ''
     city_id = ''
     area_id = ''
-    email = ''
-    type = ['consumer','wholesaler']
+    // email = ''
+    // type = ['consumer','wholesaler']
 }
 
 export class Products { // Products
@@ -86,5 +86,13 @@ export class item{
     id = 0
     quantity = 0
     alert_quantity = 0
+}
+
+export class Region{
+    id = 0
+    name_ar = ''
+    name_en = ''
+    city_id = 0
+    city = ''
 }
 

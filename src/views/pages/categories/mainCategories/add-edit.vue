@@ -1,4 +1,10 @@
 <template>
+    <!-- 
+        All Inputs:
+        - Title in arabic
+        - Title in english
+        - Image field
+     -->
     <div class="space-y-5">
         <!--  -------------------------------  Arabic title input field  --------------------------------------  -->
         <div :class="isSubmmit ? { 'has-error': titlearabic.error } : ''">
@@ -38,7 +44,7 @@
         </div>
         <!---------------------------------------------------------------------------->
         <div class="flex justify-end items-center mt-8">
-            <button type="button" @click="saveInfo" class="btn btn-primary ltr:ml-4 rtl:mr-4">
+            <button type="button" @click="saveInfo" :disabled="loading" class="btn btn-primary ltr:ml-4 rtl:mr-4">
                 <div v-if="ID == 0">
                     <span v-if="loading == false">
                         {{ t('page-control.add') }}

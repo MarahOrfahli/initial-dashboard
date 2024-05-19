@@ -1,4 +1,10 @@
 <template>
+    <!-- 
+        All Inputs:
+        - Title in arabic
+        - Title in english
+        - Select category
+     -->
     <div class="space-y-5">
         <!--  -------------------------------  Arabic title input field  --------------------------------------  -->
         <div :class="isSubmmit ? { 'has-error': titlearabic.error } : ''">
@@ -44,7 +50,7 @@
         <br/><br/><br/><br/><br/><br/>
         <!---------------------------------------------------------------------------->
         <div class="flex justify-end items-center mt-8">
-            <button type="button" @click="saveInfo" class="btn btn-primary ltr:ml-4 rtl:mr-4">
+            <button type="button" @click="saveInfo" :disabled="loading" class="btn btn-primary ltr:ml-4 rtl:mr-4">
                 <div v-if="ID == 0">
                     <span v-if="loading == false">
                         {{ t('page-control.add') }}
@@ -94,7 +100,7 @@ export default defineComponent({
        const DataStore = useConnectionStore()
         const validationForm = validationStore()
         const { isSubmmit, titlearabic, titleenglish, categorySelect } = storeToRefs(validationForm)
-        const { categories, subcategories, loading } = storeToRefs(DataStore)
+        const { categories, subcategories, loading, } = storeToRefs(DataStore)
         const { t } = useI18n()
         let currentData: SubCategories = props.data
         return{

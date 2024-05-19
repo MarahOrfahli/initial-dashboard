@@ -1,4 +1,9 @@
 <template>
+    <!-- 
+        All Inputs:
+        - Store Name
+        - Location
+     -->
     <div class="space-y-5">
         <!--  -------------------------------  Store title input field  --------------------------------------  -->
         <div :class="isSubmmit ? { 'has-error': name.error} : ''">

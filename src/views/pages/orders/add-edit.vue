@@ -1,4 +1,16 @@
 <template>
+    <!-- 
+        All Inputs:
+        - Client Name
+        - Select Shipping Company
+        - Select Status
+        - Price
+        - Shipping Date
+        - Order Date
+        - Delivery Date
+        - Discount CheckBox
+        - Note
+     -->
     <div class="mb-4.5 px-5 flex md:items-center md:flex-row flex-col gap-5">
         <div class="flex items-center gap-2"></div>
         <div class="ltr:ml-auto rtl:mr-auto">
@@ -37,7 +49,7 @@
         <!--  -------------------------------  Shipping Company Select field  --------------------------------------  -->
         <div class="p-3">
                 <div :class="isSubmmit ? { 'has-error': shipping_name.error } : ''">
-                    <label for="shi-name">{{ t('pages.orders.fields.shipping-company') }}</label>
+                    <label for="shi-name">{{ t('pages.orders.fields.car') }}</label>
                     <multiselect
                     id="shi-name"
                     v-model="values.company_name"
@@ -111,7 +123,7 @@
         </div>
         <!-------------------------------------------------------------------------------------------->
         <!--  -------------------------------  Delivery Date field  ------------------------------  -->
-        <div class="p-3"> <!-- Price -->
+        <div class="p-3">
             <div :class="isSubmmit ? { 'has-error': delivery_date.error } : ''">
             <label for="startDate" class="flex-1 ltr:mr-2 rtl:ml-2 mb-0">{{ t('pages.orders.fields.delivery-date') }}</label>
             <flat-pickr id="startDate" v-model="values.deliveryDate" class="form-input" @click="isSubmmit = false,delivery_date.error = false"  :config="config"></flat-pickr>
@@ -128,16 +140,16 @@
             </div>
         </div>
         <!-----------------------------------Note---------------------------------------->
-        <div class="p-3"> <!-- Description In Arabic -->
+        <div class="p-3">
             <label for="note" class="ltr:mr-2 rtl:ml-2 mb-0">{{ t('pages.orders.fields.note') }}</label>
             <textarea id="note" rows="3" :placeholder="t('pages.orders.modals.enter-note')" 
             class="form-textarea" v-model="values.note" required></textarea>
         </div>
     </div>
-        
+        <!--------------------------------------------->
         <div class="flex justify-end items-center mt-8">
             <button type="button" @click="saveInfo" class="btn btn-primary ltr:ml-4 rtl:mr-4">
-                <div v-if="ID == 0">
+                <div v-if="pageType == 'Create'">
                     <span v-if="loading == false">
                         {{ t('page-control.add') }}
                     </span>
@@ -145,7 +157,7 @@
                         <IconRefresh class="animate-[spin_1s_linear_infinite] w-5 h-5" />
                     </span>
                 </div>
-                <div v-else-if="ID != 0">
+                <div v-else-if="pageType == 'Edit'">
                     <span v-if="loading == false">{{ t('page-control.save-changes') }}</span>
                     <span v-else>
                         <IconRefresh class="animate-[spin_1s_linear_infinite] w-5 h-5" />
@@ -180,6 +192,23 @@ export default defineComponent({
         IconRefresh,
         flatPickr
     },
+    ////// Alert Window ///////////
+    beforeMount() {
+      window.addEventListener('beforeunload', this.preventNav)
+    },
+    beforeDestroy() {
+      window.removeEventListener('beforeunload', this.preventNav)
+    },
+    beforeRouteLeave(to, from, next) {
+      if (this.loadPage) {
+        if (!window.confirm(this.t('page-control.delete.title') + ' ' + this.t('page-control.delete.unsave-data'))) {
+          return
+        }
+      }
+      next()
+      window.removeEventListener('beforeunload', this.preventNav)
+    },
+    /////////////////
     setup(){
             useMeta({ title: 'Add-Edit Order' });
     },
@@ -195,12 +224,14 @@ export default defineComponent({
         });
         const DataStore = useConnectionStore()
         const validationForm = validationStore()
-            const { isSubmmit, status, price, type, name, shipping_name, shipping_date,
+            const { isSubmmit, status, price, name, shipping_name, shipping_date,
                 order_date, delivery_date
              } = storeToRefs(validationForm)
         const { loading, imgLocation, loading_client, loading_status } = storeToRefs(DataStore)
         const { t } = useI18n()
         return{
+            loadPage: true,
+            /////////////////
             t,config,
             // Data Connection
             pageType,
@@ -231,7 +262,6 @@ export default defineComponent({
             validationForm,
             status,
             price,
-            type,
             name,
             shipping_name,
             shipping_date,
@@ -241,6 +271,13 @@ export default defineComponent({
     },
     async mounted(){ this.FillData() },
     methods: {
+        ///////////////////Prevent Page From Loading/////////////
+        preventNav(event) {
+            if (!this.loadPage) return
+            event.preventDefault()
+            // Chrome requires returnValue to be set.
+            event.returnValue = ''
+        },
         FillData(){
             this.validationForm.clear()
             // if(this.ID != 0){
@@ -252,6 +289,7 @@ export default defineComponent({
 
         },
         saveInfo(){
+            this.loadPage = false
             var isValid = this.validationForm.checkOrderInfo(this.values)
             if (isValid == 0) {
                 this.getData()

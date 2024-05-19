@@ -16,7 +16,8 @@ export const validationStore = defineStore('Validation',{
             // Customer
             city: { error: false, message: ''},
             area: { error: false, message: ''},
-            type: { error: false, message: ''},
+            phone: { error: false, message: ''},
+            address: { error: false, message: ''},
             // Orders
             shipping_name : { error: false, message: ''},
             shipping_date : { error: false, message: ''},
@@ -63,6 +64,23 @@ export const validationStore = defineStore('Validation',{
         },
         checkMore30Char(data: string){
             return data.length > 29 ? true : false
+        },
+        checkPhone(phone: string){
+            if (phone == '') {
+                this.phone.message = this.t('pages.customer.errors.phone-empty')
+                return true
+              } else {
+                if (phone.search(/^[0-9]*$/) == -1) {
+                    this.phone.message = this.t('pages.customer.errors.phone-number')
+                    return true
+                } else if (phone.length > 20) {
+                    this.phone.message = this.t('pages.customer.errors.phone-digit-above') 
+                    return true
+                } else if (phone.length < 11) {
+                    this.phone.message = this.t('pages.customer.errors.phone-digit-under') 
+                    return true
+                }
+              }
         },
         ///////////////// Validation Store Methods //////////////////////////
         checkStoreErrors(){
@@ -189,7 +207,7 @@ export const validationStore = defineStore('Validation',{
             this.productbrand.error ==  true || this.file.error == true ||
             this.productstore.error == true || this.Quantity.error == true ? true : false
         },
-        checkProductInfo(pageType:string ,values){
+        checkProductInfo(pageType:string ,values, url: string){
             let counter = 0
             this.isSubmmit = true
             if(this.checkEmpty(values.title_ar)){ // Title In Arabic
@@ -237,7 +255,7 @@ export const validationStore = defineStore('Validation',{
                 this.productScategory.error = true
                 this.productScategory.message = this.t('pages.products_section.errors.subcategory')
             }
-            if(this.isNull(values.file) || values.file == File){ // Main Image
+            if(this.isNull(values.file) && this.checkEmpty(url) || values.file == File && this.checkEmpty(url)){ // Main Image
                 this.file.error = true
                 this.file.message = this.t('pages.products_section.errors.upload')
             }
@@ -360,6 +378,71 @@ export const validationStore = defineStore('Validation',{
             }
             return { count: counter, items: items }
         },
+        ///////////////// Validation Region Methods //////////////////////////
+        checkRegionErrors(){
+            return this.titlearabic.error == true || this.titleenglish.error == true || this.city.error == true ? true : false
+        },
+        checkRegionInfo(name_ar: string, name_en: string, city: string){ 
+            let counter = 0
+            this.isSubmmit = true
+            if(this.checkEmpty(name_ar)){
+                this.titlearabic.error = true
+                this.titlearabic.message = this.t('pages.region.errors.arabic-empty')
+            }else if(this.checkMore30Char(name_ar)){
+                this.titlearabic.error = true
+                this.titlearabic.message = this.error_length
+            }
+            if(this.checkEmpty(name_en)){
+                this.titleenglish.error = true
+                this.titleenglish.message = this.t('pages.region.errors.english-empty')
+            }else if(this.checkMore30Char(name_en)){
+                this.titleenglish.error = true
+                this.titleenglish.message = this.error_length
+            }
+            if(this.checkEmpty(city)){
+                this.city.error = true
+                this.city.message = this.t('pages.region.errors.city-empty')
+            }
+            if (this.checkRegionErrors()) {
+                counter++
+            } else {
+                counter = 0
+            }
+            return counter
+        },
+        ///////////////// Validation Customer Methods //////////////////////////
+        checkCustomerErrors(){
+            return this.name.error == true || this.phone.error == true || this.area.error == true
+            || this.address.error == true ? true : false
+        },
+        checkCustomerInfo(name: string, phone: string, area: string, address: string){ 
+            let counter = 0
+            this.isSubmmit = true
+            if(this.checkEmpty(name)){
+                this.name.error = true
+                this.name.message = this.t('pages.customer.errors.name-empty')
+            }else if(this.checkMore30Char(name)){
+                this.name.error = true
+                this.name.message = this.error_length
+            }
+             if(this.checkPhone(phone)){
+                this.phone.error = true
+            }
+            if(this.checkEmpty(area)){
+                this.area.error = true
+                this.area.message = this.t('pages.customer.errors.select')
+            }
+            if(this.checkEmpty(address)){
+                this.address.error = true
+                this.address.message = this.t('pages.customer.errors.address-empty')
+            }
+            if (this.checkCustomerErrors()) {
+                counter++
+            } else {
+                counter = 0
+            }
+            return counter
+        },
         ///////////////// Clear All Validations ////////////////////////////
         clear(){
             ////// Clear Store //////////
@@ -385,8 +468,10 @@ export const validationStore = defineStore('Validation',{
             this.city.message = ''
             this.area.error = false
             this.area.message = ''
-            this.type.error = false
-            this.type.message = ''
+            this.phone.error = false
+            this.phone.message = ''
+            this.address.error = false
+            this.address.message = ''
             ////// Clear Products //
             this.productdescenglish.error = false
             this.productdescenglish.message = ''

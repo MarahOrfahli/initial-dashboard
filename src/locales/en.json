@@ -18,7 +18,8 @@
         "orders":"Orders",
         "customers":"Customers",
         "brand":"Brand",
-        "store":"Store"
+        "store":"Store",
+        "regions":"Regions"
     },
     "***************************":"*******************",
     "footer":{
@@ -164,7 +165,14 @@
                 "enter-address":"Enter Client Address..."
             },
             "errors":{
-                
+                "name-empty":"The Name must not be empty",
+                "phone-empty":"The Phone must not be empty",
+                "phone-number":"The Phone Must Be A Number",
+                "phone-digit":"The Phone Must Be less than or equal to 20 Digits",
+                "phone-digit-above":"The phone number must not exceed 20 digits",
+                "phone-digit-under":"The phone number must not be less than eleven digits",
+                "address-empty":"The Address must not be empty",
+                "select":"You must Choose a region"
             }
         },
         "**********":"***",
@@ -193,6 +201,7 @@
                 "order":"Order",
                 "order-date":"Order Date",
                 "shipping-company":"Shipping Company",
+                "car":"Car",
                 "shipping-date":"Shipping Date",
                 "shipping-price":"Shipping Price",
                 "delivery-date":"Delivery Date",
@@ -269,6 +278,8 @@
             "fields": {
                 "name":"Store Name",
                 "details":"Store Details",
+                "in":"Entry",
+                "out":"Exit",
                 "location":"Location",
                 "quantities":"Quantities",
                 "quantity":"Quantity"
@@ -290,6 +301,25 @@
             "errors":{
                 "name-empty":"The store name must not be empty",
                 "location-empty":"The store location must not be empty"
+            }
+        },
+        "***":"************",
+        "region":{
+            "fields": {
+                "title-arabic":"Title In Arabic",
+                "title-english":"Title In English",
+                "name":"Region Name",
+                "city":"City"
+            },
+            "modals":{
+                "add-new-region":"Adding New Area",
+                "edit-region":"Edit Region Information",
+                "enter-title":"Enter Title..."
+            },
+            "errors":{
+                "arabic-empty":"The title in arabic must not be empty",
+                "english-empty":"The title in english must not be empty",
+                "city-empty":"The City must not be empty"
             }
         }
     }

@@ -54,6 +54,18 @@ const routes: RouteRecordRaw[] = [
         name: 'store-details',
         component: () => import('../views/pages/store/details.vue'),
     },
+    {
+        path: '/pages/store/track',
+        name: 'store-track',
+        component: () => import('../views/pages/store/storeTrack.vue'),
+    },
+    ////////////////////////////////
+    /* Regions */
+    {
+        path: '/pages/region/list',
+        name: 'region-list',
+        component: () => import('../views/pages/regions/list.vue'),
+    },
     ////////////////////////////////
     /* Main Categories */
     {
