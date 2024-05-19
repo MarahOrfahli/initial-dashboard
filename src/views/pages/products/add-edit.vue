@@ -205,7 +205,7 @@
 <!--------------------------------------------------------------------------------------------------------------->
 <div  class="mt-5">
     <button type="button" @click="onSubmit" :disabled="loading_create" class="btn btn-primary !mt-6">
-        <div v-if="ID == 0 || ID == undefined">
+        <div v-if="pageType == 'Create'">
             <span v-if="loading_create == false">
                 {{ t('page-control.add') }}
             </span>
@@ -213,7 +213,7 @@
                 <IconRefresh class="animate-[spin_1s_linear_infinite] w-5 h-5" />
             </span>
         </div>
-        <div v-else-if="ID != 0">
+        <div v-else-if="pageType == 'Edit'">
             <span v-if="loading_create == false">{{ t('page-control.save-changes') }}</span>
                 <span v-else>
                     <IconRefresh class="animate-[spin_1s_linear_infinite] w-5 h-5" />
@@ -271,7 +271,7 @@ import { ref, defineComponent } from 'vue';
         },
         computed: {
             fileVal(){
-                if(this.ID != 0 && this.ID != undefined && this.pageType == 'Edit') return this.imageUrl
+                if(this.pageType == 'Edit') return this.imageUrl
                 else return this.image_file
             },
         },
@@ -371,7 +371,7 @@ import { ref, defineComponent } from 'vue';
             onSubmit(){
                 this.loadPage = false
                 var isValid = this.validationForm.checkProductInfo(this.pageType,this.values, this.imageUrl)
-                if (isValid = 0) {
+                if (isValid == 0) {
                     this.getData()
                     if (this.pageType == 'Create') { // Add New Product
                         this.DataStore.createData('Products', this.formData, 'CreateWithImg').then(() => {
@@ -442,7 +442,6 @@ import { ref, defineComponent } from 'vue';
                 this.getData_ToOptions('Categories')
                 if(this.ID != 0 && this.ID != undefined && this.pageType == 'Edit'){
                     this.DataStore.getData('Products',this.ID, 'GETByID').then(() => {
-                        console.log(this.productByID)
                         this.values.title_ar = this.productByID.name_ar
                         this.values.title_en = this.productByID.name_en
                         this.values.desc_ar = this.productByID.description_ar
@@ -455,7 +454,6 @@ import { ref, defineComponent } from 'vue';
                         else this.available = false
                         
                         this.imageUrl = this.imgLocation + this.productByID.image
-                        console.log(this.imageUrl)
                         this.values.subcategory.id = this.productByID.sub_category_id
                         if(this.locale == 'eg') this.values.subcategory.field = this.productByID.subCategory.name_ar
                         if(this.locale == 'en') this.values.subcategory.field = this.productByID.subCategory.name_en

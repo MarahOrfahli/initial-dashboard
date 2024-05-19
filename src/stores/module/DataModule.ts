@@ -141,6 +141,7 @@ import {
           } catch (error) {
             handleApiError(error, this.storeSetting.rtlClass)
           } finally {
+            this.loading_create = false
             this.loading = false
           }
         },
@@ -150,6 +151,7 @@ import {
           let index: any
           const DataType = data
           try {
+            this.loading_create = true
             this.loading = true
             await updateData(dataName,id, data,type)
             if (dataName == 'Categories') {
@@ -196,6 +198,7 @@ import {
           } catch (error) {
             handleApiError(error, this.storeSetting.rtlClass)
           } finally {
+            this.loading_create = false
             this.loading = false
           }
         },
