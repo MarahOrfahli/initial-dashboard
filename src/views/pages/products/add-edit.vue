@@ -440,7 +440,7 @@ import { ref, defineComponent } from 'vue';
                 this.validationForm.clear()
                 this.getData_ToOptions('Brands')
                 this.getData_ToOptions('Categories')
-                if(this.ID != 0 && this.ID != undefined && this.pageType == 'Edit'){
+                if(this.pageType == 'Edit'){
                     this.DataStore.getData('Products',this.ID, 'GETByID').then(() => {
                         this.values.title_ar = this.productByID.name_ar
                         this.values.title_en = this.productByID.name_en

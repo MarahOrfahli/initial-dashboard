@@ -89,7 +89,7 @@
         },
         methods: {
             startPage(){
-                this.DataStore.getData('Region').then(() => { /* console.log(this.regions)  */})
+                this.DataStore.getData('Region').then(() => {  })
             },
             close(){
                 this.addeditregion = false

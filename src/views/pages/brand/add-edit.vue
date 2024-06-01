@@ -9,7 +9,7 @@
         <div :class="isSubmmit ? { 'has-error': name.error } : ''">
             <label for="name">{{ t('pages.brand.fields.brand-name') }}</label>
             <input id="name" type="text" :placeholder="t('pages.brand.fields.enter-title')" class="form-input" 
-            @keyup="isSubmmit = false,name.error = false" v-model="storename" />
+            @keyup="isSubmmit = false,name.error = false" v-model="brandname" />
             <template v-if="isSubmmit && name.error == true">
             <p class="text-danger mt-1">{{name.message}}</p>
             </template>
@@ -92,6 +92,7 @@ export default defineComponent({
         return{
             t,
             // Data Connection
+            datatype: 'Brands',
             brands,
             loading,
             currentData,
@@ -100,7 +101,7 @@ export default defineComponent({
             //// Variabls
             ID,
             file,
-            storename: '',
+            brandname: '',
             imageUrl: '',
             formData: new FormData(),
             ///////// Validation  ////
@@ -116,7 +117,7 @@ export default defineComponent({
             this.validationForm.clear()
             let str = this.imgLocation + this.currentData.logo
             if(this.ID != 0){
-                this.storename = this.currentData.name
+                this.brandname = this.currentData.name
                 this.imageUrl = str
             }
         },
@@ -135,7 +136,7 @@ export default defineComponent({
             }
         },
         saveInfo(){
-            var isValid = this.validationForm.checkBrandInfo(this.storename, this.fileVal)
+            var isValid = this.validationForm.checkBrandInfo(this.brandname, this.fileVal)
             if (isValid == 0) {
                 this.getData()
                 if (this.ID == 0) { // Add New Brand
@@ -153,7 +154,7 @@ export default defineComponent({
         },
         // Prepare Data To Create New Brand
         getData(){
-        if (this.storename != '' && this.name != null) this.formData.append('name', this.storename)
+        if (this.brandname != '' && this.brandname != null) this.formData.append('name', this.brandname)
         if (this.image_file != null) this.formData.append('logo', this.image_file)
         if(this.ID != 0) this.formData.append('_method', "PUT")
         },

@@ -17,9 +17,6 @@ function APIURL(dname: string, type = 'List', num = 0) {
     }
     // Cities & Areas //////////////////////
     case 'City': {
-      // apiurl = 'cities'
-      // return apiurl
-      // break
       if (type == 'GET' || type == 'Create') {
         apiurl = 'cities'
       } else if ( num != 0) {
@@ -93,8 +90,22 @@ function APIURL(dname: string, type = 'List', num = 0) {
     case 'Products': {
       if (type == 'GET' || type == 'Create') {
         apiurl = 'products'
-      } else if (num != 0) {
+      } else if (type == 'GetByBrand' && num != 0) {
+        apiurl = `products/brand/${num}`
+      }else if (num != 0) {
         apiurl = `products/${num}`
+      }
+      return apiurl
+      break
+    }
+    /////////////  ProductImages ////////////////
+    case 'ProductImages': {
+      if (type == 'Create') {
+        apiurl = 'product-images'
+      } else if (type == 'GET-byProduct' && num != 0) {
+        apiurl = `products/${num}/images`
+      } else if (num != 0) {
+        apiurl = `product-images/${num}`
       }
       return apiurl
       break
@@ -103,11 +114,23 @@ function APIURL(dname: string, type = 'List', num = 0) {
     case 'Orders': {
       if (type == 'GET' || type == 'Create') {
         apiurl = 'orders'
-      } else if (type == 'Edit' && num != 0) {
+      }else if (type == 'CreateItem') {
+        apiurl = 'order-items'
+      } else if (type == 'Edit' && num != 0 || type == 'GETByID' && num != 0) {
         apiurl = `orders/${num}`
       } else if (type == 'Delete' && num != 0) {
         apiurl = `orders/${num}`
+      } else if (type == 'GETItem' && num != 0) {
+        apiurl = `orders/${num}/items`
+      } else if (type == 'EditItem' && num != 0 || type == 'DeleteItem' && num != 0) {
+        apiurl = `order-items/${num}`
       }
+      return apiurl
+      break
+    }
+    /////////////  ShippingCompanies  ////////////////
+    case 'ShippingCompanies': {
+      apiurl = `shipping-companies`
       return apiurl
       break
     }
@@ -132,14 +155,14 @@ export async function getData(dataName: string, dataId = 0, type = 'GET',res = '
     }
 }
 // Updata the data into database (With Image using formDataApiClient / Without Image using apiClient)
-export async function updateData(dataName: string, id:number, data: any, type = ''){
+export async function updateData(dataName: string, id:number, data: any, type = 'Edit'){
     try{
       let response
       if(dataName == "SubCategories" || dataName == "Store" || dataName == "City" ||
-      dataName == "Customer") response = await apiClient.put(APIURL(dataName, 'Edit', id), data)
+      dataName == "Customer" || dataName == "Orders" && type == 'EditItem') response = await apiClient.put(APIURL(dataName, type, id), data)
         else{
-          if(type == 'EditWithImg') response = await formDataApiClient.post(APIURL(dataName, 'Edit', id), data)
-          else response = await apiClient.post(APIURL(dataName, 'Edit', id), data)
+          if(type == 'EditWithImg') response = await formDataApiClient.post(APIURL(dataName, type, id), data)
+          else response = await apiClient.post(APIURL(dataName, type, id), data)
         }
      // if (!response.data.status) throw { message: response.data.errors.general }
       return response.data.data

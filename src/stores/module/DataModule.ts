@@ -20,7 +20,11 @@ import {
     Customer,
     Products,
     Orders,
-    Region
+    Region,
+    ProductImages,
+    ShippingCompanies,
+    OrderByID,
+    ProductItems,
   } from '../../model/Classes'
   /// Make Data Connection Store 
   // Put the data into objects..
@@ -43,12 +47,17 @@ import {
         // Variables For Connection
         regions: [Region],
         cities: [],
+        shipping_companies : [ShippingCompanies],
         brands: [Brands],
         stores: [Store],
         orders: [Orders],
-        orderByID: [Orders],
+        orderByID: new OrderByID(),
+        itemByOrder: [ProductItems] ,
+        //orderDetails: new OrderDetails(),
         products: [Products],
-        productByID: [Products],
+        productByID: new Products(),
+        productByBrand: [],
+        productImages: [ProductImages],
         customers: [Customer],
         customerByID: [Customer],
         categories: [Categories],
@@ -58,6 +67,8 @@ import {
         storeDetails: [],
         /// Loading.........
         loading: false,
+        loading_product_images: false,
+        loading_product_brand: false,
         loading_product: false,
         loading_order: false,
         loading_brand: false,
@@ -65,6 +76,8 @@ import {
         loading_store: false,
         loading_city: false,
         loading_client: false,
+        loading_company: false,
+        loading_customer: false,
         loading_status: false,
         loading_area: false,
         loading_subcategory: false,
@@ -88,15 +101,22 @@ import {
                 } else if (dataName == 'Store') {
                   this.loading_store = true
                   this.stores = await getData(dataName, dataId)
+                } else if (dataName == 'ProductImages') {
+                  this.loading_product_images = true
+                  this.productImages = await getData(dataName, dataId, type)
                 } else if (dataName == 'Products') {
                   if(type == 'GETByID'){
                     this.loading_product = true
                     this.productByID = await getData(dataName, dataId, type)
+                  }else if(type == 'GetByBrand'){
+                    this.loading_product_brand = true
+                    this.productByBrand = await getData(dataName, dataId, type)
                   }else{
                     this.products = await getData(dataName, dataId, type)
                   }
                 //  if(type == 'GET') console.log(await getData(dataName, dataId,'GET','test'))
                 } else if (dataName == 'Customer') {
+                  this.loading_customer = true
                   if(type == 'GETByID'){
                     this.loading_client = true
                     this.customerByID = await getData(dataName, dataId, type)
@@ -107,6 +127,9 @@ import {
                   if(type == 'GETByID'){
                     this.loading_order = true
                     this.orderByID = await getData(dataName, dataId, type)
+                  }else if(type == 'GETItem'){
+                    this.loading_order = true
+                    this.itemByOrder = await getData(dataName, dataId, type)
                   }else{
                     this.orders = await getData(dataName, dataId, type)
                   }
@@ -116,6 +139,9 @@ import {
                 } else if (dataName == 'City') {
                   this.loading_city = true
                   this.cities = await getData(dataName, dataId)
+                } else if (dataName == 'ShippingCompanies') {
+                  this.loading_company = true
+                  this.shipping_companies = await getData(dataName, dataId)
                 }
             } catch (error) {
               handleApiError(error, this.storeSetting.rtlClass)
@@ -125,9 +151,13 @@ import {
               this.loading_city = false
               this.loading_store = false
               this.loading_brand = false
+              this.loading_product_brand = false,
+              this.loading_product_images = false
               this.loading_subcategory = false
               this.loading_product = false
               this.loading_client = false
+              this.loading_customer = false
+              this.loading_company = false
               this.loading_order = false
             }
         },
@@ -135,6 +165,7 @@ import {
         // Create The Data
         async createData(dataName: string, data: any, type = 'Create') {
           try {
+            this.loading_product_images = true
             this.loading_create = true
             this.loading = true
             await createData(dataName, data, type)
@@ -142,62 +173,65 @@ import {
             handleApiError(error, this.storeSetting.rtlClass)
           } finally {
             this.loading_create = false
+            this.loading_product_images = false
             this.loading = false
           }
         },
         /////////////////////////////////////////
         // Update The Data
-        async updateData(dataName: string,id: number, data: any, type = '') {
+        async updateData(dataName: string,id: number, data: any, type = 'Edit') {
           let index: any
           const DataType = data
           try {
+            this.loading_product_images = true
             this.loading_create = true
             this.loading = true
             await updateData(dataName,id, data,type)
-            if (dataName == 'Categories') {
-              index = this.categories.findIndex((t: any) => t.id === DataType.id)
-              if (index !== -1) {
-                this.categories.splice(index, 1, DataType)
-              }
-            }else if (dataName == 'SubCategories') {
-              index = this.subcategories.findIndex((t: any) => t.id === DataType.id)
-              if (index !== -1) {
-                this.subcategories.splice(index, 1, DataType)
-              }
-            }else if (dataName == 'Brands') {
-              index = this.brands.findIndex((t: any) => t.id === DataType.id)
-              if (index !== -1) {
-                this.brands.splice(index, 1, DataType)
-              }
-            }else if (dataName == 'Store') {
-              index = this.stores.findIndex((t: any) => t.id === DataType.id)
-              if (index !== -1) {
-                this.stores.splice(index, 1, DataType)
-              }
-            }else if (dataName == 'Products') {
-              index = this.products.findIndex((t: any) => t.id === DataType.id)
-              if (index !== -1) {
-                this.products.splice(index, 1, DataType)
-              }
-            }else if (dataName == 'Customer') {
-              index = this.customers.findIndex((t: any) => t.id === DataType.id)
-              if (index !== -1) {
-                this.customers.splice(index, 1, DataType)
-              }
-            }else if (dataName == 'Orders') {
-              index = this.orders.findIndex((t: any) => t.id === DataType.id)
-              if (index !== -1) {
-                this.orders.splice(index, 1, DataType)
-              }
-            }else if (dataName == 'Region') {
-              index = this.regions.findIndex((t: any) => t.id === DataType.id)
-              if (index !== -1) {
-                this.regions.splice(index, 1, DataType)
-              }
-            }
+            // if (dataName == 'Categories') {
+            //   index = this.categories.findIndex((t: any) => t.id === DataType.id)
+            //   if (index !== -1) {
+            //     this.categories.splice(index, 1, DataType)
+            //   }
+            // }else if (dataName == 'SubCategories') {
+            //   index = this.subcategories.findIndex((t: any) => t.id === DataType.id)
+            //   if (index !== -1) {
+            //     this.subcategories.splice(index, 1, DataType)
+            //   }
+            // }else if (dataName == 'Brands') {
+            //   index = this.brands.findIndex((t: any) => t.id === DataType.id)
+            //   if (index !== -1) {
+            //     this.brands.splice(index, 1, DataType)
+            //   }
+            // }else if (dataName == 'Store') {
+            //   index = this.stores.findIndex((t: any) => t.id === DataType.id)
+            //   if (index !== -1) {
+            //     this.stores.splice(index, 1, DataType)
+            //   }
+            // }else if (dataName == 'Products') {
+            //   index = this.products.findIndex((t: any) => t.id === DataType.id)
+            //   if (index !== -1) {
+            //     this.products.splice(index, 1, DataType)
+            //   }
+            // }else if (dataName == 'Customer') {
+            //   index = this.customers.findIndex((t: any) => t.id === DataType.id)
+            //   if (index !== -1) {
+            //     this.customers.splice(index, 1, DataType)
+            //   }
+            // }else if (dataName == 'Orders') {
+            //   index = this.orders.findIndex((t: any) => t.id === DataType.id)
+            //   if (index !== -1) {
+            //     this.orders.splice(index, 1, DataType)
+            //   }
+            // }else if (dataName == 'Region') {
+            //   index = this.regions.findIndex((t: any) => t.id === DataType.id)
+            //   if (index !== -1) {
+            //     this.regions.splice(index, 1, DataType)
+            //   }
+            // }
           } catch (error) {
             handleApiError(error, this.storeSetting.rtlClass)
           } finally {
+            this.loading_product_images = false
             this.loading_create = false
             this.loading = false
           }

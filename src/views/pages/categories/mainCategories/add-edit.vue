@@ -109,6 +109,11 @@ export default defineComponent({
             ///////
             ID,
             file,
+            values: {
+                artitle: '',
+                entitle: '',
+                imageUrl: '',
+            },
             artitle: '',
             entitle: '',
             imageUrl: '',
@@ -152,7 +157,7 @@ export default defineComponent({
             var isValid = this.validationForm.checkMainCategoryInfo(this.artitle, this.entitle, this.fileVal)
             if (isValid == 0) {
                 this.getData()
-                if (this.ID === 0) { // Create Data
+                if (this.ID == 0) { // Create Data
                     this.DataStore.createData('Categories', this.formData, 'CreateWithImg').then(() => {
                     this.$emit('load-data')
                     this.ondismiss()

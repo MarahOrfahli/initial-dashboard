@@ -15,8 +15,8 @@ export const notificationStore = defineStore('Notification',{
         ////////////////////////////////////
         ///// Delete Methods //////////////
         // Call a notification to confirm delete then delete the item
-        onDeleteCallback(id:number , type: string){
-            this.DataStore.deleteData(type, id).then(() => {
+        onDeleteCallback(id:number , dataname: string, SecID = 0, type = 'Delete'){
+            this.DataStore.deleteData(dataname, id, type).then(() => {
                 Swal.fire({ 
                     title: this.t('page-control.delete.done'),
                     text:  this.t('page-control.delete.text-success'),
@@ -24,11 +24,15 @@ export const notificationStore = defineStore('Notification',{
                     icon: 'success',
                     customClass: 'sweet-alerts' 
                 }).then((result) => {
-                    if (result.value) { this.DataStore.getData(type).then(() => { }) }
+                    if (result.value) {
+                        if(dataname == 'ProductImages') this.DataStore.getData(dataname,SecID, 'GET-byProduct')
+                        else if(dataname == 'Orders' && type == 'DeleteItem') this.DataStore.getData('Orders',SecID, 'GETByID')
+                        else this.DataStore.getData(dataname) 
+                    }
                 });
             })
         },
-        deleteNotification(id:number , type: string){
+        async deleteNotification(id:number , dataname: string, SecID = 0, type = 'Delete'){
             Swal.fire({
                 icon: 'warning',
                 title: this.t('page-control.delete.check'),
@@ -41,7 +45,7 @@ export const notificationStore = defineStore('Notification',{
                 customClass: 'sweet-alerts',
             }).then((result) => {
                 if (result.value) {
-                    this.onDeleteCallback(id, type)
+                    this.onDeleteCallback(id, dataname,SecID, type)
                 }
             });
         }

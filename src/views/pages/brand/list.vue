@@ -66,7 +66,7 @@
             const { t, locale } = useI18n()
             return {
                 sort: ['name'],
-                datatype: 'Brand',
+                datatype: 'Brands',
                 // Data Connection
                 currentData,
                 notification,
@@ -108,7 +108,7 @@
             ///// Delete Methods //////////////
             // Call a notification to confirm delete then delete the item
             deleteRow(idrow: number){
-                this.notification.deleteNotification(idrow, 'Brands')
+                this.notification.deleteNotification(idrow, this.datatype)
             }
         }
     })

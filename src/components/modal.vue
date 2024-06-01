@@ -37,6 +37,9 @@
                                 <div class="p-5" v-if="dataType == 'M-Category'">
                                     <AddEditCategory :dataid="ID" @close="closeModal" :data="data" @load-data="loadData"/>
                                 </div>
+                                <div class="p-5" v-if="dataType == 'Customer'">
+                                    <AddEditCustomer :dataid="ID" @close="closeModal" :data="data" @load-data="loadData"/>
+                                </div>
                                 <div class="p-5" v-if="dataType == 'S-Category'">
                                     <AddEditSubcategory :dataid="ID" @close="closeModal" :data="data" @load-data="loadData"/>
                                 </div>
@@ -45,6 +48,12 @@
                                 </div>
                                 <div class="p-5" v-if="dataType == 'Region'">
                                     <AddEditRegion :dataid="ID" @close="closeModal" :data="data" @load-data="loadData"/>
+                                </div>
+                                <div class="p-5" v-if="dataType == 'ProductImages'">
+                                    <AddEditImages :dataid="ID" @close="closeModal" :data="data" @load-data="loadData"/>
+                                </div>
+                                <div class="p-5" v-if="dataType == 'ProductInOrder'">
+                                    <AddEditProductInOrder :dataid="ID" @close="closeModal" :data="data" @load-data="loadData"/>
                                 </div>
                             </DialogPanel>
                     </TransitionChild>
@@ -62,7 +71,10 @@ import AddEditBrand from '@/views/pages/brand/add-edit.vue'
 import AddEditCategory from '@/views/pages/categories/mainCategories/add-edit.vue'
 import AddEditSubcategory from '@/views/pages/categories/subCategories/add-edit.vue'
 import AddEditStore from '@/views/pages/store/add-edit.vue'
+import AddEditCustomer from '@/views/pages/orders/add-customer.vue'
 import AddEditRegion from '@/views/pages/regions/add-edit.vue'
+import AddEditImages from '@/views/pages/products/manageImages.vue'
+import AddEditProductInOrder from '@/views/pages/orders/manageProduct.vue'
 // Icon
 import IconX from '@/components/icon/icon-x.vue';
 export default defineComponent({
@@ -71,6 +83,7 @@ export default defineComponent({
     components: {
         TransitionRoot, TransitionChild, Dialog, DialogPanel, DialogOverlay, IconX,
         AddEditBrand, AddEditCategory, AddEditSubcategory, AddEditStore, AddEditRegion,
+        AddEditImages, AddEditProductInOrder, AddEditCustomer
     },
     data(props){
         const dataType = props.dataType

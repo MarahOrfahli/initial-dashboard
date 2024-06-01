@@ -45,6 +45,7 @@ export class Products { // Products
     color_codes = []
     hex = []
     warehouses = [{ id: 0, quantity: 0, alert_quantity: 0 }]
+    brand = { id: 0, name: '', logo: '' }
     // warehouses,.id = []
     // warehouses,.quantity = []
     // warehouses,.alert_quantity = []
@@ -54,10 +55,44 @@ export class Products { // Products
     description_en = ''
     is_available = false
 }
+export class ProductImages{
+    id = 0
+    image_id = 0
+    image = ''
+    code = null
+    hex = null
+}
 export class Orders { // Orders
     id = 0
     name = ''
 }
+export class OrderByID { // OrderDetails
+    id = 0
+    code = ''
+    date = ''
+    status = ''
+    items: ProductItems[] = []
+    shipping_price = 0
+    shipping_date = null
+    shipping_company = { id: 0, name: '', contact_info: null}
+    customer = { id: 0, name: '', address: '', city_id: 0, area_id: 0, phone: '', phone2: '' }
+}
+export class ProductItems {
+    id = 0
+    order_id = 0
+    product_price = 0
+    quantity = 0
+    product: Products[] = []
+    product_id = 0
+    color = 0
+    note = ''
+}
+export class ShippingCompanies { // ShippingCompanies
+    id = 0
+    name = ''
+    contact_info = null
+}
+
 //////////////////////// Items
 export class StoreItems {
     id = 0
@@ -73,6 +108,10 @@ export class StoreItems {
 export class Items{
     id = 0
     image = ref<File | null>(null)
+    img_url = ''
+    image_id = 0
+    type = ''
+    visibale = false
     color_code = 0
     color = ''
     errorF = false
@@ -81,6 +120,13 @@ export class Items{
     errorFile_items = ''
     errorColor_items = ''
     errorCode_items = ''
+}
+export class ImageItem{
+    image_id = 0
+    product_id = 0
+    image = ref<File | null>(null)
+    code = 0
+    hex = ''
 }
 export class item{
     id = 0

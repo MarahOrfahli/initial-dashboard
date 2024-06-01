@@ -71,7 +71,7 @@
              this.startPage() },
         methods: {
             startPage(){
-                this.DataStore.getData('Customer').then(() => { })
+                this.DataStore.getData(this.datatype).then(() => { })
             },
             ////////////////////////////////////////////////
             // Add And Edit the Item data (Using Vue-Router)
@@ -91,7 +91,7 @@
             ///// Delete Methods //////////////
             // Call a notification to confirm delete then delete the item
             deleteRow(idrow: number){
-                this.notification.deleteNotification(idrow, 'Customer')
+                this.notification.deleteNotification(idrow, this.datatype)
             }
         }
     })

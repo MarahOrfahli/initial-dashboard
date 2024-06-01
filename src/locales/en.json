@@ -81,10 +81,14 @@
         "products_section":{
             "fields": {
                 "product":"Product",
+                "productprice":"Product Price",
                 "color":"Color",
+                "colordegree":"Color Code",
                 "color-code":"Code",
                 "add-product":"Add Product Information",
                 "edit-product":"Edit Product Information",
+                "add-new":"Add Product",
+                "edit":"Edit Product",
                 "add-product-store":"Add the product to stores",
                 "img-color-code":"Images, Color And Colors Codes",
                 "add-img-color-code":"Add Images, Color And Colors Codes",
@@ -95,6 +99,7 @@
                 "belong-to":"Belong To",
                 "available":"Availavle",
                 "popular":"Popular",
+                "info":"Information",
                 "new":"New",
                 "back-product":"Go Back To Products List"
             },
@@ -145,6 +150,7 @@
                 "email":"Email",
                 "email2":"Email  (Optional)",
                 "phone":"Phone Number",
+                "phone-second":"Second Phone Number",
                 "phone2":"Phone Number (Optional)",
                 "type":"Client Type",
                 "consumer":"Consumer",
@@ -156,6 +162,7 @@
                 "***********":"**",
                 "back-customer":"Go Back To Customers List",
                 "add-customer":"Add Customer Information",
+                "add-new":"Add New Customer",
                 "edit-customer":"Edit Customer Information"
             },
             "modals":{
@@ -204,10 +211,12 @@
                 "car":"Car",
                 "shipping-date":"Shipping Date",
                 "shipping-price":"Shipping Price",
+                "order-total":"Order Totals",
                 "delivery-date":"Delivery Date",
                 "created-by":"Created By",
                 "status":"Order Status",
                 "note":"Note",
+                "notes":"Notes",
                 "discount":"Add Discount To This Order",
                 "back-order":"Go Back To Orders List",
                 "change-order-status":"Change Order Status"

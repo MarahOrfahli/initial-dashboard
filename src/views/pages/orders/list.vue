@@ -62,7 +62,7 @@
             return {
                 router,
                 sort: ['name'],
-                datatype: 'Order',
+                datatype: 'Orders',
                 // Data Connection
                 currentData,
                 notification,
@@ -78,7 +78,7 @@
         },
         methods: {
             startPage(){
-                this.DataStore.getData('Orders').then(() => { })
+                this.DataStore.getData(this.datatype).then(() => { /* console.log(this.orders) */ })
             },
             // Add And Edit the Item data
             addOrder(){
@@ -109,7 +109,7 @@
             ///// Delete Methods //////////////
             // Call a notification to confirm delete then delete the item
             deleteRow(idrow: number){
-                this.notification.deleteNotification(idrow, 'Orders')
+                this.notification.deleteNotification(idrow, this.datatype)
             }
         }
     })

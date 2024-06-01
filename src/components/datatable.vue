@@ -29,8 +29,8 @@
         :lastArrow="lastArrow"
         :previousArrow="previousArrow"
         :nextArrow="nextArrow">
-        <!-- (Name) => Store / Brand / Product / Customer / Region -->
-        <template v-if="dataType == 'Store' || dataType == 'Brand' || dataType == 'Product' || dataType == 'Customer' || dataType == 'Region'" #name="data">
+        <!-- (Name) => Store / Brands / Product / Customer / Region -->
+        <template v-if="dataType == 'Store' || dataType == 'Brands' || dataType == 'Product' || dataType == 'Customer' || dataType == 'Region'" #name="data">
             <div v-if="dataType == 'Region' || dataType == 'Product'" class="text-center">
                 <span v-if="locale == 'eg'">{{ data.value.name_ar }}</span>
                 <span v-if="locale == 'en'">{{ data.value.name_en }}</span>
@@ -41,8 +41,8 @@
         <template v-if="dataType == 'Store'" #location="data">
             <div class="text-center" v-if="data.value.id > 0">{{ data.value.location }}</div>
         </template>
-        <!-- (Logo) => Brand -->
-        <template v-if="dataType == 'Brand'" #logo="data">
+        <!-- (Logo) => Brands -->
+        <template v-if="dataType == 'Brands'" #logo="data">
             <div v-if="data.value.id > 0" class="flex items-center justify-center font-semibold">
                 <div class="p-0.5 bg-white-dark/30 rounded-md w-max ltr:mr-2 rtl:ml-2">
                     <img class="h-20 w-20 rounded-md object-cover" :src="`${imgLocation}${data.value.logo}`" />
@@ -51,24 +51,27 @@
         </template>
         <!-- (city) => Region -->
         <template v-if="dataType == 'Region'" #city="data">
-            <div class="text-center">{{ data.value.city_id }}</div>
+            <div class="text-center">
+                <span v-if="locale == 'eg'">{{ data.value.city_name_ar }}</span>
+                <span v-if="locale == 'en'">{{ data.value.city_name_en }}</span>
+            </div>
         </template>
         <!---------------------- Orders ----------------------------->
-        <!-- (Order Number) => Order -->
-        <template v-if="dataType == 'Order'" #ordernum="data">
+        <!-- (Order Number) => Orders -->
+        <template v-if="dataType == 'Orders'" #ordernum="data">
             <div class="text-center cursor-pointer text-purple-600" @click="showOrderDetails(data.value.id)"
-            v-if="data.value.id > 0">{{ data.value.ordernum }}</div>
+            v-if="data.value.id > 0">{{ data.value.code }}</div>
         </template>
-        <!-- (Date) => Order -->
-        <template v-if="dataType == 'Order'" #date="data">
-            <div class="text-center" v-if="data.value.id > 0">{{ DateFormatDetails(data.value.date) }}</div>
+        <!-- (Date) => Orders -->
+        <template v-if="dataType == 'Orders'" #date="data">
+            <div class="text-center" v-if="data.value.id > 0">{{ data.value.date }}</div>
         </template>
-        <!-- (Shipping Company) => Order -->
-        <template v-if="dataType == 'Order'" #shippingcompany="data">
-            <div class="text-center" v-if="data.value.id > 0">{{ data.value.shippingcompany }}</div>
+        <!-- (Shipping Company) => Orders -->
+        <template v-if="dataType == 'Orders'" #shippingcompany="data">
+            <div class="text-center" v-if="data.value.id > 0">{{ data.value.shipping_company.name }}</div>
         </template>
-        <!-- (Status) => Order -->
-        <template v-if="dataType == 'Order'" #status="data">
+        <!-- (Status) => Orders -->
+        <template v-if="dataType == 'Orders'" #status="data">
             <div class="text-center" v-if="data.value.id > 0">
                 <span class="badge" :class="`bg-${statusColor(data.value.status)}`">{{ statusTitle(data.value.status) }}</span>
             </div>
@@ -89,12 +92,30 @@
                         <span v-if="locale == 'en'">{{ data.value.category_name_en }}</span>
                     </div>
         </template>
-        <!-- (image) => Category -->
-        <template v-if="dataType == 'M-Category'" #image="data">
-            <div v-if="data.value.id > 0" class="flex items-center justify-center font-semibold">
+        <!-- (image) => Category / ProductImages -->
+        <template v-if="dataType == 'M-Category' || dataType == 'ProductImages'" #image="data">
+            
+            <!-- {{ data.value }} -->
+            <div v-if="dataType == 'M-Category' && data.value.id > 0 || dataType == 'ProductImages' && data.value.image_id > 0"
+                class="flex items-center justify-center font-semibold">
                 <div class="p-0.5 bg-white-dark/30 rounded-md w-max ltr:mr-2 rtl:ml-2">
-                    <img class="h-20 w-20 rounded-md object-cover" :src="`${imgLocation}${data.value.image}`" />
+                    <img class="rounded-md object-cover" :class="dataType == 'M-Category'? 'h-20 w-20': ' h-24 w-24'" :src="`${imgLocation}${data.value.image}`" />
                 </div>
+            </div>
+        </template>
+        <!---------------------- ProductImages ----------------------------->
+        <template v-if="dataType == 'ProductImages'" #code="data">
+            <div v-if="data.value.image_id > 0">
+                <div class="text-center" v-if="data.value.code == null || data.value.code == 0">----</div>
+                <div class="text-center" v-else>{{ data.value.code }}</div>
+            </div>
+        </template>
+        <template v-if="dataType == 'ProductImages'" #hex="data">
+            <div v-if="data.value.image_id > 0">
+                <div v-if="data.value.hex != '' && data.value.hex != null && data.value.hex != 'null'" class="flex items-center justify-center font-semibold">
+                    <div class="rounded-full h-8 w-8" :style="'background-color:' + data.value.hex"></div>
+                </div>
+                <div v-else class="flex items-center justify-center text-center font-semibold">----</div>
             </div>
         </template>
         <!---------------------- Customers ----------------------------->
@@ -161,7 +182,7 @@
                         <IconEye/>
                     </button>
                 </div>
-                <div v-if="dataType == 'Order'" class="btn btn-white w-4 cursor-pointer hover:text-orange-600" @click="showTimeLine(data.value.id)">
+                <div v-if="dataType == 'Orders'" class="btn btn-white w-4 cursor-pointer hover:text-orange-600" @click="showTimeLine(data.value.id)">
                     <button>
                         <icon-clock  />
                     </button>
@@ -170,7 +191,11 @@
                     <button type="button">
                         <icon-trash-lines />
                     </button>
-                </div>      
+                </div>
+            </div>
+            <div v-if="data.value.image_id > 0 && dataType == 'ProductImages'" class="flex gap-4 items-center justify-center">
+                <div><button @click="editRow(data.value.image_id, data.value)" type="button" class="btn btn-success cursor-pointer"><icon-edit /></button></div>
+                <div><button @click="deleteRow(data.value.image_id)" type="button" class="btn btn-danger cursor-pointer"><icon-trash-lines /></button></div>
             </div>
         </template>
     </vue3-datatable>

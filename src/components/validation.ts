@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { useI18n } from 'vue-i18n'
-import { StoreItems } from '../model/Classes'
+import { StoreItems, Items } from '../model/Classes'
 
 export const validationStore = defineStore('Validation',{
     state: () => {
@@ -8,9 +8,13 @@ export const validationStore = defineStore('Validation',{
         return{
             t,isSubmmit: false,
             isSubmmit_itemsStore: false,
+            isSubmmit_items: false,
             //////////// Errors Objects  ///////////////
             // Store //////////////////////
             storelocation: { error: false, message: ''},
+            // ItemsImages ////////////////
+            hex: { error: false, message: ''},
+            code: { error: false, message: ''},
             // Categories /////////////////
             categorySelect: { error: false, message: ''},
             // Customer
@@ -35,12 +39,14 @@ export const validationStore = defineStore('Validation',{
             productScategory: { error: false, message: ''},
             productbrand : { error: false, message: ''},
             productstore: { error: false, message: ''},
+            brandSelect : { error: false, message: ''},
+            productSelect : { error: false, message: ''},
             //////////////////////////////////
             // Product && Order
             price : { error: false, message: ''},
             // Brand && Store && Customer
             name: { error: false, message: ''},
-            // Brand && Categories && Products
+            // Brand && Categories && Products && ItemsImages
             file: { error: false, message: ''},
             // Categories && Subcategories && Products
             titlearabic :  { error: false, message: ''},
@@ -280,11 +286,41 @@ export const validationStore = defineStore('Validation',{
             }
             return counter
         },
+        ///////////////// Validation Product_Brand Methods //////////////////////////
+        checkProduct_BrandErrors(){
+            return this.price.error == true || this.brandSelect.error == true || 
+            this.productSelect.error == true || this.Quantity.error == true ? true : false
+        },
+        checkProduct_BrandInfo(values){
+            let counter = 0
+            this.isSubmmit = true
+            if(isNaN(parseInt(values.price)) || this.checkNumZero(parseInt(values.price))){ // Price
+                this.price.error = true
+                this.price.message = this.t('pages.products_section.errors.price')
+            }
+            if(this.checkNumZero(values.brandID)){ // Brand
+                this.brandSelect.error = true
+                this.brandSelect.message = this.t('pages.products_section.errors.price')
+            }
+            if(this.checkNumZero(values.productID)){ // Product
+                this.productSelect.error = true
+                this.productSelect.message = this.t('pages.products_section.errors.price')
+            }
+            if(this.checkNumZero(values.quantity)){ // Quantity
+                this.Quantity.error = true
+                this.Quantity.message = this.t('pages.products_section.errors.price')
+            }
+            if (this.checkProduct_BrandErrors()) {
+                counter++
+            } else {
+                counter = 0
+            }
+            return counter
+        },
         ///////////////// Validation Order Methods //////////////////////////
         checkOrderErrors(){
             return this.name.error == true || this.shipping_name.error == true ||
-            this.price.error == true || this.shipping_date.error == true || this.order_date.error == true
-            || this.delivery_date.error == true || this.status.error == true ? true : false
+            this.price.error == true || this.order_date.error == true ? true : false
         },
         checkOrderInfo(values){
             let counter = 0
@@ -299,29 +335,14 @@ export const validationStore = defineStore('Validation',{
             if(this.checkEmpty(values.company_name)){ // Shipping Company Name
                 this.shipping_name.error = true
                 this.shipping_name.message = this.t('pages.products_section.errors.english-empty')
-            }else if(this.checkMore30Char(values.company_name)){
-                this.shipping_name.error = true
-                this.shipping_name.message = this.error_length
             }
             if(this.checkNumZero(values.price)){ // Price
                 this.price.error = true
                 this.price.message = this.t('pages.products_section.errors.price')
             }
-            if(this.checkDateEmpty(values.shippingDate)){
-                this.shipping_date.error = true
-                this.shipping_date.message = this.t('pages.products_section.errors.price')
-            }
             if(this.checkDateEmpty(values.orderDate)){
                 this.order_date.error = true
                 this.order_date.message = this.t('pages.products_section.errors.price')
-            }
-            if(this.checkDateEmpty(values.deliveryDate)){
-                this.delivery_date.error = true
-                this.delivery_date.message = this.t('pages.products_section.errors.price')
-            }
-            if(this.checkEmpty(values.status)){ // Client Name
-                this.status.error = true
-                this.status.message = this.t('pages.products_section.errors.arabic-empty')
             }
             if (this.checkOrderErrors()) {
                 counter++
@@ -329,21 +350,22 @@ export const validationStore = defineStore('Validation',{
                 counter = 0
             }
             return counter
-
         },
         ///////////////////// Items Validations ////////////////////////////
         checkItemsError(type: string, items: any){
             if(type == 'Store'){
                 return items.errorq == true || items.erroraq == true
             }else if(type == 'ICC'){
-
+                return items.errorF == true || items.error_code == true || items.error_color == true
             }
         },
-        checkItemsInfo(type: string, items: StoreItems[]){
+        checkItemsInfo(type: string, items: any[] = []){
             let counter = 0
+            this.isSubmmit_items = true
             if(type == 'Store'){
-                for (let index = 0; index < items.length; index++){
-                    let theItems = items[index]
+                let itemsStore: StoreItems[] = items
+                for (let index = 0; index < itemsStore.length; index++){
+                    let theItems = itemsStore[index]
                     if(theItems.quantity > 0 && theItems.alert_quantity > 0 && theItems.alert_quantity < theItems.quantity){
                         this.isSubmmit_itemsStore = false
                         theItems.errorq = false
@@ -373,10 +395,67 @@ export const validationStore = defineStore('Validation',{
                         counter++
                     }
                 }
+                items = itemsStore
             }else if(type == 'ICC'){
-
+                let itemsICC:Items[] = items
+                for (let index = 0; index < itemsICC.length; index++) {
+                    let theItems = itemsICC[index]
+                    theItems.errorF = false
+                    theItems.errorFile_items = ''
+                    theItems.error_code = false
+                    theItems.errorCode_items = ''
+                    theItems.error_color = false
+                    theItems.errorColor_items = ''
+                    if(theItems.image == null && theItems.img_url == ''){
+                        theItems.errorF = true
+                        theItems.errorFile_items = this.t('pages.products_section.errors.upload-img-item')
+                    }
+                    if(theItems.color.includes('#') && theItems.color_code == 0 || 
+                        theItems.color.includes('#') && theItems.color_code.toString() == ''){
+                        theItems.error_code = true
+                        theItems.errorCode_items = this.t('pages.products_section.errors.code')
+                    }else if(!theItems.color.includes('#') && theItems.color_code != 0 &&
+                         theItems.color_code.toString() != ''){
+                        theItems.error_color = true
+                        theItems.errorColor_items = this.t('pages.products_section.errors.color')
+                    }
+                }
+                for (let index = 0; index < itemsICC.length; index++) {
+                    let theItems = itemsICC[index]
+                    if(this.checkItemsError('ICC', theItems)){
+                        counter++
+                    }
+                }
+                items = itemsICC
             }
             return { count: counter, items: items }
+        },
+        ///
+        checkImageItemErrors(){
+            return this.file.error == true || this.code.error == true || this.hex.error == true ? true : false
+        },
+        checkImageItemInfo(code: number, color: string, url: string, file){
+            let counter = 0
+            this.isSubmmit_items = true
+            if(this.isNull(file) && url == ''){
+                this.file.error = true
+                this.file.message = this.t('pages.products_section.errors.upload-img-item')
+            }
+            if(color.includes('#') && color != '' && code == 0 || 
+                color.includes('#') && color != '' && code.toString() == ''){
+                this.code.error = true
+                this.code.message = this.t('pages.products_section.errors.code')
+            }else if(!color.includes('#') && color == '' && code != 0 &&
+                 code.toString() != ''){
+                this.hex.error = true
+                this.hex.message = this.t('pages.products_section.errors.color')
+            }
+            if (this.checkImageItemErrors()) {
+                counter++
+            } else {
+                counter = 0
+            }
+            return counter
         },
         ///////////////// Validation Region Methods //////////////////////////
         checkRegionErrors(){
@@ -506,6 +585,11 @@ export const validationStore = defineStore('Validation',{
             // Clear Store && Brand && Customer
             this.name.error = false
             this.name.message = ''
+            // Clear Images Item
+            this.code.error = false
+            this.code.message = ''
+            this.hex.error = false
+            this.hex.message = ''
         },
     }
 })
