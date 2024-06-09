@@ -21,6 +21,23 @@
         "store":"Store",
         "regions":"Regions"
     },
+    "****************************":"******************",
+    "signin":{
+        "name":"login",
+        "email":"Email",
+        "title":"Enter your email and password to login",
+        "remember-me":"Remember Me",
+        "password":"Password",
+        "username":"Username",
+        "enter-name":"Enter Username",
+        "enter-email":"Enter Email",
+        "enter-pass":"Enter Password",
+        "check-email":"The email field must be a valid email address",
+        "email-empty":"The email field is required",
+        "check-pass-length":"The password field must be at least 8 characters",
+        "pass-empty":"The password field is required",
+        "invalid-credentials":"The user is not exist"
+    },
     "***************************":"*******************",
     "footer":{
         "copy-right":"All rights reserved. © { date }"

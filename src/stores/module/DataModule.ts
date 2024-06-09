@@ -8,7 +8,9 @@ import {
     deleteData,
     updateData,
     createData,
-    getData
+    getData,
+    login,
+    logout
   } from '../../api/services/DataConnect'
   // Import The Classes From Classes.ts File... 
   // It Is Help For Take the same data by using the same objects..
@@ -24,7 +26,9 @@ import {
     ProductImages,
     ShippingCompanies,
     OrderByID,
+    Credentials,
     ProductItems,
+    Login,
   } from '../../model/Classes'
   /// Make Data Connection Store 
   // Put the data into objects..
@@ -64,6 +68,12 @@ import {
         subcategories: [SubCategories],
         /////////////
         storesTrack: [],
+        ///////// Auth /////////////
+        userInfo: new Login(),
+        // loginInfo: new Credentials(),
+        token: '',
+        authStatue : false,
+        ////////////////////////////
         storeDetails: [],
         /// Loading.........
         loading: false,
@@ -187,47 +197,6 @@ import {
             this.loading_create = true
             this.loading = true
             await updateData(dataName,id, data,type)
-            // if (dataName == 'Categories') {
-            //   index = this.categories.findIndex((t: any) => t.id === DataType.id)
-            //   if (index !== -1) {
-            //     this.categories.splice(index, 1, DataType)
-            //   }
-            // }else if (dataName == 'SubCategories') {
-            //   index = this.subcategories.findIndex((t: any) => t.id === DataType.id)
-            //   if (index !== -1) {
-            //     this.subcategories.splice(index, 1, DataType)
-            //   }
-            // }else if (dataName == 'Brands') {
-            //   index = this.brands.findIndex((t: any) => t.id === DataType.id)
-            //   if (index !== -1) {
-            //     this.brands.splice(index, 1, DataType)
-            //   }
-            // }else if (dataName == 'Store') {
-            //   index = this.stores.findIndex((t: any) => t.id === DataType.id)
-            //   if (index !== -1) {
-            //     this.stores.splice(index, 1, DataType)
-            //   }
-            // }else if (dataName == 'Products') {
-            //   index = this.products.findIndex((t: any) => t.id === DataType.id)
-            //   if (index !== -1) {
-            //     this.products.splice(index, 1, DataType)
-            //   }
-            // }else if (dataName == 'Customer') {
-            //   index = this.customers.findIndex((t: any) => t.id === DataType.id)
-            //   if (index !== -1) {
-            //     this.customers.splice(index, 1, DataType)
-            //   }
-            // }else if (dataName == 'Orders') {
-            //   index = this.orders.findIndex((t: any) => t.id === DataType.id)
-            //   if (index !== -1) {
-            //     this.orders.splice(index, 1, DataType)
-            //   }
-            // }else if (dataName == 'Region') {
-            //   index = this.regions.findIndex((t: any) => t.id === DataType.id)
-            //   if (index !== -1) {
-            //     this.regions.splice(index, 1, DataType)
-            //   }
-            // }
           } catch (error) {
             handleApiError(error, this.storeSetting.rtlClass)
           } finally {
@@ -271,5 +240,76 @@ import {
         async getCategoriesForSelection(){
           this.getData('Categories',0)
         },
+        // Auth ////////////////////////////////////////
+        
+      async login(log: any) {
+        this.loading = true
+        try {
+          this.userInfo = await login(log)
+          let token = this.userInfo.token
+          if (token == null) {
+            this.authStatue = false
+            return
+          } else {
+            this.authStatue = true
+            this.setToken(token)
+            this.setUserInfo(this.userInfo.user.name, this.userInfo.user.email)
+          }
+        } catch (error) {
+          handleApiError(error)
+        } finally {
+          this.loading = false
+        }
+      },
+      
+    async logout() {
+      // Clear the token and user information in the store
+      try {
+        await logout().then(()=>{
+          this.setToken(null)
+          this.setUserInfo(null, null)
+        })
+      } catch (error) {
+        handleApiError(error)
+      } finally {
+        this.loading = false
+      }
+    },
+    /////////////////////////
+      setToken(token: any) {
+        if (token != null) {
+          localStorage.setItem('authToken', token)
+        } else {
+          localStorage.removeItem('authToken')
+        }
+      },
+      getToken() {
+        let token = localStorage.getItem('authToken') as any
+        return token
+      },
+      
+    setUserInfo(name: any, email: any) { // , pass: any
+      if (name != null) {
+        localStorage.setItem('authName', name)
+      } else {
+        localStorage.removeItem('authName')
+      }
+      if (email != null) {
+        localStorage.setItem('authEmail', email)
+      } else {
+        localStorage.removeItem('authEmail')
+      }
+      // if (pass != null) {
+      //   localStorage.setItem('authPass', pass)
+      // } else {
+      //   localStorage.removeItem('authPass')
+      // }
+    },
+    getUserInfoName() {
+      return localStorage.getItem('authName') as any
+    },
+    getUserInfoEmail() {
+      return localStorage.getItem('authEmail') as any
+    },
     }
 });

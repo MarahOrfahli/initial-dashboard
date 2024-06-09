@@ -142,3 +142,18 @@ export class Region{
     city = ''
 }
 
+//////////////////////
+export class Credentials {
+    name = ''
+    email = ''
+    password = ''
+}
+
+export class Login {
+    token = ''
+    user = {
+        id: 0,
+        email: '',
+        name: ''
+    }
+}

@@ -314,10 +314,10 @@
                                         </router-link>
                                     </li>
                                     <li class="border-t border-white-light dark:border-white-light/10">
-                                        <router-link to="/auth/boxed-signin" class="text-danger !py-3" @click="close()">
+                                        <div class="text-danger !py-3 cursor-pointer flex pr-4" @click="close(),logout()">
                                             <icon-logout class="w-4.5 h-4.5 ltr:mr-2 rtl:ml-2 rotate-90 shrink-0" />
                                             {{ $t('header.sign-out') }}
-                                        </router-link>
+                                        </div>
                                     </li>
                                 </ul>
                             </template>
@@ -339,6 +339,7 @@
     import { useAppStore } from '@/stores/index';
     // Data Connection
     import { useConnectionStore } from '../../stores/module/DataModule'
+    import { useRouter } from 'vue-router';
     // Import Icons
     import IconMenu from '@/components/icon/icon-menu.vue';
     import IconCalendar from '@/components/icon/icon-calendar.vue';
@@ -403,6 +404,7 @@
         },
         data(){
             const store = useAppStore()
+            const router = useRouter()
             const { locale } = useI18n()
             const DataStore = useConnectionStore()
             const { project_name } = storeToRefs(DataStore)
@@ -457,6 +459,8 @@
                 },
             ]
             return{
+                router,
+                DataStore,
                 store,
                 locale,
                 messages,
@@ -477,6 +481,11 @@
             },
             removeMessage(value: number){
                 this.messages = this.messages.filter((d) => d.id !== value);
+            },
+            logout(){
+                this.DataStore.logout().then(()=>{
+                    this.router.push({ name: 'login' })
+                })
             }
         }
     })

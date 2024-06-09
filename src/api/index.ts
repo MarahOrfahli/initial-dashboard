@@ -16,6 +16,15 @@ const apiClient = axios.create({
   baseURL: apiURL,
   headers: defaultHeaders,
 })
+
+apiClient.interceptors.request.use((config) => {
+  const isAuthenticated = !!localStorage.getItem('authToken')
+  const token = localStorage.getItem('authToken')
+  if (isAuthenticated) {
+    config.headers['Authorization'] = `Bearer ${token}`
+  }
+  return config
+})
 // Separate instance for multipart/form-data requests
 ///  API Client Object with Form Data........
 const formDataApiClient = axios.create({
@@ -24,5 +33,14 @@ const formDataApiClient = axios.create({
     ...defaultHeaders,
     'Content-Type': 'multipart/form-data',
   },
+})
+
+formDataApiClient.interceptors.request.use((config) => {
+  const isAuthenticated = !!localStorage.getItem('authToken')
+  const token = localStorage.getItem('authToken')
+  if (isAuthenticated) {
+    config.headers['Authorization'] = `Bearer ${token}`
+  }
+  return config
 })
 export { apiClient, formDataApiClient}

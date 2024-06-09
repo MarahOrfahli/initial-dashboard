@@ -134,6 +134,19 @@ function APIURL(dname: string, type = 'List', num = 0) {
       return apiurl
       break
     }
+    
+    /////////////  Auth Login ////////////////
+    case 'Login': {
+      apiurl = `login`
+      return apiurl
+      break
+    }
+    /////////////  Auth Logout ////////////////
+    case 'Logout': {
+      apiurl = `logout`
+      return apiurl
+      break
+    }
     default: {
       console.log('Empty action received...\nThe dataName is: ' + dname + ' And the type is: ' + type)
       return apiurl
@@ -196,4 +209,20 @@ export async function deleteData(dataName: string, dataId: number, type = 'Delet
       console.log(error)
       throw error
     }
+}
+// Login And Logout
+
+export async function login(credentials: any) {
+  try {
+    const response = await formDataApiClient.post(APIURL('Login'), credentials)
+    console.log(response.data)
+    return response.data.data
+  } catch (error) {
+    throw error
+  }
+}
+export async function logout() {
+  // Perform logout operations
+  const response = await formDataApiClient.post(APIURL('Logout'))
+  console.log(response.data)
 }

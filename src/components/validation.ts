@@ -41,6 +41,9 @@ export const validationStore = defineStore('Validation',{
             productstore: { error: false, message: ''},
             brandSelect : { error: false, message: ''},
             productSelect : { error: false, message: ''},
+            // Auth
+            email : { error: false, message: ''},
+            pass : { error: false, message: ''},
             //////////////////////////////////
             // Product && Order
             price : { error: false, message: ''},
@@ -87,6 +90,14 @@ export const validationStore = defineStore('Validation',{
                     return true
                 }
               }
+        },
+        isEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        },
+        checkPassword(pass: string){
+            if(pass.length < 8) return true 
+            else false
         },
         ///////////////// Validation Store Methods //////////////////////////
         checkStoreErrors(){
@@ -516,6 +527,34 @@ export const validationStore = defineStore('Validation',{
                 this.address.message = this.t('pages.customer.errors.address-empty')
             }
             if (this.checkCustomerErrors()) {
+                counter++
+            } else {
+                counter = 0
+            }
+            return counter
+        },
+        ///////////////// Validation Auth Methods //////////////////////////
+        checkAuthErrors(){
+            return this.email.error == true || this.pass.error == true ? true : false
+        },
+        checkAuthInfo(values){
+            let counter = 0
+            this.isSubmmit = true
+            if(this.checkEmpty(values.email)){
+                this.email.error = true
+                this.email.message = this.t('signin.email-empty')
+            }else if(!this.isEmail(values.email)){
+                this.email.error = true
+                this.email.message = this.t('signin.check-email')
+            }
+            if(this.checkEmpty(values.password)){
+                this.pass.error = true
+                this.pass.message = this.t('signin.pass-empty')
+            }else if(this.checkPassword(values.password)){
+                this.pass.error = true
+                this.pass.message = this.t('signin.check-pass-length')
+            }
+            if (this.checkAuthErrors()) {
                 counter++
             } else {
                 counter = 0

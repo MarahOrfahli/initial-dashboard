@@ -13,11 +13,8 @@ const toast = Swal.mixin({
 
 export function handleApiError(error: any,rtlClass = 'rtl', title = 'Error') {
     if (error.response) {
-      // console.log(error.response.data.message.image[0])
-      // console.log('Server Error:', error?.response?.data)
       toast.fire({
-        // <p>${ error.response.data.message.image[0] }</p>
-        title: `<h1>${ title }</h1><p>${ error.message }</p>`,
+        title: `<h1>${ title }</h1><p>${ error.response.data.message }</p>`,
         position: rtlClass === 'rtl' ? 'top-start' : 'top-end',
     });
     } else if (error.request) {
